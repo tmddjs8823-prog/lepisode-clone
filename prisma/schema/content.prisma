@@ -1,0 +1,80 @@
+// ============================================================
+// 콘텐츠 보조 (인증서, 이벤트, 팝업, 약관, QR코드)
+// ============================================================
+
+model Certificate {
+  id        Int       @id @default(autoincrement())
+  title     String
+  titleEn   String?
+  titleJa   String?
+  issuer    String?
+  issueDate DateTime?
+  imageUrl  String?
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  @@map("certificates")
+}
+
+model Event {
+  id             Int       @id @default(autoincrement())
+  title          String
+  titleEn        String?
+  titleJa        String?
+  description    String?   @db.Text
+  imageUrl       String?
+  linkUrl        String?
+  attachmentUrl  String?   // 첨부파일 URL
+  startDate      DateTime?
+  endDate        DateTime?
+  selectedDate   DateTime? // 선정일
+  published      Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@map("events")
+}
+
+model Popup {
+  id        Int       @id @default(autoincrement())
+  title     String
+  imageUrl  String?
+  linkUrl   String?
+  startDate DateTime?
+  endDate   DateTime?
+  position  String    @default("CENTER") // CENTER, BOTTOM, FULL
+  sortOrder Int       @default(0)
+  published Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("popups")
+}
+
+model Terms {
+  id        Int      @id @default(autoincrement())
+  type      String   @unique // SERVICE, PRIVACY, MARKETING
+  title     String
+  titleEn   String?
+  titleJa   String?
+  content   String   @db.Text
+  contentEn String?  @db.Text
+  contentJa String?  @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("terms")
+}
+
+model QrCode {
+  id         Int      @id @default(autoincrement())
+  name       String
+  type       String   @default("URL") // URL, APP, DEEPLINK
+  targetUrl  String
+  qrImageUrl String?
+  scanCount  Int      @default(0)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("qr_codes")
+}

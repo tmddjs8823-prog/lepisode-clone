@@ -1,0 +1,265 @@
+<div class="rich-editor-wrap h-full flex-1 flex flex-col border border-slate-700 rounded-xl overflow-hidden focus-within:border-indigo-500 transition-colors bg-slate-800">
+
+  <!-- ── 툴바 ── -->
+  <div class="flex flex-col gap-0 border-b border-slate-700 shrink-0 bg-slate-800/80 backdrop-blur-sm">
+
+    <!-- Row 1 -->
+    <div class="flex items-center flex-wrap gap-0.5 px-2 pt-1.5 pb-1">
+      <!-- Bold -->
+      <button type="button" title="굵게 (Ctrl+B)"
+        class="toolbar-btn font-bold"
+        [class.active]="isActive('bold')"
+        (mousedown)="$event.preventDefault(); exec('bold')">B</button>
+      <!-- Italic -->
+      <button type="button" title="기울임 (Ctrl+I)"
+        class="toolbar-btn italic"
+        [class.active]="isActive('italic')"
+        (mousedown)="$event.preventDefault(); exec('italic')">I</button>
+      <!-- Underline -->
+      <button type="button" title="밑줄 (Ctrl+U)"
+        class="toolbar-btn underline"
+        [class.active]="isActive('underline')"
+        (mousedown)="$event.preventDefault(); exec('underline')">U</button>
+      <!-- Strikethrough -->
+      <button type="button" title="취소선"
+        class="toolbar-btn line-through text-slate-400"
+        [class.active]="isActive('strikeThrough')"
+        (mousedown)="$event.preventDefault(); exec('strikeThrough')">S</button>
+
+      <div class="w-px h-5 bg-slate-700 mx-1"></div>
+
+      <!-- H1 -->
+      <button type="button" title="제목 1"
+        class="toolbar-btn text-xs font-extrabold"
+        (mousedown)="$event.preventDefault(); formatBlock('h1')">H<sub>1</sub></button>
+      <!-- H2 -->
+      <button type="button" title="제목 2"
+        class="toolbar-btn text-xs font-extrabold"
+        (mousedown)="$event.preventDefault(); formatBlock('h2')">H<sub>2</sub></button>
+      <!-- H3 -->
+      <button type="button" title="제목 3"
+        class="toolbar-btn text-xs font-extrabold"
+        (mousedown)="$event.preventDefault(); formatBlock('h3')">H<sub>3</sub></button>
+
+      <div class="w-px h-5 bg-slate-700 mx-1"></div>
+
+      <!-- Font size (simulate) -->
+      <select class="toolbar-select" title="텍스트 크기"
+        (mousedown)="$event.stopPropagation()"
+        (change)="exec('fontSize', $any($event.target).value)">
+        <option value="">크기</option>
+        <option value="1">소</option>
+        <option value="3" selected>보통</option>
+        <option value="5">대</option>
+        <option value="7">특대</option>
+      </select>
+
+      <div class="w-px h-5 bg-slate-700 mx-1"></div>
+
+      <!-- Text Color -->
+      <div class="relative">
+        <button type="button" title="텍스트 색상"
+          class="toolbar-btn flex flex-col items-center gap-0 py-0.5"
+          (mousedown)="$event.preventDefault(); openColorPicker()">
+          <span class="text-xs font-bold leading-none">A</span>
+          <span class="w-4 h-1 rounded-full bg-red-500 mt-0.5"></span>
+        </button>
+        @if (showColorPicker()) {
+          <div class="color-picker-pop" (click)="$event.stopPropagation()">
+            <p class="text-[10px] text-slate-400 mb-2">텍스트 색상</p>
+            <div class="grid grid-cols-6 gap-1">
+              @for (c of colors; track c) {
+                <button type="button"
+                  class="w-5 h-5 rounded border border-slate-600 hover:scale-110 transition-transform"
+                  [style.background]="c"
+                  (mousedown)="$event.preventDefault(); applyColor(c)"></button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Background Color -->
+      <div class="relative">
+        <button type="button" title="배경 색상"
+          class="toolbar-btn flex flex-col items-center gap-0 py-0.5"
+          (mousedown)="$event.preventDefault(); openBgPicker()">
+          <span class="text-xs font-bold leading-none line-through text-slate-400">A</span>
+          <span class="w-4 h-1 rounded-full bg-yellow-400 mt-0.5"></span>
+        </button>
+        @if (showBgPicker()) {
+          <div class="color-picker-pop" (click)="$event.stopPropagation()">
+            <p class="text-[10px] text-slate-400 mb-2">배경 색상</p>
+            <div class="grid grid-cols-6 gap-1">
+              @for (c of colors; track c) {
+                <button type="button"
+                  class="w-5 h-5 rounded border border-slate-600 hover:scale-110 transition-transform"
+                  [style.background]="c"
+                  (mousedown)="$event.preventDefault(); applyBgColor(c)"></button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="w-px h-5 bg-slate-700 mx-1"></div>
+
+      <!-- Align Left -->
+      <button type="button" title="왼쪽 정렬"
+        class="toolbar-btn"
+        (mousedown)="$event.preventDefault(); exec('justifyLeft')">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h12"/></svg>
+      </button>
+      <!-- Align Center -->
+      <button type="button" title="가운데 정렬"
+        class="toolbar-btn"
+        (mousedown)="$event.preventDefault(); exec('justifyCenter')">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M6 12h12M4 18h16"/></svg>
+      </button>
+      <!-- Align Right -->
+      <button type="button" title="오른쪽 정렬"
+        class="toolbar-btn"
+        (mousedown)="$event.preventDefault(); exec('justifyRight')">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M10 12h10M6 18h14"/></svg>
+      </button>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="flex items-center flex-wrap gap-0.5 px-2 pb-1.5 pt-0.5">
+      <!-- Ordered List -->
+      <button type="button" title="번호 목록"
+        class="toolbar-btn"
+        [class.active]="isActive('insertOrderedList')"
+        (mousedown)="$event.preventDefault(); exec('insertOrderedList')">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      </button>
+      <!-- Unordered List -->
+      <button type="button" title="글머리 목록"
+        class="toolbar-btn"
+        [class.active]="isActive('insertUnorderedList')"
+        (mousedown)="$event.preventDefault(); exec('insertUnorderedList')">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      </button>
+      <!-- Blockquote -->
+      <button type="button" title="인용구"
+        class="toolbar-btn font-serif text-base leading-none"
+        (mousedown)="$event.preventDefault(); formatBlock('blockquote')">"</button>
+      <!-- Code -->
+      <button type="button" title="코드"
+        class="toolbar-btn font-mono text-xs"
+        (mousedown)="$event.preventDefault(); formatBlock('pre')">&lt;/&gt;</button>
+
+      <div class="w-px h-5 bg-slate-700 mx-1"></div>
+
+      <!-- Link -->
+      <div class="relative">
+        <button type="button" title="링크 삽입"
+          class="toolbar-btn"
+          (mousedown)="$event.preventDefault(); openLink()">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+        </button>
+        @if (showLinkInput()) {
+          <div class="absolute left-0 top-full mt-1 z-20 bg-slate-900 border border-slate-600 rounded-lg shadow-xl p-3 flex gap-2 min-w-[260px]" (click)="$event.stopPropagation()">
+            <input type="text" class="flex-1 bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-indigo-500" placeholder="https://..."
+              [value]="linkUrl()" (input)="linkUrl.set($any($event.target).value)"
+              (keydown.enter)="insertLink()" />
+            <button type="button" class="px-3 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded transition-colors" (click)="insertLink()">확인</button>
+          </div>
+        }
+      </div>
+
+      <!-- Clear Formatting -->
+      <button type="button" title="서식 지우기"
+        class="toolbar-btn text-xs font-medium"
+        (mousedown)="$event.preventDefault(); exec('removeFormat')">
+        T<sub class="opacity-60">x</sub>
+      </button>
+
+      <div class="w-px h-5 bg-slate-700 mx-1"></div>
+
+      <!-- Image -->
+      <button type="button" title="이미지 삽입"
+        class="toolbar-btn"
+        (mousedown)="$event.preventDefault(); insertImage()">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      </button>
+
+      <!-- Undo -->
+      <button type="button" title="실행취소"
+        class="toolbar-btn"
+        (mousedown)="$event.preventDefault(); exec('undo')">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+      </button>
+      <!-- Redo -->
+      <button type="button" title="다시실행"
+        class="toolbar-btn"
+        (mousedown)="$event.preventDefault(); exec('redo')">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── 에디터 영역 ── -->
+  <div
+    #editorEl
+    class="editor-body flex-1 min-h-[180px] p-4 text-slate-200 text-sm leading-relaxed focus:outline-none overflow-y-auto"
+    contenteditable="true"
+    [attr.disabled]="disabled || null"
+    (click)="showColorPicker.set(false); showBgPicker.set(false); showLinkInput.set(false)"
+  ></div>
+</div>
+
+<style>
+  .toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 5px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: rgb(148 163 184);
+    transition: background 0.15s, color 0.15s;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+  }
+  .toolbar-btn:hover { background: rgb(51 65 85); color: white; }
+  .toolbar-btn.active { background: rgb(79 70 229 / 0.25); color: rgb(129 140 248); }
+  .toolbar-select {
+    background: rgb(30 41 59);
+    border: 1px solid rgb(51 65 85);
+    color: rgb(148 163 184);
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    height: 28px;
+    cursor: pointer;
+    outline: none;
+  }
+  .toolbar-select:hover { border-color: rgb(99 102 241); }
+  .color-picker-pop {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 30;
+    background: rgb(15 23 42);
+    border: 1px solid rgb(51 65 85);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 20px 40px rgb(0 0 0 / 0.5);
+    min-width: 140px;
+  }
+  .editor-body h1 { font-size: 1.6em; font-weight: 700; margin: 0.5em 0; }
+  .editor-body h2 { font-size: 1.3em; font-weight: 700; margin: 0.5em 0; }
+  .editor-body h3 { font-size: 1.1em; font-weight: 600; margin: 0.4em 0; }
+  .editor-body blockquote { border-left: 3px solid rgb(99 102 241); padding-left: 12px; color: rgb(148 163 184); font-style: italic; margin: 0.5em 0; }
+  .editor-body pre { background: rgb(15 23 42); border: 1px solid rgb(51 65 85); border-radius: 8px; padding: 10px 14px; font-family: monospace; font-size: 12px; margin: 0.5em 0; overflow-x: auto; }
+  .editor-body ul { list-style: disc; padding-left: 1.5em; }
+  .editor-body ol { list-style: decimal; padding-left: 1.5em; }
+  .editor-body a { color: rgb(99 102 241); text-decoration: underline; }
+  .editor-body img { max-width: 100%; border-radius: 8px; margin: 4px 0; }
+  .editor-body p { margin: 0.2em 0; }
+  .editor-body:empty::before { content: attr(placeholder); color: rgb(100 116 139); pointer-events: none; }
+</style>

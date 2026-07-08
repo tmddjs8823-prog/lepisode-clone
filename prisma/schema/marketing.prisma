@@ -1,0 +1,31 @@
+// ============================================================
+// 마케팅 (수신동의 + 업체 관리)
+// ============================================================
+
+model MarketingConsent {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String
+  phone       String?
+  isConsented Boolean   @default(true)
+  consentedAt DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@map("marketing_consents")
+}
+
+model MarketingCompany {
+  id            Int      @id @default(autoincrement())
+  name          String
+  contactPerson String?
+  phone         String?
+  email         String?
+  serviceType   String?
+  memo          String?  @db.Text
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("marketing_companies")
+}

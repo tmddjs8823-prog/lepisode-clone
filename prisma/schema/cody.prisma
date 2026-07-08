@@ -1,0 +1,82 @@
+// ============================================================
+// 코디(Cody) 모듈
+// ============================================================
+
+model CodyCompany {
+  id             Int                @id @default(autoincrement())
+  name           String
+  businessNumber String?
+  ceoName        String?
+  ceoPhone       String?
+  address        String?
+  email          String?
+  memo           String?            @db.Text
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  projects       CodyProject[]
+  credits        CodyCredit[]
+  notifications  CodyNotification[]
+  weeklyReports  CodyWeeklyReport[]
+
+  @@map("cody_companies")
+}
+
+model CodyProject {
+  id            Int                @id @default(autoincrement())
+  name          String
+  status        String             @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, ON_HOLD, CANCELLED
+  company       CodyCompany        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId     Int
+  startDate     DateTime?
+  endDate       DateTime?
+  description   String?            @db.Text
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  credits       CodyCredit[]
+  weeklyReports CodyWeeklyReport[]
+
+  @@map("cody_projects")
+}
+
+model CodyCredit {
+  id          Int          @id @default(autoincrement())
+  type        String // CHARGE, USE, REFUND, ADJUST
+  company     CodyCompany  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId   Int
+  project     CodyProject? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  projectId   Int?
+  description String?      @db.Text
+  amount      Decimal      @db.Decimal(12, 0)
+  manager     String?
+  createdAt   DateTime     @default(now())
+
+  @@map("cody_credits")
+}
+
+model CodyNotification {
+  id          Int         @id @default(autoincrement())
+  status      String      @default("PENDING") // SENT, PENDING, FAILED, READ
+  company     CodyCompany @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId   Int
+  companyName String
+  content     String      @db.Text
+  createdAt   DateTime    @default(now())
+
+  @@map("cody_notifications")
+}
+
+model CodyWeeklyReport {
+  id          Int         @id @default(autoincrement())
+  company     CodyCompany @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId   Int
+  project     CodyProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   Int
+  title       String
+  periodStart DateTime?
+  periodEnd   DateTime?
+  content     String?     @db.Text
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("cody_weekly_reports")
+}

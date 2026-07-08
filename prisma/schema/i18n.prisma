@@ -1,0 +1,31 @@
+// ============================================================
+// 다국어 + SEO
+// ============================================================
+
+model Translation {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  ko        String   @db.Text
+  en        String?  @db.Text
+  ja        String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("translations")
+}
+
+model SeoConfig {
+  id            Int      @id @default(autoincrement())
+  pagePath      String   @unique
+  title         String?
+  titleEn       String?
+  titleJa       String?
+  description   String?  @db.Text
+  descriptionEn String?  @db.Text
+  descriptionJa String?  @db.Text
+  keywords      String?
+  ogImageUrl    String?
+  updatedAt     DateTime @updatedAt
+
+  @@map("seo_configs")
+}

@@ -1,0 +1,20 @@
+// ============================================================
+// 공지사항
+// ============================================================
+
+model Notice {
+  id           Int      @id @default(autoincrement())
+  title        String
+  titleEn      String?
+  titleJa      String?
+  content      String   @db.Text
+  contentEn    String?  @db.Text
+  contentJa    String?  @db.Text
+  thumbnailUrl String?
+  published    Boolean  @default(false)
+  isPinned     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("notices")
+}

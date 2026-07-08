@@ -1,0 +1,19 @@
+// ============================================================
+// 채용 관리
+// ============================================================
+
+model JobPosting {
+  id        Int       @id @default(autoincrement())
+  title     String
+  titleEn   String?
+  titleJa   String?
+  category  String?   // 카테고리 (예: 개발, 디자인, 기획)
+  jobUrl    String?   // 잡코리아 등 공고 URL
+  startDate DateTime? // 모집 시작일
+  deadline  DateTime? // 공고 마감일
+  published Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("job_postings")
+}

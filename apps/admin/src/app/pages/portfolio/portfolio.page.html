@@ -1,0 +1,255 @@
+<style>
+  @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .animate-drawer { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .animate-backdrop { animation: fadeIn 0.2s ease-out forwards; }
+</style>
+
+<div class="flex flex-col gap-6 p-6">
+
+  <!-- ── 헤더 ── -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-xl font-bold text-white">포트폴리오 관리</h2>
+      <p class="text-xs text-slate-400 mt-0.5">프로젝트 포트폴리오를 관리합니다.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button
+        class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors"
+        (click)="openForm()"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        포트폴리오 등록
+      </button>
+      <button
+        class="p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg border border-slate-700 hover:border-emerald-500/30 transition-colors"
+        title="엑셀 다운로드"
+        (click)="onExportExcel()"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── 카테고리 필터 ── -->
+  <div class="flex items-center gap-3">
+    <span class="text-xs text-slate-400 shrink-0">카테고리</span>
+    <div class="flex flex-wrap gap-2">
+      <button
+        class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
+        [class]="filterCategory() === '' ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'"
+        (click)="filterCategory.set(''); onFilterChange()"
+      >전체</button>
+      @for (type of serviceTypeOptions; track type) {
+        <button
+          class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors"
+          [class]="filterCategory() === type ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'"
+          (click)="filterCategory.set(type); onFilterChange()"
+        >{{ type }}</button>
+      }
+    </div>
+  </div>
+
+  <!-- ── 데이터 그리드 ── -->
+  <admin-data-table
+    [columns]="columns"
+    [data]="$any(data())"
+    [loading]="loading()"
+    [total]="total()"
+    [page]="page()"
+    [limit]="limit"
+    (edit)="openForm($any($event))"
+    (delete)="onDelete($any($event))"
+    (pageChange)="onPageChange($event)"
+  />
+
+</div>
+
+
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- 포트폴리오 등록/수정 사이드 서랍               -->
+<!-- ══════════════════════════════════════════ -->
+@if (showForm()) {
+  <div class="fixed inset-0 z-50 flex justify-end">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-backdrop" (click)="closeForm()" (keydown.enter)="closeForm()" tabindex="0"></div>
+    <div class="relative w-full max-w-2xl h-full bg-slate-900 border-l border-slate-700/60 shadow-2xl flex flex-col animate-drawer" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()" tabindex="-1">
+
+      <!-- 헤더 -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
+        <h3 class="text-base font-semibold text-white">{{ formTitle() }}</h3>
+        <button class="p-2 -mr-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors" (click)="closeForm()">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- 본문 -->
+      <div class="flex flex-col gap-6 p-6 overflow-y-auto flex-1">
+        @if (fLoading()) {
+          <div class="flex items-center justify-center py-20">
+            <div class="w-6 h-6 border-2 border-slate-600 border-t-indigo-500 rounded-full animate-spin"></div>
+          </div>
+        } @else {
+
+          <!-- 포트폴리오 명 -->
+          <div class="flex flex-col gap-1.5">
+            <label for="portfolio-title" class="text-sm font-semibold text-slate-200">포트폴리오 명 <span class="text-red-400">*</span></label>
+            <input id="portfolio-title" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" placeholder="포트폴리오 명을 입력해주세요." [ngModel]="fTitle()" (ngModelChange)="fTitle.set($event)" />
+          </div>
+
+          <!-- 포트폴리오 영문명 -->
+          <div class="flex flex-col gap-1.5">
+            <label for="portfolio-title-en" class="text-sm font-semibold text-slate-200">포트폴리오 영문명 <span class="text-red-400">*</span></label>
+            <input id="portfolio-title-en" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" placeholder="포트폴리오 영문명을 입력해주세요." [ngModel]="fTitleEn()" (ngModelChange)="fTitleEn.set($event)" />
+          </div>
+
+          <!-- 포트폴리오 일본어 명 -->
+          <div class="flex flex-col gap-1.5">
+            <label for="portfolio-title-ja" class="text-sm font-semibold text-slate-200">포트폴리오 일본어 명 <span class="text-red-400">*</span></label>
+            <input id="portfolio-title-ja" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" placeholder="포트폴리오 일본어 명을 입력해주세요." [ngModel]="fTitleJa()" (ngModelChange)="fTitleJa.set($event)" />
+          </div>
+
+          <!-- 서비스 유형 -->
+          <div class="flex flex-col gap-2 border-t border-slate-800/60 pt-5">
+            <div class="text-sm font-semibold text-slate-200">서비스 유형 <span class="text-red-400">*</span></div>
+            <div class="flex flex-wrap gap-x-5 gap-y-2 mt-1">
+              @for (type of serviceTypeOptions; track type) {
+                <div class="flex items-center gap-2 cursor-pointer group">
+                  <div
+                    class="w-4 h-4 rounded border-2 flex items-center justify-center transition-all shrink-0"
+                    [class]="isServiceTypeSelected(type) ? 'bg-indigo-600 border-indigo-600' : 'border-slate-600 bg-slate-800 group-hover:border-indigo-400'"
+                    (click)="toggleServiceType(type)"
+                    (keydown.enter)="toggleServiceType(type)"
+                    (keydown.space)="toggleServiceType(type)"
+                    tabindex="0"
+                    role="checkbox"
+                    [attr.aria-checked]="isServiceTypeSelected(type)"
+                  >
+                    @if (isServiceTypeSelected(type)) {
+                      <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    }
+                  </div>
+                  <span class="text-sm text-slate-300 group-hover:text-slate-100 transition-colors select-none">{{ type }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- 프로젝트 시작일 / 종료일 -->
+          <div class="grid grid-cols-2 gap-4 border-t border-slate-800/60 pt-5">
+            <div class="flex flex-col gap-1.5">
+              <label for="portfolio-start-date" class="text-sm font-semibold text-slate-200">프로젝트 시작일 <span class="text-red-400">*</span></label>
+              <input id="portfolio-start-date" type="date" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="fStartDate()" (ngModelChange)="fStartDate.set($event)" />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label for="portfolio-end-date" class="text-sm font-semibold text-slate-200">프로젝트 종료일 <span class="text-red-400">*</span></label>
+              <input id="portfolio-end-date" type="date" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="fEndDate()" (ngModelChange)="fEndDate.set($event)" />
+            </div>
+          </div>
+
+          <!-- SEO -->
+          <div class="flex flex-col gap-4 border-t border-slate-800/60 pt-5">
+            <div class="flex flex-col gap-1.5">
+              <label for="portfolio-seo-title" class="text-sm font-semibold text-slate-200">SEO 타이틀</label>
+              <input id="portfolio-seo-title" type="text" class="w-full bg-slate-800/60 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" placeholder="자동 생성되며 필요 시 수정할 수 있습니다." [ngModel]="fSeoTitle()" (ngModelChange)="fSeoTitle.set($event)" />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label for="portfolio-meta-desc" class="text-sm font-semibold text-slate-200">메타 설명</label>
+              <textarea id="portfolio-meta-desc" rows="2" class="w-full bg-slate-800/60 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors resize-none" placeholder="자동 생성되며 필요 시 수정할 수 있습니다." [ngModel]="fMetaDesc()" (ngModelChange)="fMetaDesc.set($event)"></textarea>
+            </div>
+          </div>
+
+          <!-- AEO/GEO 마크다운 -->
+          <div class="flex flex-col gap-2 border-t border-slate-800/60 pt-5">
+            <div class="flex items-center justify-between">
+              <div class="text-sm font-semibold text-slate-200">AEO/GEO 마크다운</div>
+              <button class="px-3 py-1 text-xs font-medium text-slate-400 border border-slate-700 hover:border-slate-500 rounded-lg transition-colors">md 파일 생성</button>
+            </div>
+            <label for="portfolio-aeo-geo" class="sr-only">AEO/GEO 마크다운</label>
+            <textarea id="portfolio-aeo-geo" rows="5" class="w-full bg-slate-800 border border-slate-700 text-slate-300 text-sm font-mono rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors resize-none" placeholder="AI 초안을 생성하거나 직접 입력해주세요." [ngModel]="fAeoGeo()" (ngModelChange)="fAeoGeo.set($event)"></textarea>
+          </div>
+
+          <!-- Service Detail -->
+          <div class="flex flex-col gap-1.5 border-t border-slate-800/60 pt-5">
+            <label for="portfolio-service-detail" class="text-sm font-semibold text-slate-200">Service Detail</label>
+            <textarea id="portfolio-service-detail" rows="3" class="w-full bg-slate-800/60 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors resize-none" placeholder="UI/UX Plan, Design, Publishing, Development" [ngModel]="fServiceDetail()" (ngModelChange)="fServiceDetail.set($event)"></textarea>
+          </div>
+
+          <!-- 썸네일 -->
+          <div class="flex flex-col gap-1.5 border-t border-slate-800/60 pt-5">
+            <label for="portfolio-thumbnail" class="text-sm font-semibold text-slate-200">썸네일 <span class="text-red-400">*</span></label>
+            <input id="portfolio-thumbnail" type="text" class="w-full bg-slate-800/60 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" placeholder="https://... (이미지 URL 입력)" [ngModel]="fThumbnailUrl()" (ngModelChange)="fThumbnailUrl.set($event)" />
+            @if (fThumbnailUrl()) {
+              <img [src]="fThumbnailUrl()" alt="썸네일 미리보기" class="mt-2 w-full h-32 object-cover rounded-lg border border-slate-700" (error)="$any($event.target).style.display='none'" />
+            }
+          </div>
+
+          <!-- 키워드 -->
+          <div class="flex flex-col gap-2 border-t border-slate-800/60 pt-5">
+            <label for="portfolio-keyword-input" class="text-sm font-semibold text-slate-200">키워드</label>
+            <div class="flex gap-2">
+              <input
+                id="portfolio-keyword-input"
+                type="text"
+                class="flex-1 bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors"
+                placeholder="입력 후 Enter"
+                [ngModel]="fKeywordInput()"
+                (ngModelChange)="fKeywordInput.set($event)"
+                (keydown)="onKeywordKeydown($event)"
+              />
+              <button class="px-3 py-2 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors" (click)="addKeyword()">추가</button>
+            </div>
+            @if (fKeywordList().length) {
+              <div class="flex flex-wrap gap-1.5 mt-1">
+                @for (kw of fKeywordList(); track kw) {
+                  <span class="flex items-center gap-1 pl-2.5 pr-1.5 py-1 bg-slate-700/70 border border-slate-600/50 text-slate-300 text-xs rounded-full">
+                    {{ kw }}
+                    <button class="text-slate-500 hover:text-red-400 transition-colors" (click)="removeKeyword(kw)">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                  </span>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- 내용 -->
+          <div class="flex flex-col gap-1.5 border-t border-slate-800/60 pt-5">
+            <div class="text-sm font-semibold text-slate-200">내용</div>
+            <admin-rich-editor [ngModel]="fContent()" (ngModelChange)="fContent.set($event)" />
+          </div>
+
+          <!-- 정렬 & 게시 -->
+          <div class="flex items-center justify-between border-t border-slate-800/60 pt-5">
+            <div class="flex items-center gap-2">
+              <label for="portfolio-sort-order" class="text-xs font-semibold text-slate-300">정렬 순서</label>
+              <input id="portfolio-sort-order" type="number" class="w-24 bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="fSortOrder()" (ngModelChange)="fSortOrder.set(+$event)" />
+            </div>
+            <div class="flex items-center gap-3 cursor-pointer">
+              <div class="relative w-9 h-5 rounded-full transition-colors" [class]="fPublished() ? 'bg-indigo-600' : 'bg-slate-700'" (click)="fPublished.set(!fPublished())" (keydown.enter)="fPublished.set(!fPublished())" (keydown.space)="fPublished.set(!fPublished())" tabindex="0" role="switch" [attr.aria-checked]="fPublished()">
+                <span class="absolute top-[2px] w-4 h-4 bg-white rounded-full shadow transition-all" [class]="fPublished() ? 'left-[18px]' : 'left-[2px]'"></span>
+              </div>
+              <span class="text-xs font-medium text-slate-300">게시 활성화</span>
+            </div>
+          </div>
+
+        }
+      </div>
+
+      <!-- 푸터 -->
+      <div class="flex gap-3 px-6 py-5 border-t border-slate-800 shrink-0">
+        <button class="flex-1 px-4 py-2.5 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors" (click)="closeForm()">취소</button>
+        <button class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50" (click)="save()" [disabled]="saving()">
+          @if (saving()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
+          저장하기
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Confirm Dialog -->
+@if (deleteTarget()) {
+  <admin-confirm-dialog message="포트폴리오를 삭제하시겠습니까?" subMessage="삭제된 데이터는 복구할 수 없습니다." [loading]="deleting()" (confirmed)="confirmDelete()" (cancelled)="cancelDelete()" />
+}

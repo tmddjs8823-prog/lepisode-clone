@@ -1,0 +1,142 @@
+<style>
+  @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .animate-drawer { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .animate-backdrop { animation: fadeIn 0.2s ease-out forwards; }
+</style>
+
+<div class="flex flex-col gap-6 p-6">
+
+  <!-- ── 헤더 ── -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-xl font-bold text-white">팝업 관리</h2>
+      <p class="text-xs text-slate-400 mt-0.5">팝업 배너를 등록하고 노출 기간을 설정합니다.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button
+        class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors"
+        (click)="openForm()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        팝업 등록
+      </button>
+      <button
+        class="p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg border border-slate-700 hover:border-emerald-500/30 transition-colors"
+        title="엑셀 다운로드"
+        (click)="onExportExcel()"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── 데이터 그리드 ── -->
+  <admin-data-table
+    [columns]="columns"
+    [data]="$any(data())"
+    [loading]="loading()"
+    [total]="data().length"
+    (edit)="openForm($any($event))"
+    (delete)="onDelete($any($event))"
+  />
+
+</div>
+
+
+<!-- 사이드 서랍: 팝업 등록/수정 -->
+@if (showForm()) {
+  <div class="fixed inset-0 z-50 flex justify-end">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-backdrop" role="button" tabindex="-1" (click)="closeForm()" (keydown.escape)="closeForm()"></div>
+    <div class="relative w-full max-w-md h-full bg-slate-900 border-l border-slate-700/60 shadow-2xl flex flex-col animate-drawer" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+
+      <!-- 헤더 -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
+        <h3 class="text-base font-semibold text-white">{{ formTitle() }}</h3>
+        <button class="p-2 -mr-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors" (click)="closeForm()">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- 본문 -->
+      <div class="flex flex-col gap-5 p-6 flex-1 overflow-y-auto">
+
+        <!-- 팝업명 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="input-popup-title" class="text-sm font-semibold text-slate-200">팝업명 <span class="text-red-400">*</span></label>
+          <input id="input-popup-title" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="팝업명을 입력하세요" [ngModel]="fTitle()" (ngModelChange)="fTitle.set($event)" />
+        </div>
+
+        <!-- 연결 링크 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="input-popup-link" class="text-sm font-semibold text-slate-200">연결 링크</label>
+          <input id="input-popup-link" type="url" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="https://example.com" [ngModel]="fLinkUrl()" (ngModelChange)="fLinkUrl.set($event)" />
+        </div>
+
+        <!-- 배너 이미지 -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-sm font-semibold text-slate-200">배너 이미지 <span class="text-red-400">*</span></span>
+          @if (fImagePreview()) {
+            <div class="relative rounded-lg overflow-hidden border border-slate-700">
+              <img [src]="fImagePreview()" class="w-full object-cover max-h-40" alt="배너 미리보기" />
+              <button class="absolute top-2 right-2 p-1 bg-slate-900/80 text-slate-400 hover:text-red-400 rounded-full transition-colors" (click)="removeImage()">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+          } @else {
+            <label
+              class="flex flex-col items-center justify-center gap-2 p-6 border-2 border-dashed border-slate-600 rounded-xl cursor-pointer hover:border-indigo-500 transition-colors"
+              (dragover)="onDragOver($event)" (drop)="onDropFile($event)">
+              <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M13.5 3.75h6m-6 0v6m0-6L6 11.25"/></svg>
+              <span class="text-slate-400 text-xs">이미지를 드래그하거나 클릭해서 업로드</span>
+              <input type="file" accept="image/*" class="hidden" (change)="onFileSelect($event)" />
+            </label>
+          }
+        </div>
+
+        <!-- 노출 기한 -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-sm font-semibold text-slate-200">노출 기한</span>
+          <div class="flex items-center gap-2">
+            <input type="date" class="flex-1 bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="fStartDate()" (ngModelChange)="fStartDate.set($event)" />
+            <span class="text-slate-500 text-xs">~</span>
+            <input type="date" class="flex-1 bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="fEndDate()" (ngModelChange)="fEndDate.set($event)" />
+          </div>
+        </div>
+
+        <!-- 노출 여부 -->
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-semibold text-slate-200">노출 여부</span>
+          <button
+            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+            [class]="fPublished() ? 'bg-indigo-600' : 'bg-slate-700'"
+            (click)="fPublished.set(!fPublished())">
+            <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform" [class]="fPublished() ? 'translate-x-6' : 'translate-x-1'"></span>
+          </button>
+          <span class="text-xs" [class]="fPublished() ? 'text-indigo-400' : 'text-slate-500'">{{ fPublished() ? '노출중' : '비노출' }}</span>
+        </div>
+
+      </div>
+
+      <!-- 푸터 -->
+      <div class="px-6 py-4 border-t border-slate-800 shrink-0 flex gap-3">
+        <button class="flex-1 px-4 py-2.5 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors" (click)="closeForm()">닫기</button>
+        <button class="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50" [disabled]="saving()" (click)="save()">
+          {{ saving() ? '저장 중...' : '저장' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- 삭제 확인 다이얼로그 -->
+@if (deleteTarget()) {
+  <admin-confirm-dialog
+    title="팝업 삭제"
+    message="이 팝업을 삭제하시겠습니까?"
+    confirmLabel="삭제"
+    [loading]="deleting()"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+}

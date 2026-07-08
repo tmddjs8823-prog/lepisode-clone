@@ -1,0 +1,21 @@
+// ============================================================
+// 문의 내역
+// ============================================================
+
+model Inquiry {
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String
+  phone       String?
+  company     String?
+  budget      String?
+  projectType String?
+  content     String   @db.Text
+  status      String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
+  isRead      Boolean  @default(false)
+  adminMemo   String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("inquiries")
+}

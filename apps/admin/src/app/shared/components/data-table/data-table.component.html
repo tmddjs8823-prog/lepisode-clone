@@ -1,0 +1,163 @@
+<div class="flex flex-col">
+  <!-- Table wrapper -->
+  <div class="overflow-x-auto rounded-xl border border-slate-700/50">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="bg-slate-800/80 border-b border-slate-700/50">
+          @for (col of columns(); track col.key) {
+            <th
+              class="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap"
+              [style.width]="col.width ?? 'auto'"
+              [class.text-center]="col.align === 'center'"
+              [class.text-right]="col.align === 'right'"
+            >
+              {{ col.label }}
+            </th>
+          }
+          @if (showActions()) {
+            <th class="px-4 py-3 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider w-28">
+              관리
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @if (loading()) {
+          <tr>
+            <td [colSpan]="columns().length + (showActions() ? 1 : 0)" class="py-16 text-center text-slate-500">
+              <div class="flex flex-col items-center gap-3">
+                <div class="w-6 h-6 border-2 border-slate-600 border-t-indigo-500 rounded-full animate-spin"></div>
+                <span class="text-xs">불러오는 중...</span>
+              </div>
+            </td>
+          </tr>
+        } @else if (data().length === 0) {
+          <tr>
+            <td [colSpan]="columns().length + (showActions() ? 1 : 0)" class="py-16 text-center text-slate-500 text-xs">
+              데이터가 없습니다.
+            </td>
+          </tr>
+        } @else {
+          @for (row of data(); track $index) {
+            <tr class="border-b border-slate-800/80 hover:bg-slate-800/40 transition-colors">
+              @for (col of columns(); track col.key) {
+                <td
+                  class="px-4 py-3 text-slate-300"
+                  [class.text-center]="col.align === 'center'"
+                  [class.text-right]="col.align === 'right'"
+                >
+                  @if (col.transform) {
+                    @let transformedVal = col.transform($any(row));
+                    <span [title]="transformedVal" class="block max-w-xs truncate">{{ transformedVal || '—' }}</span>
+                  } @else if (col.type === 'image') {
+                    @let imgVal = getCellValue(row, col.key.toString());
+                    @if (imgVal) {
+                      <img [src]="imgVal + ''" class="w-10 h-10 object-contain rounded-lg border border-slate-700 mx-auto" (error)="$any($event.target).style.display='none'" />
+                    } @else {
+                      <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto">
+                        <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+                      </div>
+                    }
+                  } @else if (col.type === 'badge' && col.badgeMap) {
+                    @let val = getCellValue(row, col.key.toString());
+                    @let badge = col.badgeMap[val + ''];
+                    @if (badge) {
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" [class]="badge.class">
+                        {{ badge.label }}
+                      </span>
+                    } @else {
+                      <span class="text-slate-500">—</span>
+                    }
+                  } @else if (col.type === 'boolean') {
+                    @let boolVal = getCellValue(row, col.key.toString());
+                    @if (boolVal) {
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        활성
+                      </span>
+                    } @else {
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-700/50 text-slate-400 border border-slate-600/30">
+                        비활성
+                      </span>
+                    }
+                  } @else if (col.type === 'date') {
+                    @let dateVal = getCellValue(row, col.key.toString());
+                    <span class="text-slate-400 text-xs">
+                      {{ dateVal ? ($any(dateVal) | date: 'yyyy-MM-dd') : '—' }}
+                    </span>
+                  } @else {
+                    @let textVal = getCellValue(row, col.key.toString());
+                    <span [title]="textVal + ''" class="block max-w-xs truncate">{{ textVal ?? '—' }}</span>
+                  }
+                </td>
+              }
+              @if (showActions()) {
+                <td class="px-4 py-3">
+                  <div class="flex items-center justify-center gap-2">
+                    <button
+                      class="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
+                      title="수정"
+                      (click)="edit.emit(row)"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    <button
+                      class="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                      title="삭제"
+                      (click)="delete.emit(row)"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              }
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  @if (totalPages > 1) {
+    <div class="flex items-center justify-between pt-4">
+      <p class="text-xs text-slate-500">
+        총 <span class="text-slate-300 font-medium">{{ total() }}</span>개
+      </p>
+      <div class="flex items-center gap-1">
+        <button
+          class="px-2.5 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          [disabled]="page() <= 1"
+          (click)="pageChange.emit(page() - 1)"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        @for (p of getPages(); track p) {
+          <button
+            class="px-3 py-1.5 text-xs rounded-lg transition-colors"
+            [class]="p === page()
+              ? 'bg-indigo-600 text-white font-medium'
+              : 'text-slate-400 hover:text-white hover:bg-slate-700'"
+            (click)="pageChange.emit(p)"
+          >
+            {{ p }}
+          </button>
+        }
+        <button
+          class="px-2.5 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          [disabled]="page() >= totalPages"
+          (click)="pageChange.emit(page() + 1)"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  }
+</div>

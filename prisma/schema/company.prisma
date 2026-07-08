@@ -1,0 +1,48 @@
+// ============================================================
+// 회사 소개 (CompanyInfo, TeamMember, CompanyHistory)
+// ============================================================
+
+model CompanyInfo {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique // vision, mission, address, phone, intro_video
+  value     String   @db.Text
+  valueEn   String?  @db.Text
+  valueJa   String?  @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("company_info")
+}
+
+model TeamMember {
+  id              Int      @id @default(autoincrement())
+  name            String
+  nameEn          String?
+  nameJa          String?
+  position        String
+  positionEn      String?
+  positionJa      String?
+  profileImageUrl String?
+  bio             String?  @db.Text
+  bioEn           String?  @db.Text
+  bioJa           String?  @db.Text
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("team_members")
+}
+
+model CompanyHistory {
+  id            Int     @id @default(autoincrement())
+  year          Int
+  month         Int?
+  title         String
+  titleEn       String?
+  titleJa       String?
+  description   String?
+  descriptionEn String?
+  descriptionJa String?
+  sortOrder     Int     @default(0)
+
+  @@map("company_history")
+}

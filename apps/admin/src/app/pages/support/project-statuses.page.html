@@ -1,0 +1,185 @@
+<div class="flex flex-col gap-6 p-6">
+  <admin-page-header title="현황 관리" createLabel="현황 등록" [showExport]="true" (exportExcel)="onExportExcel()" (create)="openForm()" />
+
+  <admin-data-table
+    [columns]="columns"
+    [data]="$any(data())"
+    [loading]="loading()"
+    [total]="data().length"
+    (edit)="openForm($any($event))"
+    (delete)="onDelete($any($event))"
+  />
+</div>
+
+
+<!-- 폼 모달 (스크린샷 기반 수직형 디자인 적용) -->
+@if (showForm()) {
+  <div class="fixed inset-0 z-50 flex justify-end">
+    <!-- 백그라운드 오버레이 -->
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-backdrop" (click)="closeForm()" (keydown.enter)="closeForm()" tabindex="0"></div>
+    
+    <!-- 서랍 컨테이너 -->
+    <div class="relative w-full max-w-2xl h-full bg-white shadow-2xl flex flex-col animate-drawer" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()" tabindex="-1">
+      <!-- 모달 헤더 -->
+      <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
+        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+          {{ formTitle() }}
+        </h2>
+        <button class="p-2 text-slate-400 hover:text-slate-600 transition-colors" (click)="closeForm()">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- 모달 본문 (스크롤) -->
+      <div class="p-6 overflow-y-auto flex-1 bg-white flex flex-col gap-6">
+        
+        <!-- 제목 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="project-title" class="text-sm font-semibold text-slate-700">제목 <span class="text-indigo-500">*</span></label>
+          <input id="project-title" type="text" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" placeholder="제목을 입력해주세요" [ngModel]="fTitle()" (ngModelChange)="fTitle.set($event)" />
+        </div>
+
+        <!-- 영문 제목 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="project-title-en" class="text-sm font-semibold text-slate-700">영문 제목 <span class="text-indigo-500">*</span></label>
+          <input id="project-title-en" type="text" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" placeholder="영문 제목을 입력해주세요" [ngModel]="fTitleEn()" (ngModelChange)="fTitleEn.set($event)" />
+        </div>
+
+        <!-- 일어 제목 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="project-title-ja" class="text-sm font-semibold text-slate-700">일어 제목 <span class="text-indigo-500">*</span></label>
+          <input id="project-title-ja" type="text" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" placeholder="일어 제목을 입력해주세요" [ngModel]="fTitleJa()" (ngModelChange)="fTitleJa.set($event)" />
+        </div>
+
+        <!-- 클라이언트 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="project-client" class="text-sm font-semibold text-slate-700">클라이언트 <span class="text-indigo-500">*</span></label>
+          <input id="project-client" type="text" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" placeholder="클라이언트를 입력해주세요" [ngModel]="fClient()" (ngModelChange)="fClient.set($event)" />
+        </div>
+
+        <!-- 플랫폼 (체크박스) -->
+        <div class="flex flex-col gap-2">
+          <div class="text-sm font-semibold text-slate-700">플랫폼</div>
+          <div class="flex items-center gap-6">
+            @for (opt of platformOptions; track opt) {
+              <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-600">
+                <input type="checkbox" class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer" [checked]="fPlatforms().includes(opt)" (change)="togglePlatform(opt)" />
+                {{ opt }}
+              </label>
+            }
+          </div>
+        </div>
+
+        <!-- 시작일 / 종료일 -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1.5">
+            <label for="project-start-date" class="text-sm font-semibold text-slate-700">시작일 <span class="text-indigo-500">*</span></label>
+            <input id="project-start-date" type="date" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" [ngModel]="fStartDate()" (ngModelChange)="fStartDate.set($event)" />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label for="project-end-date" class="text-sm font-semibold text-slate-700">종료일 <span class="text-indigo-500">*</span></label>
+            <input id="project-end-date" type="date" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" [ngModel]="fEndDate()" (ngModelChange)="fEndDate.set($event)" />
+          </div>
+        </div>
+
+        <!-- 상태 (라디오 버튼) -->
+        <div class="flex flex-col gap-2">
+          <div class="text-sm font-semibold text-slate-700">상태</div>
+          <div class="flex items-center gap-6">
+            @for (opt of statusOptions; track opt) {
+              <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-600">
+                <input type="radio" name="status" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer" [value]="opt" [ngModel]="fStatus()" (ngModelChange)="fStatus.set($event)" />
+                {{ statusMeta[opt].label }}
+              </label>
+            }
+          </div>
+        </div>
+
+        <!-- 이메일 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="project-email" class="text-sm font-semibold text-slate-700">이메일 <span class="text-indigo-500">*</span></label>
+          <input id="project-email" type="email" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" placeholder="이메일을 입력해주세요" [ngModel]="fEmail()" (ngModelChange)="fEmail.set($event)" />
+        </div>
+
+        <!-- 전화번호 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="project-phone" class="text-sm font-semibold text-slate-700">전화번호 <span class="text-indigo-500">*</span></label>
+          <input id="project-phone" type="tel" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm" placeholder="전화번호를 입력해주세요" [ngModel]="fPhone()" (ngModelChange)="fPhone.set($event)" />
+        </div>
+
+        <!-- 문서 (파일 업로드) -->
+        <div class="flex flex-col gap-2">
+          <div class="text-sm font-semibold text-slate-700">문서</div>
+          <div class="flex flex-col items-center justify-center p-8 border border-dashed border-slate-300 bg-slate-50/50 rounded-xl hover:border-indigo-400 transition-colors cursor-pointer relative group">
+            @if (fAttachmentUrl()) {
+              <div class="flex flex-col items-center gap-2">
+                <svg class="w-10 h-10 text-indigo-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span class="text-sm text-slate-700 font-medium truncate max-w-[200px]">document_attached.pdf</span>
+                <button class="text-xs text-red-500 hover:text-red-700 mt-1" (click)="fAttachmentUrl.set(''); $event.stopPropagation()">삭제</button>
+              </div>
+            } @else {
+              <svg class="w-8 h-8 text-indigo-600 mb-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+              <p class="text-sm font-medium text-slate-700 mb-1">파일을 드래그하여 올려놓으세요</p>
+              <p class="text-xs text-slate-500">또는 클릭해서 선택이 가능합니다</p>
+            }
+            <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" (change)="onFileChange($event)" />
+          </div>
+        </div>
+
+        <hr class="border-slate-100 my-2" />
+
+        <!-- 추가: 메모칸 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="project-memo" class="text-sm font-semibold text-slate-700">관리자 메모</label>
+          <textarea id="project-memo" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all text-sm min-h-[80px] resize-y" placeholder="내부 관리용 메모를 입력하세요" [ngModel]="fMemo()" (ngModelChange)="fMemo.set($event)"></textarea>
+        </div>
+
+        <!-- 추가: 내용 (에디터) -->
+        <div class="flex flex-col gap-2">
+          <label for="project-content" class="text-sm font-semibold text-slate-700">내용</label>
+          <div class="border border-slate-200 rounded-lg overflow-hidden">
+            <!-- 가짜 에디터 툴바 -->
+            <div class="px-3 py-2 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
+              <button class="p-1.5 text-slate-500 hover:bg-slate-200 rounded text-xs font-bold">B</button>
+              <button class="p-1.5 text-slate-500 hover:bg-slate-200 rounded text-xs italic">I</button>
+              <button class="p-1.5 text-slate-500 hover:bg-slate-200 rounded text-xs underline">U</button>
+              <div class="w-px h-4 bg-slate-300 mx-1"></div>
+              <span class="text-xs text-slate-500">글꼴 크기 조절 기능 영역</span>
+            </div>
+            <!-- 에디터 본문 영역 -->
+            <textarea id="project-content" class="w-full px-4 py-3 bg-white text-slate-800 placeholder-slate-300 focus:outline-none min-h-[250px] resize-y text-sm" placeholder="현황 관련 세부 내용을 마크다운이나 텍스트로 작성하세요." [ngModel]="fContent()" (ngModelChange)="fContent.set($event)"></textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 모달 푸터 -->
+      <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-between bg-slate-50 shrink-0">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <div class="relative w-9 h-5 bg-slate-300 rounded-full peer-checked:bg-indigo-600 transition-colors overflow-hidden" [class.bg-indigo-600]="fPublished()">
+            <div class="absolute top-[2px] left-[2px] bg-white border border-slate-300 rounded-full h-4 w-4 transition-all" [class.translate-x-full]="fPublished()" [class.border-white]="fPublished()"></div>
+          </div>
+          <span class="text-sm font-medium text-slate-600">노출 활성화</span>
+          <input type="checkbox" class="sr-only" [ngModel]="fPublished()" (ngModelChange)="fPublished.set($event)">
+        </label>
+
+        <div class="flex items-center gap-2">
+          <button class="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-200 rounded-lg transition-colors" (click)="closeForm()">취소</button>
+          <button
+            class="px-5 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-all flex items-center gap-2"
+            (click)="save()"
+            [disabled]="saving()"
+          >
+            @if (saving()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
+            저장
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (deleteTarget()) {
+  <admin-confirm-dialog message="현황을 삭제하시겠습니까?" [loading]="deleting()" (confirmed)="confirmDelete()" (cancelled)="cancelDelete()" />
+}

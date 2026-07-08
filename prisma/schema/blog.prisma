@@ -1,0 +1,25 @@
+// ============================================================
+// 기술 블로그
+// ============================================================
+
+model BlogPost {
+  id           Int       @id @default(autoincrement())
+  title        String
+  titleEn      String?
+  titleJa      String?
+  content      String    @db.Text
+  contentEn    String?   @db.Text
+  contentJa    String?   @db.Text
+  thumbnailUrl String?
+  category     String?
+  subCategory  String?   // 서브 카테고리
+  author       String?   // 작성자명
+  tags         String[]  // PostgreSQL array
+  viewCount    Int       @default(0)
+  published    Boolean   @default(false)
+  publishedAt  DateTime? // 발행일 (수동 지정)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("blog_posts")
+}

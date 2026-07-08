@@ -1,0 +1,22 @@
+// ============================================================
+// 서비스 소개
+// ============================================================
+
+model Service {
+  id             Int      @id @default(autoincrement())
+  title          String
+  titleEn        String?
+  titleJa        String?
+  slug           String   @unique
+  seoTitle       String?
+  seoDescription String?  @db.Text
+  content        String?  @db.Text // 한글/워드 스타일 에디터 본문
+  icon           String?
+  thumbnailUrl   String?  // 썸네일 이미지 경로
+  sortOrder      Int      @default(0)
+  published      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("services")
+}

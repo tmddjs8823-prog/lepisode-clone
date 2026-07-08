@@ -1,0 +1,44 @@
+<div class="flex flex-col gap-6 p-6">
+
+  <!-- ── 헤더 ── -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-xl font-bold text-white">마케팅 수신동의 관리</h2>
+      <p class="text-xs text-slate-400 mt-0.5">마케팅 수신에 동의한 사용자 목록입니다.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-xs text-slate-500">총 <span class="text-slate-300 font-semibold">{{ total() }}</span>명</span>
+      <button
+        class="p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg border border-slate-700 hover:border-emerald-500/30 transition-colors"
+        title="엑셀 다운로드"
+        (click)="onExportExcel()"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── 데이터 그리드 ── -->
+  <admin-data-table
+    [columns]="columns"
+    [data]="$any(data())"
+    [loading]="loading()"
+    [total]="total()"
+    [page]="page()"
+    [limit]="limit"
+    (pageChange)="onPageChange($event)"
+    (delete)="onRevoke($any($event))"
+  />
+
+</div>
+
+<!-- Confirm Dialog -->
+@if (revokeTarget()) {
+  <admin-confirm-dialog
+    message="수신거부 처리하시겠습니까?"
+    subMessage="{{ revokeTarget()?.name }} ({{ revokeTarget()?.email }}) 님을 수신거부 처리합니다."
+    [loading]="revoking()"
+    (confirmed)="confirmRevoke()"
+    (cancelled)="cancelRevoke()"
+  />
+}

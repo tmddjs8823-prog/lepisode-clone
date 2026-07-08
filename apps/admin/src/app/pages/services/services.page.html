@@ -1,0 +1,147 @@
+<style>
+  @keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-drawer { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .animate-backdrop { animation: fadeIn 0.3s ease-out forwards; }
+</style>
+
+<div class="flex flex-col gap-6 p-6">
+  <admin-page-header title="서비스 소개 관리" createLabel="서비스 등록" [showExport]="true" (exportExcel)="onExportExcel()" (create)="openForm()" />
+
+  <admin-data-table
+    [columns]="columns"
+    [data]="$any(data())"
+    [loading]="loading()"
+    [total]="data().length"
+    (edit)="openForm($any($event))"
+    (delete)="onDelete($any($event))"
+  />
+</div>
+
+
+<!-- 사이드 서랍(Drawer) 모달 -->
+@if (showForm()) {
+  <div class="fixed inset-0 z-50 flex justify-end">
+    <!-- 백그라운드 오버레이 -->
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-backdrop" role="presentation" (click)="closeForm()" (keydown.escape)="closeForm()"></div>
+    
+    <!-- 서랍 컨테이너 -->
+    <div class="relative w-full max-w-2xl h-full bg-white shadow-2xl flex flex-col animate-drawer">
+      
+      <!-- 서랍 헤더 -->
+      <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
+        <h2 class="text-xl font-bold text-slate-800">{{ formTitle() }}</h2>
+        <button class="p-2 -mr-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors" (click)="closeForm()">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- 서랍 본문 (스크롤) -->
+      <div class="p-8 overflow-y-auto flex-1 bg-slate-50">
+        <div class="flex flex-col gap-8">
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="svc-title" class="text-sm font-semibold text-slate-700">제목 <span class="text-indigo-500">*</span></label>
+            <input id="svc-title" type="text" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" placeholder="제목을 입력해주세요" [ngModel]="fTitle()" (ngModelChange)="fTitle.set($event)" (blur)="autoSlug()" />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="svc-title-en" class="text-sm font-semibold text-slate-700">영문 제목</label>
+            <input id="svc-title-en" type="text" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" placeholder="영문 제목을 입력해주세요" [ngModel]="fTitleEn()" (ngModelChange)="fTitleEn.set($event)" />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="svc-title-ja" class="text-sm font-semibold text-slate-700">일본어 제목</label>
+            <input id="svc-title-ja" type="text" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" placeholder="일본어 제목을 입력해주세요" [ngModel]="fTitleJa()" (ngModelChange)="fTitleJa.set($event)" />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="svc-slug" class="text-sm font-semibold text-slate-700">Slug <span class="text-indigo-500">*</span></label>
+            <input id="svc-slug" type="text" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-indigo-600 font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" placeholder="예: ai-transformation" [ngModel]="fSlug()" (ngModelChange)="fSlug.set($event)" />
+          </div>
+
+          <!-- SEO 정보 -->
+          <div class="bg-white p-6 rounded-xl border border-slate-200 flex flex-col gap-6">
+            <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              SEO 설정
+            </h3>
+            
+            <div class="flex flex-col gap-1.5">
+              <label for="svc-seo-title" class="text-xs font-semibold text-slate-500">SEO 타이틀</label>
+              <input id="svc-seo-title" type="text" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-indigo-500 transition-all text-sm" placeholder="검색엔진에 노출될 제목" [ngModel]="fSeoTitle()" (ngModelChange)="fSeoTitle.set($event)" />
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label for="svc-seo-desc" class="text-xs font-semibold text-slate-500">메타 설명 (Meta Description)</label>
+              <textarea id="svc-seo-desc" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-indigo-500 transition-all text-sm resize-y min-h-[80px]" placeholder="검색 결과에 표시될 설명문" [ngModel]="fSeoDescription()" (ngModelChange)="fSeoDescription.set($event)"></textarea>
+            </div>
+          </div>
+
+          <!-- 썸네일 업로드 -->
+          <div class="flex flex-col gap-2">
+            <label for="svc-thumbnail" class="text-sm font-semibold text-slate-700">썸네일 이미지</label>
+            <div class="flex flex-col items-center justify-center p-8 border-2 border-dashed border-slate-300 bg-white rounded-xl hover:border-indigo-400 transition-colors cursor-pointer relative overflow-hidden group">
+              @if (fThumbnailUrl()) {
+                <img [src]="fThumbnailUrl()" alt="썸네일 미리보기" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-30 transition-opacity" />
+                <div class="relative z-10 flex flex-col items-center">
+                  <span class="px-3 py-1 bg-slate-900/80 text-white text-xs rounded-full mb-2 backdrop-blur-sm">이미지 변경</span>
+                </div>
+              } @else {
+                <svg class="w-10 h-10 text-slate-400 mb-3 group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <p class="text-sm font-medium text-slate-600 mb-1">클릭하거나 이미지를 드래그하세요</p>
+                <p class="text-xs text-slate-400">권장 사이즈: 1200 x 630px</p>
+              }
+              <input id="svc-thumbnail" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" accept="image/*" (change)="onFileChange($event)" />
+            </div>
+          </div>
+
+          <!-- 마크다운/본문 (가짜 에디터) -->
+          <div class="flex flex-col gap-1.5">
+            <label for="svc-content" class="text-sm font-semibold text-slate-700">본문 내용</label>
+            <div class="border border-slate-200 rounded-xl overflow-hidden bg-white focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all">
+              <div class="px-3 py-2 bg-slate-50 border-b border-slate-200 flex items-center gap-1">
+                <button class="p-1.5 text-slate-600 hover:bg-slate-200 rounded font-bold text-sm">B</button>
+                <button class="p-1.5 text-slate-600 hover:bg-slate-200 rounded italic text-sm">I</button>
+                <button class="p-1.5 text-slate-600 hover:bg-slate-200 rounded underline text-sm">U</button>
+                <div class="w-px h-4 bg-slate-300 mx-2"></div>
+                <button class="p-1.5 text-slate-600 hover:bg-slate-200 rounded text-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg></button>
+              </div>
+              <textarea id="svc-content" class="w-full px-5 py-4 bg-transparent text-slate-800 focus:outline-none min-h-[300px] resize-y" placeholder="마크다운 또는 에디터를 이용해 본문을 작성하세요." [ngModel]="fContent()" (ngModelChange)="fContent.set($event)"></textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 서랍 푸터 -->
+      <div class="px-8 py-5 border-t border-slate-100 flex items-center justify-between bg-white shrink-0">
+        <label class="flex items-center gap-3 cursor-pointer group">
+          <div class="relative w-11 h-6 bg-slate-200 rounded-full peer-checked:bg-indigo-600 transition-colors" [class.bg-indigo-600]="fPublished()">
+            <div class="absolute top-[2px] left-[2px] bg-white border border-slate-200 rounded-full h-5 w-5 transition-transform shadow-sm group-hover:scale-105" [class.translate-x-5]="fPublished()"></div>
+          </div>
+          <span class="text-sm font-bold text-slate-700">공개 여부</span>
+          <input id="svc-published" type="checkbox" class="sr-only" [ngModel]="fPublished()" (ngModelChange)="fPublished.set($event)">
+        </label>
+
+        <div class="flex items-center gap-3">
+          <button class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors" (click)="closeForm()">취소</button>
+          <button class="px-6 py-2.5 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition-all flex items-center gap-2" (click)="save()" [disabled]="saving()">
+            @if (saving()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
+            저장하기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (deleteTarget()) {
+  <admin-confirm-dialog message="서비스를 삭제하시겠습니까?" [loading]="deleting()" (confirmed)="confirmDelete()" (cancelled)="cancelDelete()" />
+}

@@ -1,0 +1,52 @@
+// ============================================================
+// 시스템 / 인증
+// ============================================================
+
+model AdminUser {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  password    String
+  name        String
+  role        String    @default("ADMIN") // SUPER_ADMIN, ADMIN, EDITOR
+  isActive    Boolean   @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("admin_users")
+}
+
+model Role {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
+  description String?
+  permissions RolePermission[]
+  createdAt   DateTime         @default(now())
+
+  @@map("roles")
+}
+
+model MenuPermission {
+  id              Int              @id @default(autoincrement())
+  menuKey         String           @unique
+  menuName        String
+  parentKey       String?
+  sortOrder       Int              @default(0)
+  rolePermissions RolePermission[]
+
+  @@map("menu_permissions")
+}
+
+model RolePermission {
+  id        Int            @id @default(autoincrement())
+  role      Role           @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    Int
+  menu      MenuPermission @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  menuId    Int
+  canRead   Boolean        @default(false)
+  canWrite  Boolean        @default(false)
+  canDelete Boolean        @default(false)
+
+  @@unique([roleId, menuId])
+  @@map("role_permissions")
+}

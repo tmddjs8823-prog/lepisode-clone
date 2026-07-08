@@ -1,0 +1,38 @@
+// ============================================================
+// 지원사업 + 현황 관리
+// ============================================================
+
+model SupportProject {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  published Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("support_projects")
+}
+
+model ProjectStatus {
+  id            Int       @id @default(autoincrement())
+  title         String    // 제목
+  titleEn       String?   // 영문 제목
+  titleJa       String?   // 일어 제목
+  client        String    // 클라이언트
+  platforms     String[]  // 플랫폼 (안드로이드, iOS, 웹)
+  startDate     DateTime? // 시작일
+  endDate       DateTime? // 종료일
+  status        String    @default("ESTIMATING") // ESTIMATING(견적 중), IN_PROGRESS(진행 중), COMPLETE(납품 완료)
+  email         String?   // 이메일
+  phone         String?   // 전화번호
+  attachmentUrl String?   // 문서 파일 경로
+  memo          String?   @db.Text // 메모 (추가)
+  content       String?   @db.Text // 내용 에디터 (추가)
+  published     Boolean   @default(false)
+  sortOrder     Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("project_statuses")
+}

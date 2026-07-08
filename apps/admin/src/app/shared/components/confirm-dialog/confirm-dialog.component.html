@@ -1,0 +1,46 @@
+<!-- Backdrop -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" (click)="cancelled.emit()" (keydown.enter)="cancelled.emit()" tabindex="0">
+  <!-- Dialog -->
+  <div
+    class="relative bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl w-full max-w-sm"
+    (click)="$event.stopPropagation()"
+    (keydown.enter)="$event.stopPropagation()"
+    tabindex="-1"
+  >
+    <!-- Icon -->
+    <div class="flex flex-col items-center pt-8 pb-2 px-6">
+      <div class="flex items-center justify-center w-14 h-14 rounded-full bg-red-500/10 border border-red-500/20 mb-4">
+        <svg class="w-7 h-7 text-red-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+      </div>
+      <h3 class="text-base font-semibold text-white">{{ message() }}</h3>
+      <p class="text-sm text-slate-400 text-center mt-1">{{ subMessage() }}</p>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-3 p-5">
+      <button
+        id="btn-cancel"
+        class="flex-1 px-4 py-2.5 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
+        (click)="cancelled.emit()"
+        [disabled]="loading()"
+      >
+        {{ cancelLabel() }}
+      </button>
+      <button
+        id="btn-confirm"
+        class="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-500 active:bg-red-700 rounded-lg transition-colors disabled:opacity-50"
+        (click)="confirmed.emit()"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <span class="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+        } @else {
+          {{ confirmLabel() }}
+        }
+      </button>
+    </div>
+  </div>
+</div>
