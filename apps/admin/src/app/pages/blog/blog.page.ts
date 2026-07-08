@@ -102,8 +102,8 @@ export class BlogPage implements OnInit {
 
   loadData(): void {
     this.loading.set(true);
-    this.http.get<BlogPost[]>(`${API}/blog`).subscribe({
-      next: (list) => { this.data.set(list); this.loading.set(false); },
+    this.http.get<{ data: BlogPost[]; total: number }>(`${API}/blog/admin/list`).subscribe({
+      next: (res) => { this.data.set(res.data); this.loading.set(false); },
       error: () => { this.toast.error('목록을 불러오지 못했습니다.'); this.loading.set(false); },
     });
   }

@@ -65,13 +65,14 @@
           <span class="w-4 h-1 rounded-full bg-red-500 mt-0.5"></span>
         </button>
         @if (showColorPicker()) {
-          <div class="color-picker-pop" (click)="$event.stopPropagation()">
+          <div class="color-picker-pop" role="dialog" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
             <p class="text-[10px] text-slate-400 mb-2">텍스트 색상</p>
             <div class="grid grid-cols-6 gap-1">
               @for (c of colors; track c) {
                 <button type="button"
                   class="w-5 h-5 rounded border border-slate-600 hover:scale-110 transition-transform"
                   [style.background]="c"
+                  [attr.aria-label]="'색상 ' + c"
                   (mousedown)="$event.preventDefault(); applyColor(c)"></button>
               }
             </div>
@@ -88,13 +89,14 @@
           <span class="w-4 h-1 rounded-full bg-yellow-400 mt-0.5"></span>
         </button>
         @if (showBgPicker()) {
-          <div class="color-picker-pop" (click)="$event.stopPropagation()">
+          <div class="color-picker-pop" role="dialog" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
             <p class="text-[10px] text-slate-400 mb-2">배경 색상</p>
             <div class="grid grid-cols-6 gap-1">
               @for (c of colors; track c) {
                 <button type="button"
                   class="w-5 h-5 rounded border border-slate-600 hover:scale-110 transition-transform"
                   [style.background]="c"
+                  [attr.aria-label]="'배경색 ' + c"
                   (mousedown)="$event.preventDefault(); applyBgColor(c)"></button>
               }
             </div>
@@ -159,7 +161,7 @@
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
         </button>
         @if (showLinkInput()) {
-          <div class="absolute left-0 top-full mt-1 z-20 bg-slate-900 border border-slate-600 rounded-lg shadow-xl p-3 flex gap-2 min-w-[260px]" (click)="$event.stopPropagation()">
+          <div class="absolute left-0 top-full mt-1 z-20 bg-slate-900 border border-slate-600 rounded-lg shadow-xl p-3 flex gap-2 min-w-[260px]" role="dialog" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
             <input type="text" class="flex-1 bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-indigo-500" placeholder="https://..."
               [value]="linkUrl()" (input)="linkUrl.set($any($event.target).value)"
               (keydown.enter)="insertLink()" />
@@ -206,6 +208,7 @@
     contenteditable="true"
     [attr.disabled]="disabled || null"
     (click)="showColorPicker.set(false); showBgPicker.set(false); showLinkInput.set(false)"
+    (keydown)="showColorPicker.set(false); showBgPicker.set(false); showLinkInput.set(false)"
   ></div>
 </div>
 

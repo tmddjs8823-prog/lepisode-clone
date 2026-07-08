@@ -12,50 +12,416 @@
 </div>
 
 
-<!-- 폼 모달 (사이드 서랍 방식) -->
+<!-- ── 폼 모달 (사이드 서랍) ── -->
 @if (showForm()) {
   <div class="fixed inset-0 z-50 flex justify-end">
-    <!-- 백그라운드 오버레이 -->
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-backdrop" (click)="closeForm()" (keydown.enter)="closeForm()" tabindex="0" role="button" aria-label="Close form"></div>
-    
-    <!-- 서랍 컨테이너 -->
-    <div class="relative w-full max-w-md h-full bg-slate-900 border-l border-slate-700/60 shadow-2xl flex flex-col animate-drawer" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()" tabindex="-1">
+    <!-- 백드롭 -->
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" role="button" tabindex="-1" (click)="closeForm()" (keydown.escape)="closeForm()"></div>
+
+    <!-- 서랍 -->
+    <div class="relative w-full max-w-lg h-full bg-slate-900 border-l border-slate-700/60 shadow-2xl flex flex-col animate-drawer">
+
+      <!-- 헤더 -->
       <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
-        <h3 class="text-base font-semibold text-white">{{ formTitle() }}</h3>
-        <button class="p-2 -mr-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors" (click)="closeForm()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
+        <div>
+          <h3 class="text-base font-semibold text-white">{{ formTitle() }}</h3>
+          <p class="text-[11px] text-slate-500 mt-0.5">지원사업 폼을 사이드 패널에서 관리합니다.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="px-3 py-1.5 text-xs text-slate-400 hover:text-white transition-colors" (click)="closeForm()">닫기</button>
+          <button
+            class="flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50"
+            [disabled]="saving()"
+            (click)="save()"
+          >
+            @if (saving()) {
+              <span class="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+            }
+            저장
+          </button>
+        </div>
       </div>
-      <div class="flex flex-col gap-5 p-6 overflow-y-auto flex-1 bg-slate-900">
+
+      <!-- 본문 -->
+      <div class="flex flex-col gap-6 p-6 overflow-y-auto flex-1">
+
+        <!-- ═══════════ 섹션 1: 기본 정보 ═══════════ -->
+
+        <!-- 지원사업명 -->
         <div class="flex flex-col gap-1.5">
-          <label for="input-title" class="text-xs font-medium text-slate-400">지원사업명 <span class="text-red-400">*</span></label>
-          <input id="input-title" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-colors" [ngModel]="fTitle()" (ngModelChange)="fTitle.set($event)" (blur)="autoSlug()" />
+          <label for="input-sp-title" class="text-sm font-semibold text-slate-200">지원사업명 <span class="text-red-400">*</span></label>
+          <input id="input-sp-title" type="text"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+            placeholder="예: 2026 AI 바우처 지원사업"
+            [ngModel]="fTitle()" (ngModelChange)="fTitle.set($event)" (blur)="autoSlug()" />
         </div>
+
+        <!-- 슬러그 -->
         <div class="flex flex-col gap-1.5">
-          <label for="input-slug" class="text-xs font-medium text-slate-400">슬러그 <span class="text-red-400">*</span></label>
-          <input id="input-slug" type="text" class="w-full bg-slate-800 border border-slate-700 text-indigo-300 text-sm font-mono rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" placeholder="url-friendly-slug" [ngModel]="fSlug()" (ngModelChange)="fSlug.set($event)" />
-          <p class="text-xs text-slate-500">영문 소문자, 숫자, 하이픈만 허용. 제목 입력 후 자동 생성됩니다.</p>
+          <label for="input-sp-slug" class="text-sm font-semibold text-slate-200">슬러그 <span class="text-red-400">*</span></label>
+          <input id="input-sp-slug" type="text"
+            class="w-full bg-slate-800 border border-slate-700 text-indigo-300 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+            placeholder="예: ai-voucher-2026"
+            [ngModel]="fSlug()" (ngModelChange)="fSlug.set($event)" />
         </div>
-        <div class="flex items-center gap-6 mt-2">
+
+        <!-- 뱃지 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="input-sp-badge" class="text-sm font-semibold text-slate-200">뱃지</label>
+          <input id="input-sp-badge" type="text"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+            placeholder="예: 2026 AI 바우처 지원사업 모집중"
+            [ngModel]="fBadge()" (ngModelChange)="fBadge.set($event)" />
+        </div>
+
+        <!-- 노출 여부 -->
+        <div class="flex flex-col gap-2">
+          <span class="text-sm font-semibold text-slate-200">노출 여부</span>
           <label class="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" class="sr-only peer" [ngModel]="fPublished()" (ngModelChange)="fPublished.set($event)" />
-            <div class="relative w-9 h-5 rounded-full transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-500 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-slate-900" [class]="fPublished() ? 'bg-indigo-600' : 'bg-slate-700'">
+            <div class="relative w-9 h-5 rounded-full transition-colors" [class]="fPublished() ? 'bg-indigo-600' : 'bg-slate-700'">
               <span class="absolute top-[2px] w-4 h-4 bg-white rounded-full shadow transition-all" [class]="fPublished() ? 'left-[18px]' : 'left-[2px]'"></span>
             </div>
-            <span class="text-sm text-slate-300 select-none">노출 활성화</span>
+            <span class="text-sm text-slate-300 select-none">활성화</span>
           </label>
-          <div class="flex items-center gap-2">
-            <label for="input-sort" class="text-xs text-slate-400">정렬순서</label>
-            <input id="input-sort" type="number" class="w-20 bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="fSortOrder()" (ngModelChange)="fSortOrder.set(+$event)" />
+        </div>
+
+        <!-- 설명 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="input-sp-desc" class="text-sm font-semibold text-slate-200">설명 <span class="text-red-400">*</span></label>
+          <textarea id="input-sp-desc" rows="4"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 resize-y"
+            placeholder="예: 검증된 기술력과 노하우로 2026년 AI 바우처 사업을 통한 성공적인 디지털 혁신을 지원합니다."
+            [ngModel]="fDescription()" (ngModelChange)="fDescription.set($event)"></textarea>
+        </div>
+
+        <!-- 지원사업 찾기 최대 지원금 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="input-sp-grant" class="text-sm font-semibold text-slate-200">지원사업 찾기 최대 지원금</label>
+          <input id="input-sp-grant" type="text"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+            placeholder="예: 1억원"
+            [ngModel]="fMaxGrant()" (ngModelChange)="fMaxGrant.set($event)" />
+          <span class="text-[10px] text-slate-500">지원사업 찾기 페이지 카드의 최대 지원금 영역에 노출됩니다.</span>
+        </div>
+
+        <!-- 지원사업 찾기 테마 -->
+        <div class="flex flex-col gap-2">
+          <span class="text-sm font-semibold text-slate-200">지원사업 찾기 테마</span>
+          <div class="flex flex-wrap gap-x-4 gap-y-2">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
+                [ngModel]="fThemeStartup()" (ngModelChange)="fThemeStartup.set($event)" />
+              <span class="text-sm text-slate-300">예비창업자</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
+                [ngModel]="fThemeSmallBiz()" (ngModelChange)="fThemeSmallBiz.set($event)" />
+              <span class="text-sm text-slate-300">소상공인·스타트업</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
+                [ngModel]="fThemeSME()" (ngModelChange)="fThemeSME.set($event)" />
+              <span class="text-sm text-slate-300">중소 기업</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
+                [ngModel]="fThemeMidCap()" (ngModelChange)="fThemeMidCap.set($event)" />
+              <span class="text-sm text-slate-300">중견 기업</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
+                [ngModel]="fThemeGlobal()" (ngModelChange)="fThemeGlobal.set($event)" />
+              <span class="text-sm text-slate-300">수출·글로벌</span>
+            </label>
           </div>
         </div>
-      </div>
-      <div class="flex gap-3 px-6 py-5 border-t border-slate-800 shrink-0">
-        <button class="flex-1 px-4 py-2.5 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors" (click)="closeForm()">취소</button>
-        <button id="btn-save" class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50" (click)="save()" [disabled]="saving()">
-          @if (saving()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
-          저장
-        </button>
+
+        <!-- ═══════════ 섹션 2: 이미지 & SEO ═══════════ -->
+        <div class="border-t border-slate-700/60 pt-5 mt-1"></div>
+
+        <!-- 배너 이미지 -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-sm font-semibold text-slate-200">배너 이미지</span>
+          <p class="text-[10px] text-slate-500 flex items-center gap-1">
+            <svg class="w-3 h-3 text-blue-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+            히어로 중앙에 일러스트처럼 배치되며 multiply 효과가 적용됩니다.
+          </p>
+          @if (fBannerPreview()) {
+            <div class="relative mt-1">
+              <img [src]="fBannerPreview()" alt="배너 미리보기" class="w-full h-32 object-contain rounded-lg border border-slate-700 bg-slate-800" />
+              <button class="absolute top-1 right-1 p-1 bg-red-600/80 hover:bg-red-500 rounded-full text-white" (click)="removeBanner()">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+          } @else {
+            <div
+              class="flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-slate-700 rounded-lg hover:border-indigo-500/50 transition-colors cursor-pointer mt-1"
+              (dragover)="onDragOver($event)" (drop)="onBannerDrop($event)" (click)="bannerInput.click()"
+            >
+              <svg class="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+              <span class="text-xs text-slate-500">파일을 드래그하여 올려놓으세요</span>
+              <span class="text-[10px] text-indigo-400">또는 클릭해서 선택이 가능합니다</span>
+            </div>
+            <input #bannerInput type="file" accept="image/*" class="hidden" (change)="onBannerSelect($event)" />
+          }
+        </div>
+
+        <!-- 히어로 배경 컬러 -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-sm font-semibold text-slate-200">히어로 배경 컬러</span>
+          <div class="flex items-center gap-2">
+            <input type="color" class="w-9 h-9 rounded border border-slate-700 bg-slate-800 cursor-pointer p-0.5"
+              [ngModel]="fHeroColor()" (ngModelChange)="fHeroColor.set($event)" />
+            <input type="text"
+              class="flex-1 bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+              [ngModel]="fHeroColor()" (ngModelChange)="fHeroColor.set($event)" />
+            <button class="px-3 py-2 text-xs text-slate-400 hover:text-white border border-slate-700 rounded-lg hover:bg-slate-800 transition-colors" (click)="resetHeroColor()">초기화</button>
+          </div>
+          <span class="text-[10px] text-slate-500">선택한 컬러가 히어로 상단에서 100%, 중간에서 50%, 하단에서 투명하게 페이드됩니다.</span>
+        </div>
+
+        <!-- OG 이미지 -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-sm font-semibold text-slate-200">OG 이미지</span>
+          <p class="text-[10px] text-slate-500 flex items-center gap-1">
+            <svg class="w-3 h-3 text-blue-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+            미입력 시 배너 이미지가 대표 이미지로 자동 적용됩니다.
+          </p>
+          @if (fOgPreview()) {
+            <div class="relative mt-1">
+              <img [src]="fOgPreview()" alt="OG 미리보기" class="w-full h-32 object-contain rounded-lg border border-slate-700 bg-slate-800" />
+              <button class="absolute top-1 right-1 p-1 bg-red-600/80 hover:bg-red-500 rounded-full text-white" (click)="removeOg()">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+          } @else {
+            <div
+              class="flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-slate-700 rounded-lg hover:border-indigo-500/50 transition-colors cursor-pointer mt-1"
+              (dragover)="onDragOver($event)" (drop)="onOgDrop($event)" (click)="ogInput.click()"
+            >
+              <svg class="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+              <span class="text-xs text-slate-500">파일을 드래그하여 올려놓으세요</span>
+              <span class="text-[10px] text-indigo-400">또는 클릭해서 선택이 가능합니다</span>
+            </div>
+            <input #ogInput type="file" accept="image/*" class="hidden" (change)="onOgSelect($event)" />
+          }
+        </div>
+
+        <!-- SEO 타이틀 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="input-sp-seo-title" class="text-sm font-semibold text-slate-200">SEO 타이틀</label>
+          <input id="input-sp-seo-title" type="text"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+            placeholder="예: 2026 AI 바우처 지원사업 | 레피소드"
+            [ngModel]="fSeoTitle()" (ngModelChange)="fSeoTitle.set($event)" />
+        </div>
+
+        <!-- SEO 설명 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="input-sp-seo-desc" class="text-sm font-semibold text-slate-200">SEO 설명</label>
+          <textarea id="input-sp-seo-desc" rows="3"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 resize-y"
+            placeholder="미입력 시 설명 앞 150자가 자동 적용됩니다."
+            [ngModel]="fSeoDesc()" (ngModelChange)="fSeoDesc.set($event)"></textarea>
+        </div>
+
+        <!-- SEO 키워드 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="input-sp-seo-kw" class="text-sm font-semibold text-slate-200">SEO 키워드</label>
+          <textarea id="input-sp-seo-kw" rows="3"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 resize-y"
+            placeholder="예: AI 바우처, AI 지원사업, 정부지원사업, 레피소드"
+            [ngModel]="fSeoKeywords()" (ngModelChange)="fSeoKeywords.set($event)"></textarea>
+        </div>
+
+        <!-- ═══════════ 섹션 3: 단계별 안내 & 선택 포인트 ═══════════ -->
+        <div class="border-t border-slate-700/60 pt-5 mt-1"></div>
+
+        <!-- 지원사업 단계별 안내 -->
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="text-sm font-bold text-white">지원사업 단계별 안내</h4>
+              <p class="text-[10px] text-slate-500 mt-0.5">기업 성장 단계에 따라 노출되는 지원 정보를 등록합니다. 1개만 등록해도 가운데 정렬로 노출됩니다.</p>
+            </div>
+            <button class="shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-medium text-indigo-400 border border-indigo-500/30 rounded-lg hover:bg-indigo-500/10 transition-colors" (click)="addStep()">추가</button>
+          </div>
+          @if (fSteps().length === 0) {
+            <div class="text-xs text-slate-500 px-4 py-6 border border-slate-700/50 rounded-lg text-center">
+              등록된 단계가 없습니다.
+            </div>
+          } @else {
+            @for (step of fSteps(); track $index) {
+              <div class="border border-slate-700/50 rounded-lg p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-slate-300">단계 {{ $index + 1 }}</span>
+                  <button class="text-xs text-red-400 hover:text-red-300 transition-colors" (click)="removeStep($index)">삭제</button>
+                </div>
+                <input type="text"
+                  class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+                  placeholder="단계 제목"
+                  [ngModel]="step.title" (ngModelChange)="updateStepTitle($index, $event)" />
+                <textarea rows="2"
+                  class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 resize-y"
+                  placeholder="단계 설명"
+                  [ngModel]="step.description" (ngModelChange)="updateStepDesc($index, $event)"></textarea>
+              </div>
+            }
+          }
+        </div>
+
+        <!-- 지원사업 선택 포인트 -->
+        <div class="border-t border-slate-700/60 pt-5 mt-1"></div>
+
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-bold text-white">지원사업 선택 포인트</h4>
+            <button class="shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-medium text-indigo-400 border border-indigo-500/30 rounded-lg hover:bg-indigo-500/10 transition-colors" (click)="addPoint()">추가</button>
+          </div>
+          @for (point of fPoints(); track $index) {
+            <div class="border border-slate-700/50 rounded-lg p-4 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-300">선택 포인트 {{ $index + 1 }}</span>
+                <button class="text-xs text-red-400 hover:text-red-300 transition-colors" (click)="removePoint($index)">삭제</button>
+              </div>
+
+              <!-- 일러스트 선택 -->
+              <div class="flex flex-col gap-1.5">
+                <span class="text-[11px] text-slate-400">카드 하단 일러스트 선택</span>
+                <div class="grid grid-cols-5 gap-2">
+                  @for (opt of illustOptions; track opt.key) {
+                    <button type="button"
+                      class="flex flex-col items-center gap-1 p-2 rounded-lg border text-xs transition-colors"
+                      [class]="point.illustKey === opt.key
+                        ? 'border-indigo-500 bg-indigo-500/10 text-indigo-300'
+                        : 'border-slate-700 bg-slate-800/50 text-slate-400 hover:border-slate-600'"
+                      (click)="selectIllust($index, opt.key)"
+                    >
+                      <span class="text-lg">{{ opt.label.charAt(0) }}</span>
+                      <span class="text-[9px] leading-tight text-center">{{ opt.label }}</span>
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <input type="text"
+                class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+                placeholder="예: 제조 현장 맞춤 AI"
+                [ngModel]="point.title" (ngModelChange)="updatePointTitle($index, $event)" />
+              <textarea rows="3"
+                class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 resize-y"
+                placeholder="예: 생산·품질·재고 관리 자동화, 공정 데이터 분석 등 제조 현장에 즉시 적용 가능한 AI 솔루션을 제공합니다."
+                [ngModel]="point.description" (ngModelChange)="updatePointDesc($index, $event)"></textarea>
+            </div>
+          }
+        </div>
+
+        <!-- ═══════════ 섹션 4: 포트폴리오 매핑, 로드맵, FAQ ═══════════ -->
+        <div class="border-t border-slate-700/60 pt-5 mt-1"></div>
+
+        <!-- 포트폴리오 및 서비스 소개 매핑 -->
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-bold text-white">포트폴리오 및 서비스 소개 매핑</h4>
+            <button class="shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-medium text-indigo-400 border border-indigo-500/30 rounded-lg hover:bg-indigo-500/10 transition-colors" (click)="addMapping()">추가</button>
+          </div>
+          @for (map of fMappings(); track $index) {
+            <div class="flex items-center gap-2 p-3 border border-slate-700/50 rounded-lg bg-slate-800/30">
+              <svg class="w-4 h-4 text-slate-500 shrink-0 cursor-grab" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+              <select
+                class="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:border-indigo-500"
+                [ngModel]="map.type" (ngModelChange)="updateMappingType($index, $event)"
+              >
+                <option value="portfolio">포트폴리오</option>
+                <option value="service">서비스 소개</option>
+              </select>
+              <select
+                class="flex-1 bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:border-indigo-500"
+                [ngModel]="map.selectedId" (ngModelChange)="updateMappingId($index, +$event)"
+              >
+                <option [ngValue]="null">선택</option>
+              </select>
+              <button class="text-xs text-red-400 hover:text-red-300 transition-colors shrink-0" (click)="removeMapping($index)">삭제</button>
+            </div>
+          }
+        </div>
+
+        <div class="border-t border-slate-700/60 pt-5 mt-1"></div>
+
+        <!-- 사업 로드맵 -->
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-bold text-white">사업 로드맵</h4>
+            <button class="shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-medium text-indigo-400 border border-indigo-500/30 rounded-lg hover:bg-indigo-500/10 transition-colors" (click)="addRoadmap()">추가</button>
+          </div>
+          @if (fRoadmaps().length === 0) {
+            <div class="text-xs text-slate-500 px-4 py-6 border border-slate-700/50 rounded-lg text-center">
+              등록된 로드맵이 없습니다.
+            </div>
+          } @else {
+            @for (rm of fRoadmaps(); track $index) {
+              <div class="border border-slate-700/50 rounded-lg p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-slate-300">로드맵 {{ $index + 1 }}</span>
+                  <button class="text-xs text-red-400 hover:text-red-300 transition-colors" (click)="removeRoadmap($index)">삭제</button>
+                </div>
+                <input type="text"
+                  class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+                  placeholder="단계 제목"
+                  [ngModel]="rm.title" (ngModelChange)="updateRoadmapTitle($index, $event)" />
+                <textarea rows="3"
+                  class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 resize-y"
+                  placeholder="예: 신청 자격 검토 후 필요한 서류와 접수 일정을 안내합니다."
+                  [ngModel]="rm.description" (ngModelChange)="updateRoadmapDesc($index, $event)"></textarea>
+              </div>
+            }
+          }
+        </div>
+
+        <div class="border-t border-slate-700/60 pt-5 mt-1"></div>
+
+        <!-- FAQ -->
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="text-sm font-bold text-white">FAQ</h4>
+              <p class="text-[10px] text-slate-500 mt-0.5">우선 노출할 FAQ를 최대 5개까지 고정할 수 있습니다. 저장 시 고정된 FAQ가 먼저 노출됩니다.</p>
+            </div>
+            <button class="shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-medium text-indigo-400 border border-indigo-500/30 rounded-lg hover:bg-indigo-500/10 transition-colors" (click)="addFaq()">추가</button>
+          </div>
+          <span class="inline-flex items-center self-start px-2.5 py-1 rounded-full text-[10px] font-medium border border-slate-700 text-slate-400">
+            우선 노출 고정 {{ pinnedCount() }}/5
+          </span>
+          @for (faq of fFaqs(); track $index) {
+            <div class="border border-slate-700/50 rounded-lg p-4 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-300">FAQ {{ $index + 1 }}</span>
+                <div class="flex items-center gap-2">
+                  <button
+                    class="px-2 py-1 text-[10px] font-medium rounded border transition-colors"
+                    [class]="faq.pinned
+                      ? 'border-indigo-500 bg-indigo-500/10 text-indigo-300'
+                      : 'border-slate-700 text-slate-400 hover:border-slate-600'"
+                    (click)="toggleFaqPin($index)"
+                  >
+                    우선 노출 고정
+                  </button>
+                  <button class="text-xs text-red-400 hover:text-red-300 transition-colors" (click)="removeFaq($index)">삭제</button>
+                </div>
+              </div>
+              <input type="text"
+                class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+                placeholder="예: 바우처 신청 경험이 없어도 진행 가능한가요?"
+                [ngModel]="faq.question" (ngModelChange)="updateFaqQuestion($index, $event)" />
+              <textarea rows="3"
+                class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 resize-y"
+                placeholder="예: 가능합니다. 사업 적합성 검토부터 서류 준비, 구축 범위 정의까지 전 과정을 함께 진행합니다."
+                [ngModel]="faq.answer" (ngModelChange)="updateFaqAnswer($index, $event)"></textarea>
+            </div>
+          }
+        </div>
+
       </div>
     </div>
   </div>

@@ -13,6 +13,7 @@ import { SupportProjectsPage } from './pages/support/support-projects.page';
 import { ProjectStatusesPage } from './pages/support/project-statuses.page';
 import { PortfolioPage } from './pages/portfolio/portfolio.page';
 import { MarketingConsentsPage } from './pages/marketing/marketing-consents.page';
+import { MarketingCompaniesPage } from './pages/marketing/marketing-companies.page';
 import { CertificatesPage } from './pages/certificates/certificates.page';
 import { EventsPage } from './pages/events/events.page';
 import { PopupsPage } from './pages/popups/popups.page';
@@ -21,6 +22,7 @@ import { BlogPage } from './pages/blog/blog.page';
 import { CompanyPage } from './pages/company/company.page';
 import { TermsPage } from './pages/terms/terms.page';
 import { SeoPage } from './pages/seo/seo.page';
+import { I18nPage } from './pages/i18n/i18n.page';
 
 export const appRoutes: Route[] = [
   // Login
@@ -73,7 +75,7 @@ export const appRoutes: Route[] = [
       // Marketing
       // 마케팅 수신동의 — 실제 구현
       { path: 'marketing/consents',   component: MarketingConsentsPage },
-      { path: 'marketing/companies',  component: StubPage, data: { title: '마케팅 업체' } },
+      { path: 'marketing/companies',  component: MarketingCompaniesPage },
 
       // Cody
       { path: 'cody/companies',     component: StubPage, data: { title: '코디 업체 관리' } },
@@ -87,7 +89,7 @@ export const appRoutes: Route[] = [
       { path: 'users/roles',  component: StubPage, data: { title: '역할/권한' } },
 
       // Settings
-      { path: 'settings/i18n', component: StubPage, data: { title: '번역 관리' } },
+      { path: 'settings/i18n', component: I18nPage },
       { path: 'settings/seo',  component: SeoPage },
     ],
   },
