@@ -16,6 +16,7 @@ import { MarketingConsentsPage } from './pages/marketing/marketing-consents.page
 import { MarketingCompaniesPage } from './pages/marketing/marketing-companies.page';
 import { CertificatesPage } from './pages/certificates/certificates.page';
 import { EventsPage } from './pages/events/events.page';
+import { EventDetailPage } from './pages/events/event-detail.page';
 import { PopupsPage } from './pages/popups/popups.page';
 import { QrPage } from './pages/qr/qr.page';
 import { BlogPage } from './pages/blog/blog.page';
@@ -23,6 +24,15 @@ import { CompanyPage } from './pages/company/company.page';
 import { TermsPage } from './pages/terms/terms.page';
 import { SeoPage } from './pages/seo/seo.page';
 import { I18nPage } from './pages/i18n/i18n.page';
+import { RolesPage } from './pages/users/roles.page';
+import { MenuPermsPage } from './pages/users/menu-perms.page';
+import { CodyCompaniesPage } from './pages/cody/cody-companies.page';
+import { CodyProjectsPage } from './pages/cody/cody-projects.page';
+import { CodyCreditsPage } from './pages/cody/cody-credits.page';
+import { AdminsPage } from './pages/users/admins.page';
+import { CodyNotificationsPage } from './pages/cody/cody-notifications.page';
+import { CodyReportsPage } from './pages/cody/cody-reports.page';
+import { CodyReportDetailPage } from './pages/cody/cody-report-detail.page';
 
 export const appRoutes: Route[] = [
   // Login
@@ -62,6 +72,7 @@ export const appRoutes: Route[] = [
       { path: 'content/certificates', component: CertificatesPage },
       // 이벤트 — 실제 구현
       { path: 'content/events',       component: EventsPage },
+      { path: 'content/events/:id',    component: EventDetailPage },
       // 팝업 — 실제 구현
       { path: 'content/popups',       component: PopupsPage },
       { path: 'content/terms',        component: TermsPage },
@@ -78,15 +89,17 @@ export const appRoutes: Route[] = [
       { path: 'marketing/companies',  component: MarketingCompaniesPage },
 
       // Cody
-      { path: 'cody/companies',     component: StubPage, data: { title: '코디 업체 관리' } },
-      { path: 'cody/projects',      component: StubPage, data: { title: '코디 프로젝트' } },
-      { path: 'cody/credits',       component: StubPage, data: { title: '크레딧' } },
-      { path: 'cody/notifications', component: StubPage, data: { title: '알림' } },
-      { path: 'cody/reports',       component: StubPage, data: { title: '주간 보고' } },
+      { path: 'cody/companies',     component: CodyCompaniesPage },
+      { path: 'cody/projects',      component: CodyProjectsPage },
+      { path: 'cody/credits',       component: CodyCreditsPage },
+      { path: 'cody/notifications', component: CodyNotificationsPage },
+      { path: 'cody/reports',       component: CodyReportsPage },
+      { path: 'cody/reports/:id',    component: CodyReportDetailPage },
 
       // Users
-      { path: 'users/admins', component: StubPage, data: { title: '관리자 계정' } },
-      { path: 'users/roles',  component: StubPage, data: { title: '역할/권한' } },
+      { path: 'users/admins', component: AdminsPage },
+      { path: 'users/roles',  component: RolesPage },
+      { path: 'users/menus',  component: MenuPermsPage },
 
       // Settings
       { path: 'settings/i18n', component: I18nPage },

@@ -1,0 +1,124 @@
+<header class="header">
+  <div class="header-inner">
+    <!-- 로고 -->
+    <a routerLink="/" class="logo" (click)="closeMenu()">
+      <div class="logo-icon">L</div>
+      <span class="logo-text">LEPISODE</span>
+    </a>
+
+    <!-- 데스크톱 네비게이션 -->
+    <nav class="nav-desktop">
+      @for (item of navItems; track item.label) {
+        @if (item.children) {
+          <!-- 드롭다운 있는 메뉴 -->
+          <div class="nav-group">
+            <button
+              class="nav-item"
+              [class.active]="activeDropdown === item.label"
+              (click)="toggleDesktopDropdown(item.label, $event)"
+            >
+              {{ item.label }}
+              <svg
+                class="dropdown-arrow"
+                [class.rotated]="activeDropdown === item.label"
+                width="10" height="6" viewBox="0 0 10 6" fill="none"
+              >
+                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <!-- 드롭다운 패널 -->
+            @if (activeDropdown === item.label) {
+              <div class="dropdown-panel" (click)="$event.stopPropagation()">
+                @for (sub of item.children; track sub.path) {
+                  <a
+                    [routerLink]="sub.path"
+                    class="dropdown-item"
+                    (click)="closeDropdown()"
+                  >
+                    {{ sub.label }}
+                  </a>
+                }
+              </div>
+            }
+          </div>
+        } @else {
+          <!-- 드롭다운 없는 메뉴 -->
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: false }"
+            class="nav-item"
+          >
+            {{ item.label }}
+          </a>
+        }
+      }
+    </nav>
+
+    <!-- 언어 선택 -->
+    <div class="header-right">
+      <button class="lang-btn">
+        <span class="lang-flag">🇰🇷</span>
+        <span class="lang-label">한국어</span>
+        <svg class="dropdown-arrow small" width="10" height="6" viewBox="0 0 10 6" fill="none">
+          <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <!-- 모바일 햄버거 -->
+      <button class="mobile-toggle" (click)="toggleMenu()" aria-label="메뉴 열기">
+        @if (mobileMenuOpen) {
+          <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        } @else {
+          <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- 하단 그라데이션 라인 -->
+  <div class="header-line"></div>
+
+  <!-- 모바일 메뉴 -->
+  @if (mobileMenuOpen) {
+    <div class="mobile-menu">
+      <nav class="mobile-nav">
+        @for (item of navItems; track item.label) {
+          @if (item.children) {
+            <div class="mobile-group">
+              <button class="mobile-nav-item has-children" (click)="toggleMobileDropdown(item.label)">
+                <span>{{ item.label }}</span>
+                <svg
+                  class="mobile-arrow"
+                  [class.rotated]="activeDropdown === item.label"
+                  width="10" height="6" viewBox="0 0 10 6" fill="none"
+                >
+                  <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              @if (activeDropdown === item.label) {
+                <div class="mobile-sub">
+                  @for (sub of item.children; track sub.path) {
+                    <a [routerLink]="sub.path" class="mobile-sub-item" (click)="closeMenu()">
+                      {{ sub.label }}
+                    </a>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <a
+              [routerLink]="item.path"
+              routerLinkActive="active"
+              class="mobile-nav-item"
+              (click)="closeMenu()"
+            >
+              {{ item.label }}
+            </a>
+          }
+        }
+      </nav>
+    </div>
+  }
+</header>

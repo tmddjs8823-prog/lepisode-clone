@@ -3,7 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { ToastService } from '../../shared/services/toast.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
+import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { FormsModule } from '@angular/forms';
 
 export interface TeamMember {
@@ -25,14 +27,16 @@ export interface TeamMember {
 
 @Component({
   selector: 'admin-company-page',
-  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent],
+  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent, PageHeaderComponent],
   templateUrl: './company.page.html',
 })
 export class CompanyPage implements OnInit {
   private http = inject(HttpClient);
   private toast = inject(ToastService);
+  private excel = inject(ExcelExportService);
 
   data = signal<TeamMember[]>([]);
+  searchTerm = signal('');
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
@@ -65,7 +69,16 @@ export class CompanyPage implements OnInit {
   deleteTarget = signal<TeamMember | null>(null);
   deleting = signal(false);
 
+  filteredData = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return this.data();
+    return this.data().filter(item =>
+      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  });
   ngOnInit(): void { this.loadData(); }
+
+  onSearch(term?: string): void { this.searchTerm.set(typeof term === 'string' ? term : ''); }
 
   loadData(): void {
     this.loading.set(true);
@@ -73,6 +86,16 @@ export class CompanyPage implements OnInit {
       next: (res) => { this.data.set(res); this.loading.set(false); },
       error: () => { this.toast.error('목록을 불러오지 못했습니다.'); this.loading.set(false); },
     });
+  }
+
+  onExportExcel(): void {
+    this.excel.export(this.data() as unknown as Record<string, unknown>[], [
+      { key: 'sortOrder', header: '순서' },
+      { key: 'name', header: '이름' },
+      { key: 'position', header: '직함' },
+      { key: 'bio', header: '분야' },
+      { key: 'createdAt', header: '등록일' },
+    ], '회사소개_팀원');
   }
 
   openForm(item?: TeamMember): void {
@@ -155,8 +178,9 @@ export class CompanyPage implements OnInit {
     };
 
     this.saving.set(true);
-    const req = this.editingItem()
-      ? this.http.put(`http://localhost:3000/api/v1/company/team/${this.editingItem()!.id}`, payload)
+    const editing = this.editingItem();
+    const req = editing
+      ? this.http.put(`http://localhost:3000/api/v1/company/team/${editing.id}`, payload)
       : this.http.post('http://localhost:3000/api/v1/company/team', payload);
 
     req.subscribe({

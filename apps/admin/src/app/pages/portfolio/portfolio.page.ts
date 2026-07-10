@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, computed } from '@angular/core';
+﻿import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   PortfolioApiService,
@@ -10,13 +10,14 @@ import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { RichEditorComponent } from '../../shared/components/rich-editor/rich-editor.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
 
 export const SERVICE_TYPES = ['플랫폼', '홈페이지', 'DX(디지털전환)', 'AX(AI전환)', '카탈로그/브랜딩'];
 
 @Component({
   selector: 'admin-portfolio-page',
-  imports: [FormsModule, ConfirmDialogComponent, RichEditorComponent, DataTableComponent],
+  imports: [FormsModule, ConfirmDialogComponent, RichEditorComponent, DataTableComponent, PageHeaderComponent],
   templateUrl: './portfolio.page.html',
 })
 export class PortfolioPage implements OnInit {
@@ -28,9 +29,10 @@ export class PortfolioPage implements OnInit {
 
   /* ── 목록 ── */
   data = signal<PortfolioItem[]>([]);
+  searchTerm = signal('');
   total = signal(0);
   page = signal(1);
-  readonly limit = 20;
+  limit = signal(20);
   loading = signal(false);
   filterCategory = signal('');
 
@@ -55,7 +57,7 @@ export class PortfolioPage implements OnInit {
     { key: 'createdAt', label: '등록일자', align: 'center', width: '7.5rem', type: 'date' },
   ];
 
-  totalPages = computed(() => Math.ceil(this.total() / this.limit));
+  totalPages = computed(() => Math.ceil(this.total() / this.limit()));
   pages = computed(() => {
     const cur = this.page(), tot = this.totalPages(), delta = 2, pages: number[] = [];
     for (let i = Math.max(1, cur - delta); i <= Math.min(tot, cur + delta); i++) pages.push(i);
@@ -151,11 +153,20 @@ export class PortfolioPage implements OnInit {
     return this.fServiceTypes().includes(type);
   }
 
+  filteredData = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return this.data();
+    return this.data().filter(item =>
+      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  });
   ngOnInit(): void { this.loadData(); }
+
+  onSearch(term?: string): void { this.searchTerm.set(typeof term === 'string' ? term : ''); }
 
   loadData(): void {
     this.loading.set(true);
-    const params: Record<string, string | number> = { page: this.page(), limit: this.limit };
+    const params: Record<string, string | number> = { page: this.page(), limit: this.limit() };
     if (this.filterCategory()) params['category'] = this.filterCategory();
     this.api.getList(params).subscribe({
       next: (res) => { this.data.set(res.data); this.total.set(res.total); this.loading.set(false); },

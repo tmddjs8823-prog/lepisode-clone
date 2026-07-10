@@ -1,85 +1,95 @@
 <div class="flex flex-col">
 
-  <!-- 상단 툴바: 총 건수 + 정렬 ⋮ 버튼 -->
-  <div class="flex items-center justify-between mb-2">
-    <p class="text-xs text-slate-500">
-      총 <span class="text-slate-300 font-medium">{{ total() }}</span>개
-      @if (sortKey()) {
-        <span class="text-slate-500"> · </span>
-        @for (col of columns(); track col.key) {
-          @if (col.key === sortKey()) {
-            <span class="text-indigo-400 font-medium">{{ col.label }}</span>
-          }
-        }
-        <span class="text-indigo-400 text-[10px]">{{ sortDir() === 'asc' ? ' ↑' : ' ↓' }}</span>
-      }
-    </p>
-
-    <!-- ⋮ 정렬 버튼 -->
-    <div class="relative">
-      <button
-        class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-slate-600 transition-colors"
-        [class]="sortKey() ? 'text-indigo-400 border-indigo-500/40 bg-indigo-500/10' : ''"
-        (click)="toggleSortMenu()"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="5" r="1.5"/>
-          <circle cx="12" cy="12" r="1.5"/>
-          <circle cx="12" cy="19" r="1.5"/>
-        </svg>
-      </button>
-
-      @if (showSortMenu()) {
-        <div class="absolute right-0 top-full mt-1 z-30 bg-white rounded-lg shadow-xl border border-gray-200 overflow-visible min-w-[120px]">
-          <!-- 오름차순 -->
-          <div class="relative" (mouseenter)="hoverAsc.set(true)" (mouseleave)="hoverAsc.set(false)">
-            <button
-              class="w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors"
-              [class]="sortDir() === 'asc' && sortKey() ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
-            >
-              <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-              오름차순 ↑
-            </button>
-            @if (hoverAsc()) {
-              <div class="absolute right-full top-0 mr-1 z-40 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden min-w-[140px]">
-                @for (col of sortableColumns(); track col.key) {
-                  <button
-                    class="w-full text-left px-4 py-2 text-sm transition-colors"
-                    [class]="sortKey() === col.key && sortDir() === 'asc' ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
-                    (click)="applySort(col.key.toString(), 'asc')"
-                  >{{ col.label }}</button>
-                }
-              </div>
-            }
-          </div>
-
-          <!-- 내림차순 -->
-          <div class="relative" (mouseenter)="hoverDesc.set(true)" (mouseleave)="hoverDesc.set(false)">
-            <button
-              class="w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors"
-              [class]="sortDir() === 'desc' && sortKey() ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
-            >
-              <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-              내림차순 ↓
-            </button>
-            @if (hoverDesc()) {
-              <div class="absolute right-full top-0 mr-1 z-40 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden min-w-[140px]">
-                @for (col of sortableColumns(); track col.key) {
-                  <button
-                    class="w-full text-left px-4 py-2 text-sm transition-colors"
-                    [class]="sortKey() === col.key && sortDir() === 'desc' ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
-                    (click)="applySort(col.key.toString(), 'desc')"
-                  >{{ col.label }}</button>
-                }
-              </div>
-            }
-          </div>
-
-        </div>
-        <div class="fixed inset-0 z-20" role="button" tabindex="-1" (click)="closeSortMenu()" (keydown.escape)="closeSortMenu()"></div>
-      }
+  <!-- 검색 바 + 액션 바 (같은 줄에 배치) -->
+  <div class="flex items-center justify-between gap-3 mb-10">
+    <ng-content select="[search-bar]"></ng-content>
+    <div class="flex items-center gap-2 shrink-0">
+      <ng-content select="[action-bar]"></ng-content>
     </div>
   </div>
+
+  <!-- 상단 툴바: 정렬 뱃지 + 정렬 ⋮ 버튼 -->
+  @if (showToolbar()) {
+    <div class="flex items-center justify-between gap-2 mb-2">
+      <!-- 정렬 라벨 뱃지 (Pill style) - 항상 노출 -->
+      <div class="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-full shadow-sm select-none transition-colors">
+        @if (!sortKey() || sortDir() === 'desc') {
+          <!-- 기본값이거나 desc일 때 아래 화살표 기호 -->
+          <span class="text-sm">↓</span>
+        } @else {
+          <!-- 위 화살표 기호 -->
+          <span class="text-sm">↑</span>
+        }
+        <span>{{ currentSortLabel() }}</span>
+      </div>
+
+      <!-- ⋮ 정렬 버튼 -->
+      <div class="relative">
+        <button
+          class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-700 hover:border-slate-600 transition-colors"
+          [class]="sortKey() ? 'text-indigo-400 border-indigo-500/40 bg-indigo-500/10' : ''"
+          (click)="toggleSortMenu()"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="5" r="1.5"/>
+            <circle cx="12" cy="12" r="1.5"/>
+            <circle cx="12" cy="19" r="1.5"/>
+          </svg>
+        </button>
+
+        @if (showSortMenu()) {
+          <div class="absolute right-0 top-full mt-1 z-30 bg-white rounded-lg shadow-xl border border-gray-200 overflow-visible min-w-[120px]">
+            <!-- 오름차순 -->
+            <div class="relative" (mouseenter)="hoverAsc.set(true)" (mouseleave)="hoverAsc.set(false)">
+              <button
+                class="w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors"
+                [class]="sortDir() === 'asc' && sortKey() ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
+              >
+                <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                오름차순 ↑
+              </button>
+              @if (hoverAsc()) {
+                <div class="absolute right-full top-0 mr-1 z-40 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden min-w-[140px]">
+                  @for (col of sortableColumns(); track col.key) {
+                    <button
+                      class="w-full text-left px-4 py-2 text-sm transition-colors"
+                      [class]="sortKey() === col.key && sortDir() === 'asc' ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
+                      (click)="applySort(col.key.toString(), 'asc')"
+                    >{{ col.label }}</button>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- 내림차순 -->
+            <div class="relative" (mouseenter)="hoverDesc.set(true)" (mouseleave)="hoverDesc.set(false)">
+              <button
+                class="w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors"
+                [class]="sortDir() === 'desc' && sortKey() ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
+              >
+                <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                내림차순 ↓
+              </button>
+              @if (hoverDesc()) {
+                <div class="absolute right-full top-0 mr-1 z-40 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden min-w-[140px]">
+                  @for (col of sortableColumns(); track col.key) {
+                    <button
+                      class="w-full text-left px-4 py-2 text-sm transition-colors"
+                      [class]="sortKey() === col.key && sortDir() === 'desc' ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
+                      (click)="applySort(col.key.toString(), 'desc')"
+                    >{{ col.label }}</button>
+                  }
+                </div>
+              }
+            </div>
+
+          </div>
+          <div class="fixed inset-0 z-20" role="button" tabindex="-1" (click)="closeSortMenu()" (keydown.escape)="closeSortMenu()"></div>
+        }
+      </div>
+    </div>
+  }
+
 
   <!-- Table wrapper -->
   <div class="overflow-x-auto rounded-xl border border-slate-700/50">
@@ -88,28 +98,33 @@
         <tr class="bg-slate-800/80 border-b border-slate-700/50">
           @for (col of columns(); track col.key) {
             <th
-              class="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap"
+              class="px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap"
               [style.width]="col.width ?? 'auto'"
+              [class.text-left]="col.align !== 'center' && col.align !== 'right'"
               [class.text-center]="col.align === 'center'"
               [class.text-right]="col.align === 'right'"
             >
-              <span class="inline-flex items-center gap-1">
-                {{ col.label }}
-                @if (sortKey() === col.key) {
-                  <svg class="w-3 h-3 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    @if (sortDir() === 'asc') {
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
-                    } @else {
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                    }
-                  </svg>
-                }
-              </span>
-            </th>
-          }
-          @if (showActions()) {
-            <th class="px-4 py-3 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider w-28">
-              관리
+              @if (col.type !== 'image') {
+                <button
+                  class="inline-flex items-center gap-1 hover:text-slate-200 transition-colors"
+                  (click)="$event.stopPropagation(); toggleColumnSortMenu($event, col.key.toString())"
+                >
+                  {{ col.label }}
+                  @if (sortKey() === col.key) {
+                    <svg class="w-3 h-3 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      @if (sortDir() === 'asc') {
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+                      } @else {
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                      }
+                    </svg>
+                  }
+                </button>
+              } @else {
+                <span class="inline-flex items-center gap-1">
+                  {{ col.label }}
+                </span>
+              }
             </th>
           }
         </tr>
@@ -117,7 +132,7 @@
       <tbody>
         @if (loading()) {
           <tr>
-            <td [colSpan]="columns().length + (showActions() ? 1 : 0)" class="py-16 text-center text-slate-500">
+            <td [colSpan]="columns().length" class="py-16 text-center text-slate-500">
               <div class="flex flex-col items-center gap-3">
                 <div class="w-6 h-6 border-2 border-slate-600 border-t-indigo-500 rounded-full animate-spin"></div>
                 <span class="text-xs">불러오는 중...</span>
@@ -126,87 +141,75 @@
           </tr>
         } @else if (sortedData().length === 0) {
           <tr>
-            <td [colSpan]="columns().length + (showActions() ? 1 : 0)" class="py-16 text-center text-slate-500 text-xs">
+            <td [colSpan]="columns().length" class="py-16 text-center text-slate-500 text-xs">
               데이터가 없습니다.
             </td>
           </tr>
         } @else {
           @for (row of sortedData(); track $index) {
-            <tr class="border-b border-slate-800/80 hover:bg-slate-800/40 transition-colors">
-              @for (col of columns(); track col.key) {
+            <tr class="border-b border-slate-800/80 hover:bg-slate-800/40 transition-colors cursor-pointer" (click)="edit.emit(row)" (contextmenu)="showActions() ? openContextMenu($event, row) : null">
+               @for (col of columns(); track col.key) {
                 <td
-                  class="px-4 py-3 text-slate-300"
+                  [class]="col.type === 'image' ? 'px-2 text-slate-300' : 'px-4 text-slate-300'"
+                  [class.text-left]="col.align !== 'center' && col.align !== 'right'"
                   [class.text-center]="col.align === 'center'"
                   [class.text-right]="col.align === 'right'"
                 >
-                  @if (col.transform) {
-                    @let transformedVal = col.transform($any(row));
-                    <span [title]="transformedVal" class="block max-w-xs truncate">{{ transformedVal || '—' }}</span>
+                  @if ($any(col.type) === 'index') {
+                    <div class="flex items-center py-3" [class.justify-center]="col.align === 'center'">
+                      <span>{{ $index + 1 }}</span>
+                    </div>
                   } @else if (col.type === 'image') {
                     @let imgVal = getCellValue(row, col.key.toString());
-                    @if (imgVal) {
-                      <img [src]="imgVal + ''" class="w-10 h-10 object-contain rounded-lg border border-slate-700 mx-auto" alt="이미지" (error)="$any($event.target).style.display='none'" />
-                    } @else {
-                      <div class="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto">
-                        <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
-                      </div>
-                    }
-                  } @else if (col.type === 'badge' && col.badgeMap) {
-                    @let val = getCellValue(row, col.key.toString());
-                    @let badge = col.badgeMap[val + ''];
-                    @if (badge) {
-                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" [class]="badge.class">
-                        {{ badge.label }}
-                      </span>
-                    } @else {
-                      <span class="text-slate-500">—</span>
-                    }
-                  } @else if (col.type === 'boolean') {
-                    @let boolVal = getCellValue(row, col.key.toString());
-                    @if (boolVal) {
-                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        활성
-                      </span>
-                    } @else {
-                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-700/50 text-slate-400 border border-slate-600/30">
-                        비활성
-                      </span>
-                    }
-                  } @else if (col.type === 'date') {
-                    @let dateVal = getCellValue(row, col.key.toString());
-                    <span class="text-slate-400 text-xs">
-                      {{ dateVal ? ($any(dateVal) | date: 'yyyy-MM-dd') : '—' }}
-                    </span>
+                    <div class="py-2">
+                      @if (imgVal) {
+                        <img [src]="imgVal + ''" style="width: 100%; max-height: 160px; object-fit: cover;" class="rounded-lg border border-slate-700" alt="이미지" (error)="$any($event.target).style.display='none'" />
+                      } @else {
+                        <div style="width: 100%; height: 80px;" class="rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center">
+                          <svg class="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+                        </div>
+                      }
+                    </div>
                   } @else {
-                    @let textVal = getCellValue(row, col.key.toString());
-                    <span [title]="textVal + ''" class="block max-w-xs truncate">{{ textVal ?? '—' }}</span>
+                    <div class="flex items-center py-3" [class.min-h-28]="hasImageColumn()" [class.justify-center]="col.align === 'center'" [class.justify-end]="col.align === 'right'">
+                      @if (col.transform) {
+                        @let transformedVal = col.transform($any(row));
+                        <span [title]="transformedVal" class="block max-w-xs truncate">{{ transformedVal || '—' }}</span>
+                      } @else if (col.type === 'badge' && col.badgeMap) {
+                        @let val = getCellValue(row, col.key.toString());
+                        @let badge = col.badgeMap[val + ''];
+                        @if (badge) {
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" [class]="badge.class">
+                            {{ badge.label }}
+                          </span>
+                        } @else {
+                          <span class="text-slate-500">—</span>
+                        }
+                      } @else if (col.type === 'boolean') {
+                        @let boolVal = getCellValue(row, col.key.toString());
+                        @if (boolVal) {
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            활성
+                          </span>
+                        } @else {
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-700/50 text-slate-400 border border-slate-600/30">
+                            비활성
+                          </span>
+                        }
+                      } @else if (col.type === 'date') {
+                        @let dateVal = getCellValue(row, col.key.toString());
+                        <span class="text-slate-400 text-xs">
+                          {{ dateVal ? ($any(dateVal) | date: 'yyyy-MM-dd') : '—' }}
+                        </span>
+                      } @else {
+                        @let textVal = getCellValue(row, col.key.toString());
+                        <span [title]="textVal + ''" class="block max-w-xs truncate">{{ textVal ?? '—' }}</span>
+                      }
+                    </div>
                   }
                 </td>
               }
-              @if (showActions()) {
-                <td class="px-4 py-3">
-                  <div class="flex items-center justify-center gap-2">
-                    <button
-                      class="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
-                      title="수정"
-                      (click)="edit.emit(row)"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                    </button>
-                    <button
-                      class="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
-                      title="삭제"
-                      (click)="delete.emit(row)"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              }
+
             </tr>
           }
         }
@@ -215,42 +218,87 @@
   </div>
 
   <!-- Pagination -->
-  @if (totalPages > 1) {
-    <div class="flex items-center justify-between pt-4">
-      <p class="text-xs text-slate-500">
-        총 <span class="text-slate-300 font-medium">{{ total() }}</span>개
-      </p>
-      <div class="flex items-center gap-1">
-        <button
-          class="px-2.5 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          [disabled]="page() <= 1"
-          (click)="pageChange.emit(page() - 1)"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        @for (p of getPages(); track p) {
-          <button
-            class="px-3 py-1.5 text-xs rounded-lg transition-colors"
-            [class]="p === page()
-              ? 'bg-indigo-600 text-white font-medium'
-              : 'text-slate-400 hover:text-white hover:bg-slate-700'"
-            (click)="pageChange.emit(p)"
-          >
-            {{ p }}
-          </button>
-        }
-        <button
-          class="px-2.5 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          [disabled]="page() >= totalPages"
-          (click)="pageChange.emit(page() + 1)"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
+  <div class="pt-4">
+    <admin-pagination
+      [totalItems]="total()"
+      [currentPage]="page()"
+      [pageSize]="limit()"
+      (pageChange)="pageChange.emit($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    />
     </div>
-  }
+
 </div>
+
+<!-- ── 우클릭 컨텍스트 메뉴 ── -->
+@if (contextMenuRow()) {
+  <div
+    class="fixed inset-0 z-[9998]"
+    role="button"
+    tabindex="-1"
+    (click)="closeContextMenu()"
+    (keydown.escape)="closeContextMenu()"
+    (contextmenu)="$event.preventDefault(); closeContextMenu()"
+  ></div>
+  <div
+    class="fixed z-[9999] min-w-[140px] bg-slate-800 border border-slate-600/60 rounded-xl shadow-2xl shadow-black/40 overflow-hidden backdrop-blur-sm"
+    [style.left.px]="contextMenuX()"
+    [style.top.px]="contextMenuY()"
+    style="animation: ctxFadeIn 0.12s ease-out;"
+  >
+    <button
+      class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-200 hover:bg-indigo-500/20 hover:text-indigo-300 transition-colors"
+      (click)="$event.stopPropagation(); onContextEdit()"
+    >
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+      </svg>
+      수정
+    </button>
+    <div class="border-t border-slate-700/50"></div>
+    <button
+      class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-200 hover:bg-red-500/20 hover:text-red-300 transition-colors"
+      (click)="$event.stopPropagation(); onContextDelete()"
+    >
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+      </svg>
+      삭제
+    </button>
+  </div>
+}
+
+<!-- ── 컬럼 정렬 드롭다운 (fixed) ── -->
+@if (sortDropdownKey()) {
+  <div
+    class="fixed inset-0 z-[9998]"
+    role="button"
+    tabindex="-1"
+    (click)="closeColumnSortMenu()"
+    (keydown.escape)="closeColumnSortMenu()"
+  ></div>
+  <div
+    class="fixed z-[9999] min-w-[120px] bg-slate-800 border border-slate-600/60 rounded-xl shadow-2xl shadow-black/40 overflow-hidden backdrop-blur-sm"
+    [style.left.px]="sortDropdownX()"
+    [style.top.px]="sortDropdownY()"
+    style="animation: ctxFadeIn 0.12s ease-out;"
+  >
+    <button
+      class="w-full flex items-center gap-2 px-4 py-2.5 text-sm transition-colors"
+      [class]="sortKey() === sortDropdownKey() && sortDir() === 'asc' ? 'text-indigo-300 bg-indigo-500/15 font-medium' : 'text-slate-300 hover:bg-slate-700/60'"
+      (click)="$event.stopPropagation(); applyColumnSort(sortDropdownKey(), 'asc')"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+      오름차순
+    </button>
+    <div class="border-t border-slate-700/50"></div>
+    <button
+      class="w-full flex items-center gap-2 px-4 py-2.5 text-sm transition-colors"
+      [class]="sortKey() === sortDropdownKey() && sortDir() === 'desc' ? 'text-indigo-300 bg-indigo-500/15 font-medium' : 'text-slate-300 hover:bg-slate-700/60'"
+      (click)="$event.stopPropagation(); applyColumnSort(sortDropdownKey(), 'desc')"
+    >
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      내림차순
+    </button>
+  </div>
+}

@@ -1,0 +1,126 @@
+<div class="flex flex-col gap-6 p-6">
+
+  <!-- ═══ 헤더 ═══ -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-xl font-bold text-white">알림</h2>
+      <p class="text-xs text-blue-400 mt-0.5">레피소드 &gt; <span class="text-slate-200">알림 관리</span></p>
+    </div>
+    <div class="flex items-center gap-2">
+      <!-- 활성 상태 라벨 -->
+      <span
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium"
+        [class]="notificationEnabled()
+          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+          : 'bg-red-500/10 text-red-400 border border-red-500/20'"
+      >
+        <span
+          class="w-2 h-2 rounded-full"
+          [class]="notificationEnabled() ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'"
+        ></span>
+        {{ notificationEnabled() ? '활성' : '비활성' }}
+      </span>
+
+      <!-- 알림톡 상태 변경 버튼 -->
+      <button
+        id="btn-toggle-notification"
+        class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors"
+        (click)="openStatusDialog()"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+        </svg>
+        알림톡 상태 변경
+      </button>
+
+      <!-- 엑셀 -->
+      <button
+        id="btn-export-excel"
+        class="p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg border border-slate-700 hover:border-emerald-500/30 transition-colors"
+        title="엑셀 다운로드"
+        (click)="onExportExcel()"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#217346" d="M23 1.5q.41 0 .7.3.3.29.3.7v19q0 .41-.3.7-.29.3-.7.3H7q-.41 0-.7-.3-.3-.29-.3-.7V18H2.5q-.41 0-.7-.3-.3-.29-.3-.7V7q0-.41.3-.7.29-.3.7-.3H6V2.5q0-.41.3-.7.29-.3.7-.3zM6 13.28l1.42 2.66h2.14l-2.38-3.87 2.34-3.8H7.46l-1.3 2.4-.05.08-.04.09-.64-1.28-.66-1.29H2.59l2.27 3.82-2.48 3.85h2.2zM23 17V7h-6v1.4h4.2v1.43h-4.2v1.4h4.2v1.44h-4.2v1.4h4.2v1.43h-4.2V17z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <admin-data-table
+    [columns]="columns"
+    [data]="$any(filteredData())"
+    [loading]="loading()"
+    [total]="total()"
+    [page]="page()"
+    [limit]="limit()"
+    [showActions]="false"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="limit.set($event); page.set(1); loadData()"
+  >
+    <!-- 검색 바를 데이터 테이블 내부의 슬롯으로 주입 -->
+    <div search-bar class="relative max-w-sm">
+      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+        </svg>
+      </div>
+      <input type="text" class="w-full bg-slate-800/60 border border-slate-700/60 text-slate-200 text-sm rounded-lg pl-10 pr-10 py-2.5 focus:outline-none focus:border-indigo-500/60 focus:bg-slate-800 placeholder-slate-500 transition-colors" placeholder="수신자, 내용 검색" [(ngModel)]="searchTerm" (keydown.enter)="onSearch()" />
+    </div>
+  </admin-data-table>
+
+</div>
+
+<!-- ═══ 알림톡 상태 변경 다이얼로그 ═══ -->
+@if (showStatusDialog()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" role="button" tabindex="-1" (click)="cancelStatusDialog()" (keydown.escape)="cancelStatusDialog()"></div>
+    <div class="relative bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden">
+      <!-- 아이콘 -->
+      <div class="flex flex-col items-center pt-8 pb-4 px-6">
+        <div class="w-14 h-14 rounded-full flex items-center justify-center mb-4"
+          [class]="notificationEnabled()
+            ? 'bg-amber-500/10 border border-amber-500/20'
+            : 'bg-emerald-500/10 border border-emerald-500/20'"
+        >
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+            [class]="notificationEnabled() ? 'text-amber-400' : 'text-emerald-400'"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-1">알림톡 상태 변경</h3>
+        <p class="text-sm text-slate-400 text-center">
+          @if (notificationEnabled()) {
+            알림톡을 <span class="text-red-400 font-medium">비활성화</span> 하시겠습니까?<br/>
+            <span class="text-xs text-slate-500">비활성화 시 알림톡 발송이 중지됩니다.</span>
+          } @else {
+            알림톡을 <span class="text-emerald-400 font-medium">활성화</span> 하시겠습니까?<br/>
+            <span class="text-xs text-slate-500">활성화 시 알림톡 발송이 재개됩니다.</span>
+          }
+        </p>
+      </div>
+      <!-- 버튼 -->
+      <div class="flex border-t border-slate-800">
+        <button
+          class="flex-1 py-3.5 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-colors"
+          (click)="cancelStatusDialog()"
+        >
+          취소
+        </button>
+        <div class="w-px bg-slate-800"></div>
+        <button
+          class="flex-1 py-3.5 text-sm font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          [class]="notificationEnabled()
+            ? 'text-red-400 hover:text-red-300 hover:bg-red-500/10'
+            : 'text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10'"
+          [disabled]="statusChanging()"
+          (click)="confirmDeactivate()"
+        >
+          @if (statusChanging()) {
+            <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          }
+          {{ notificationEnabled() ? '비활성화' : '활성화' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -7,6 +7,7 @@ import {
 } from '../../shared/services/service-api.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
+import { UploadService } from '../../shared/services/upload.service';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
@@ -21,8 +22,10 @@ export class ServicesPage implements OnInit {
   private api = inject(ServiceApiService);
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
+  private upload = inject(UploadService);
 
   data = signal<ServiceItem[]>([]);
+  searchTerm = signal('');
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
@@ -57,12 +60,23 @@ export class ServicesPage implements OnInit {
   fSeoDescription = signal('');
   fContent = signal(''); 
   fThumbnailUrl = signal('');
+  fThumbnailPreview = signal('');
+  fThumbnailFile = signal<File | null>(null);
   fSortOrder = signal(0);
   fPublished = signal(true);
 
+  filteredData = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return this.data();
+    return this.data().filter(item =>
+      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  });
   ngOnInit(): void {
     this.loadData();
   }
+
+  onSearch(term?: string): void { this.searchTerm.set(term || ''); }
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [
@@ -104,6 +118,8 @@ export class ServicesPage implements OnInit {
           this.fSeoDescription.set(detail.seoDescription ?? '');
           this.fContent.set(detail.content ?? '');
           this.fThumbnailUrl.set(detail.thumbnailUrl ?? '');
+          this.fThumbnailPreview.set('');
+          this.fThumbnailFile.set(null);
           this.fSortOrder.set(detail.sortOrder);
           this.fPublished.set(detail.published);
         },
@@ -120,6 +136,8 @@ export class ServicesPage implements OnInit {
       this.fSeoDescription.set('');
       this.fContent.set('');
       this.fThumbnailUrl.set('');
+      this.fThumbnailPreview.set('');
+      this.fThumbnailFile.set(null);
       this.fSortOrder.set(0);
       this.fPublished.set(true);
     }
@@ -137,48 +155,75 @@ export class ServicesPage implements OnInit {
     }
   }
 
-  onFileChange(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.toast.info('이미지 업로드 기능은 서버 연동이 필요합니다.');
-      this.fThumbnailUrl.set('https://via.placeholder.com/150');
+  onFileChange(event: Event): void {
+    const file = this.upload.extractFile(event);
+    if (!file) return;
+
+    // 파일 크기 제한 (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      this.toast.warning('파일 크기는 10MB 이하만 가능합니다.');
+      return;
     }
+
+    this.fThumbnailFile.set(file);
+    this.upload.toPreviewUrl(file).subscribe({
+      next: (url) => this.fThumbnailPreview.set(url),
+      error: () => this.toast.error('이미지 미리보기에 실패했습니다.'),
+    });
+  }
+
+  removeThumbnail(): void {
+    this.fThumbnailUrl.set('');
+    this.fThumbnailPreview.set('');
+    this.fThumbnailFile.set(null);
   }
 
   save(): void {
     if (!this.fTitle().trim()) { this.toast.warning('제목을 입력하세요.'); return; }
     if (!this.fSlug().trim()) { this.toast.warning('슬러그를 입력하세요.'); return; }
 
-    const payload: CreateServicePayload = {
-      title: this.fTitle().trim(),
-      titleEn: this.fTitleEn().trim() || undefined,
-      titleJa: this.fTitleJa().trim() || undefined,
-      slug: this.fSlug().trim(),
-      seoTitle: this.fSeoTitle().trim() || undefined,
-      seoDescription: this.fSeoDescription().trim() || undefined,
-      content: this.fContent() || undefined,
-      thumbnailUrl: this.fThumbnailUrl() || undefined,
-      sortOrder: this.fSortOrder(),
-      published: this.fPublished(),
+    this.saving.set(true);
+
+    const doSave = (uploadedUrl?: string) => {
+      const payload: CreateServicePayload = {
+        title: this.fTitle().trim(),
+        titleEn: this.fTitleEn().trim() || undefined,
+        titleJa: this.fTitleJa().trim() || undefined,
+        slug: this.fSlug().trim(),
+        seoTitle: this.fSeoTitle().trim() || undefined,
+        seoDescription: this.fSeoDescription().trim() || undefined,
+        content: this.fContent() || undefined,
+        thumbnailUrl: uploadedUrl || this.fThumbnailUrl() || undefined,
+        sortOrder: this.fSortOrder(),
+        published: this.fPublished(),
+      };
+
+      const req = this.editingItem()
+        ? this.api.update(this.editingItem()!.id, payload)
+        : this.api.create(payload);
+
+      req.subscribe({
+        next: () => {
+          this.toast.success(this.editingItem() ? '수정되었습니다.' : '저장되었습니다.');
+          this.closeForm();
+          this.loadData();
+          this.saving.set(false);
+        },
+        error: () => {
+          this.toast.error('저장에 실패했습니다.');
+          this.saving.set(false);
+        },
+      });
     };
 
-    this.saving.set(true);
-    const req = this.editingItem() 
-      ? this.api.update(this.editingItem()!.id, payload) 
-      : this.api.create(payload);
-
-    req.subscribe({
-      next: () => {
-        this.toast.success(this.editingItem() ? '수정되었습니다.' : '저장되었습니다.');
-        this.closeForm();
-        this.loadData();
-        this.saving.set(false);
-      },
-      error: () => {
-        this.toast.error('저장에 실패했습니다.');
-        this.saving.set(false);
-      },
-    });
+    if (this.fThumbnailFile()) {
+      this.upload.upload(this.fThumbnailFile()!, 'services').subscribe({
+        next: (res) => doSave(res.url),
+        error: () => { this.toast.error('이미지 업로드에 실패했습니다.'); this.saving.set(false); },
+      });
+    } else {
+      doSave();
+    }
   }
 
   onDelete(item: ServiceItem): void {

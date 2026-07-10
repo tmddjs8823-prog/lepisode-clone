@@ -3,30 +3,34 @@ import { FormsModule } from '@angular/forms';
 import { ContentApiService, CertificateItem, CertificatePayload } from '../../shared/services/content-api.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
+import { UploadService } from '../../shared/services/upload.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
 
 @Component({
   selector: 'admin-certificates-page',
-  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent],
+  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent, PageHeaderComponent],
   templateUrl: './certificates.page.html',
 })
 export class CertificatesPage implements OnInit {
   private api = inject(ContentApiService);
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
+  private upload = inject(UploadService);
 
   data = signal<CertificateItem[]>([]);
+  searchTerm = signal('');
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'title',    label: '인증서명', align: 'left' },
-    { key: 'titleEn',  label: '영문명', align: 'left' },
-    { key: 'issuer',   label: '발급기관', align: 'left' },
-    { key: 'imageUrl', label: '이미지', align: 'center', width: '5.5rem', type: 'image' },
-    { key: 'sortOrder', label: '순서', align: 'center', width: '4.5rem', type: 'number' },
-    { key: 'createdAt', label: '등록일', align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'title',    label: '인증서명', align: 'left', width: '10%' },
+    { key: 'imageUrl', label: '이미지', align: 'center', width: '15%', type: 'image' },
+    { key: 'titleEn',  label: '영문명', align: 'left', width: '22%' },
+    { key: 'issuer',   label: '발급기관', align: 'left', width: '22%' },
+    { key: 'sortOrder', label: '순서', align: 'center', width: '5rem', type: 'number' },
+    { key: 'createdAt', label: '등록일', align: 'center', width: '8rem', type: 'date' },
   ];
 
   showForm = signal(false);
@@ -45,14 +49,23 @@ export class CertificatesPage implements OnInit {
   deleteTarget = signal<CertificateItem | null>(null);
   deleting = signal(false);
 
-  onFileSelect(event: any): void {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => this.fImagePreview.set(e.target?.result as string);
-      reader.readAsDataURL(file);
-      this.toast.info('\uC774\uBBF8\uC9C0 \uC5C5\uB85C\uB4DC\uB294 \uC11C\uBC84 \uC5F0\uB3D9\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.');
-    }
+  onFileSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) this.handleFile(file);
+  }
+
+  private handleFile(file: File): void {
+    // 미리보기 즉시 표시
+    this.upload.toPreviewUrl(file).subscribe(url => this.fImagePreview.set(url));
+    // Supabase에 업로드
+    this.upload.upload(file, 'certificates').subscribe({
+      next: (result) => {
+        this.fImageUrl.set(result.url);
+        this.toast.success('이미지가 업로드되었습니다.');
+      },
+      error: () => this.toast.error('이미지 업로드에 실패했습니다.'),
+    });
   }
 
   onDragOver(event: DragEvent): void { event.preventDefault(); }
@@ -60,7 +73,7 @@ export class CertificatesPage implements OnInit {
   onDropFile(event: DragEvent): void {
     event.preventDefault();
     const file = event.dataTransfer?.files?.[0];
-    if (file) this.onFileSelect({ target: { files: [file] } });
+    if (file) this.handleFile(file);
   }
 
   removeImage(): void {
@@ -68,7 +81,16 @@ export class CertificatesPage implements OnInit {
     this.fImagePreview.set('');
   }
 
+  filteredData = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return this.data();
+    return this.data().filter(item =>
+      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  });
   ngOnInit(): void { this.loadData(); }
+
+  onSearch(term?: string): void { this.searchTerm.set(typeof term === 'string' ? term : ''); }
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [
@@ -95,19 +117,13 @@ export class CertificatesPage implements OnInit {
     this.fTitleJa.set(item?.titleJa ?? '');
     this.fIssuer.set(item?.issuer ?? '');
     this.fImageUrl.set(item?.imageUrl ?? '');
+    this.fImagePreview.set(item?.imageUrl ?? '');
     this.fSortOrder.set(item?.sortOrder ?? 0);
     this.showForm.set(true);
   }
 
   closeForm(): void { this.showForm.set(false); }
 
-  onFileChange(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.toast.info('이미지 업로드 기능은 서버 연동이 필요합니다.');
-      this.fImageUrl.set('https://dummyimage.com/100x100/ccc/000.png&text=CERT');
-    }
-  }
 
   save(): void {
     if (!this.fTitle().trim()) { this.toast.warning('인증서명을 입력하세요.'); return; }
@@ -121,8 +137,9 @@ export class CertificatesPage implements OnInit {
     };
 
     this.saving.set(true);
-    const req = this.editingItem()
-      ? this.api.updateCertificate(this.editingItem()!.id, payload)
+    const editing = this.editingItem();
+    const req = editing
+      ? this.api.updateCertificate(editing.id, payload)
       : this.api.createCertificate(payload);
 
     req.subscribe({

@@ -11,7 +11,7 @@ export interface PagedResponse<T> {
 export interface ColumnDef<T> {
   key: keyof T | string;
   label: string;
-  type?: 'text' | 'badge' | 'date' | 'boolean' | 'number' | 'image';
+  type?: 'text' | 'badge' | 'date' | 'boolean' | 'number' | 'image' | 'index';
   badgeMap?: Record<string, { label: string; class: string }>;
   width?: string;
   align?: 'left' | 'center' | 'right';

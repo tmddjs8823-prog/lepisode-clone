@@ -114,7 +114,7 @@ export class SeoPage implements OnInit {
   save(): void {
     this.saving.set(true);
 
-    const globalReq = this.http.post('http://localhost:3000/api/v1/i18n/seo', {
+    const globalReq = this.http.put('http://localhost:3000/api/v1/i18n/seo', {
       pagePath:    'GLOBAL',
       title:       this.seoTitle(),
       description: this.seoDesc(),
@@ -122,7 +122,7 @@ export class SeoPage implements OnInit {
     });
 
     const pageReqs = this.pageForms().map(f =>
-      this.http.post('http://localhost:3000/api/v1/i18n/seo', {
+      this.http.put('http://localhost:3000/api/v1/i18n/seo', {
         pagePath:    f.key.toUpperCase(),
         title:       f.title,
         description: f.desc,

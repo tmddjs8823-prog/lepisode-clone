@@ -9,6 +9,7 @@ import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
 
 export interface JobCategory {
@@ -28,7 +29,7 @@ const DEFAULT_CATEGORIES: JobCategory[] = [
 
 @Component({
   selector: 'admin-jobs-page',
-  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent],
+  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent, PageHeaderComponent],
   templateUrl: './jobs.page.html',
 })
 export class JobsPage implements OnInit {
@@ -38,6 +39,7 @@ export class JobsPage implements OnInit {
 
   /* \u2500\u2500 \uBAA9\uB85D \u2500\u2500 */
   data = signal<JobItem[]>([]);
+  searchTerm = signal('');
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
@@ -104,7 +106,16 @@ export class JobsPage implements OnInit {
   deleteTarget = signal<JobItem | null>(null);
   deleting = signal(false);
 
+  filteredData = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return this.data();
+    return this.data().filter(item =>
+      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  });
   ngOnInit(): void { this.loadData(); }
+
+  onSearch(term?: string): void { this.searchTerm.set(typeof term === 'string' ? term : ''); }
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [

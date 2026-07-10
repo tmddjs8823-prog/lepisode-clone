@@ -34,6 +34,7 @@ export class ProjectStatusesPage implements OnInit {
   readonly platformOptions = ['안드로이드', 'iOS', '웹'];
 
   data = signal<ProjectStatusItem[]>([]);
+  searchTerm = signal('');
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
@@ -82,7 +83,16 @@ export class ProjectStatusesPage implements OnInit {
   fPublished = signal(true);
   fSortOrder = signal(0);
 
+  filteredData = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return this.data();
+    return this.data().filter(item =>
+      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  });
   ngOnInit(): void { this.loadData(); }
+
+  onSearch(term?: string): void { this.searchTerm.set(typeof term === 'string' ? term : ''); }
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [
@@ -119,7 +129,6 @@ export class ProjectStatusesPage implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       this.toast.info('파일 업로드는 서버 연동이 필요합니다.');
-      this.fAttachmentUrl.set('https://dummyimage.com/100x100/ccc/000.png&text=DOC'); // 임시 경로
     }
   }
 

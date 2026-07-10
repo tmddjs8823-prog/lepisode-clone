@@ -35,4 +35,8 @@ export class I18nApiService {
   removeTranslation(id: number): Observable<void> {
     return this.http.delete<void>(`${this.base}/translations/${id}`);
   }
+
+  bulkUploadTranslations(formData: FormData): Observable<{ count: number }> {
+    return this.http.post<{ count: number }>(`${this.base}/translations/bulk`, formData);
+  }
 }

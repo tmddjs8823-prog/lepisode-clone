@@ -73,6 +73,10 @@ export class ContentApiService {
     return this.http.get<EventItem[]>(`${API}/events/admin`);
   }
 
+  getEvent(id: number): Observable<EventItem> {
+    return this.http.get<EventItem>(`${API}/events/${id}`);
+  }
+
   createEvent(dto: EventPayload): Observable<EventItem> {
     return this.http.post<EventItem>(`${API}/events`, dto);
   }

@@ -5,6 +5,7 @@ import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
@@ -33,7 +34,7 @@ const API = 'http://localhost:3000/api/v1';
 
 @Component({
   selector: 'admin-blog-page',
-  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent],
+  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent, PageHeaderComponent],
   templateUrl: './blog.page.html',
 })
 export class BlogPage implements OnInit {
@@ -43,20 +44,18 @@ export class BlogPage implements OnInit {
   private sanitizer = inject(DomSanitizer);
 
   data = signal<BlogPost[]>([]);
+  searchTerm = signal('');
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'title', label: '제목', align: 'left' },
-    { key: 'category', label: '카테고리', align: 'center', width: '7rem' },
-    { key: 'thumbnailUrl', label: '썸네일', align: 'center', width: '5.5rem', type: 'image' },
-    {
-      key: 'published', label: '공개', align: 'center', width: '5.5rem', type: 'badge',
-      badgeMap: {
-        true:  { label: '공개', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
-        false: { label: '숨김', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
-      },
-    },
-    { key: 'createdAt', label: '등록일', align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'id', label: '순번', align: 'center', width: '5%' },
+    { key: 'title', label: '제목', align: 'center', width: '15%' },
+    { key: 'category', label: '카테고리', align: 'center', width: '10%' },
+    { key: 'subCategory', label: '서브 카테고리', align: 'center', width: '12%' },
+    { key: 'author', label: '작성자', align: 'center', width: '8%' },
+    { key: 'thumbnailUrl', label: '썸네일', align: 'center', width: '12%', type: 'image' },
+    { key: 'publishedAt', label: '발행일', align: 'center', width: '10%', type: 'date' },
+    { key: 'createdAt', label: '생성일', align: 'center', width: '10%', type: 'date' },
   ];
 
   /* ── 삭제 ── */
@@ -87,7 +86,16 @@ export class BlogPage implements OnInit {
 
   @ViewChild('editorTextarea') editorTextarea!: ElementRef<HTMLTextAreaElement>;
 
+  filteredData = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return this.data();
+    return this.data().filter(item =>
+      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  });
   ngOnInit(): void { this.loadData(); }
+
+  onSearch(term?: string): void { this.searchTerm.set(typeof term === 'string' ? term : ''); }
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [
@@ -219,6 +227,7 @@ export class BlogPage implements OnInit {
     if (!this.fContent().trim()) { this.toast.warning('본문을 입력하세요.'); return; }
     if (!this.fAuthor().trim()) { this.toast.warning('작성자를 입력하세요.'); return; }
 
+    const publishedAt = this.fPublishedAt();
     const payload: Record<string, unknown> = {
       title: this.fTitle().trim(),
       content: this.fContent().trim(),
@@ -226,7 +235,7 @@ export class BlogPage implements OnInit {
       subCategory: this.fSubCategory().trim() || undefined,
       author: this.fAuthor().trim(),
       published: this.fPublished(),
-      publishedAt: this.fPublishedAt() || undefined,
+      publishedAt: publishedAt ? new Date(publishedAt).toISOString() : undefined,
       thumbnailUrl: this.fThumbnailPreview() || undefined,
     };
 

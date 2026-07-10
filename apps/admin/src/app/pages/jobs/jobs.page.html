@@ -6,47 +6,40 @@
 </style>
 
 <div class="flex flex-col gap-6 p-6">
-  <!-- ── 헤더 ── -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h2 class="text-xl font-bold text-white">채용 관리</h2>
-      <p class="text-xs text-slate-400 mt-0.5">채용 공고를 관리합니다.</p>
-    </div>
-    <div class="flex items-center gap-2">
-      <!-- 카테고리 관리 버튼 -->
-      <button
-        class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors"
-        (click)="openCatManager()"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-        카테고리 관리
-      </button>
-      <button
-        class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors"
-        (click)="openForm()"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-        채용 공고 등록
-      </button>
-      <button
-        class="p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg border border-slate-700 hover:border-emerald-500/30 transition-colors"
-        title="엑셀 다운로드"
-        (click)="onExportExcel()"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#217346" d="M23 1.5q.41 0 .7.3.3.29.3.7v19q0 .41-.3.7-.29.3-.7.3H7q-.41 0-.7-.3-.3-.29-.3-.7V18H2.5q-.41 0-.7-.3-.3-.29-.3-.7V7q0-.41.3-.7.29-.3.7-.3H6V2.5q0-.41.3-.7.29-.3.7-.3zM6 13.28l1.42 2.66h2.14l-2.38-3.87 2.34-3.8H7.46l-1.3 2.4-.05.08-.04.09-.64-1.28-.66-1.29H2.59l2.27 3.82-2.48 3.85h2.2zM23 17V7h-6v1.4h4.2v1.43h-4.2v1.4h4.2v1.44h-4.2v1.4h4.2v1.43h-4.2V17z"/></svg>
-      </button>
-    </div>
-  </div>
+  <admin-page-header title="채용 관리" />
 
-  <!-- ── 목록 테이블 ── -->
   <admin-data-table
     [columns]="columns"
-    [data]="$any(data())"
+    [data]="$any(filteredData())"
     [loading]="loading()"
     [total]="data().length"
     (edit)="openForm($any($event))"
     (delete)="onDelete($any($event))"
-  />
+  >
+    <!-- 검색 바를 데이터 테이블 내부의 슬롯으로 주입 (라벨 아래에 정확히 배치) -->
+    <div search-bar class="relative max-w-sm">
+      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+        </svg>
+      </div>
+      <input type="text" class="w-full bg-slate-800/60 border border-slate-700/60 text-slate-200 text-sm rounded-lg pl-10 pr-10 py-2.5 focus:outline-none focus:border-indigo-500/60 focus:bg-slate-800 placeholder-slate-500 transition-colors" placeholder="제목, 부서 검색" [(ngModel)]="searchTerm" (keydown.enter)="onSearch()" />
+    </div>
+    <!-- 액션 바 -->
+    <div action-bar class="flex items-center gap-2">
+      <button class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors" (click)="openCatManager()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+        카테고리
+      </button>
+      <button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors" (click)="openForm()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        채용 공고 등록
+      </button>
+      <button class="p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg border border-slate-700 hover:border-emerald-500/30 transition-colors" title="엑셀 다운로드" (click)="onExportExcel()">
+        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#217346" d="M23 1.5q.41 0 .7.3.3.29.3.7v19q0 .41-.3.7-.29.3-.7.3H7q-.41 0-.7-.3-.3-.29-.3-.7V18H2.5q-.41 0-.7-.3-.3-.29-.3-.7V7q0-.41.3-.7.29-.3.7-.3H6V2.5q0-.41.3-.7.29-.3.7-.3zM6 13.28l1.42 2.66h2.14l-2.38-3.87 2.34-3.8H7.46l-1.3 2.4-.05.08-.04.09-.64-1.28-.66-1.29H2.59l2.27 3.82-2.48 3.85h2.2zM23 17V7h-6v1.4h4.2v1.43h-4.2v1.4h4.2v1.44h-4.2v1.4h4.2v1.43h-4.2V17z"/></svg>
+      </button>
+    </div>
+  </admin-data-table>
 
 </div>
 
@@ -84,7 +77,7 @@
       <div class="flex-1 overflow-y-auto px-4 py-3">
         @if (categories().length === 0) {
           <div class="flex flex-col items-center justify-center py-16 text-slate-500">
-            <svg class="w-10 h-10 mb-3 text-slate-700" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+            <svg class="w-10 h-10 mb-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
             <span class="text-xs">카테고리가 없습니다.</span>
           </div>
         } @else {
@@ -104,7 +97,7 @@
                   @if (cat.labelEn || cat.labelJa) {
                     <div class="flex items-center gap-2 text-[11px] text-slate-500">
                       @if (cat.labelEn) { <span>EN: {{ cat.labelEn }}</span> }
-                      @if (cat.labelEn && cat.labelJa) { <span class="text-slate-700">|</span> }
+                      @if (cat.labelEn && cat.labelJa) { <span class="text-slate-500">|</span> }
                       @if (cat.labelJa) { <span>JA: {{ cat.labelJa }}</span> }
                     </div>
                   }
@@ -196,50 +189,50 @@
   <div class="fixed inset-0 z-50 flex justify-end">
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-backdrop" role="button" tabindex="-1" (click)="closeForm()" (keydown.escape)="closeForm()"></div>
 
-    <div class="relative w-full max-w-2xl h-full bg-white shadow-2xl flex flex-col animate-drawer" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+    <div class="relative w-full max-w-2xl h-full bg-slate-900 shadow-2xl flex flex-col animate-drawer" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
 
       <!-- 헤더 -->
-      <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
-        <h2 class="text-xl font-bold text-slate-800">{{ formTitle() }}</h2>
-        <button class="p-2 -mr-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors" (click)="closeForm()">
+      <div class="px-8 py-6 border-b border-slate-800 flex items-center justify-between bg-slate-900 shrink-0">
+        <h2 class="text-xl font-bold text-white">{{ formTitle() }}</h2>
+        <button class="p-2 -mr-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors" (click)="closeForm()">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
       <!-- 본문 -->
-      <div class="p-8 overflow-y-auto flex-1 bg-slate-50 flex flex-col gap-6 relative">
+      <div class="p-8 overflow-y-auto flex-1 bg-slate-900/50 flex flex-col gap-6 relative">
         @if (fLoading()) {
-          <div class="absolute inset-0 bg-white/50 backdrop-blur-[1px] z-20 flex items-center justify-center">
+          <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-[1px] z-20 flex items-center justify-center">
             <div class="flex flex-col items-center gap-3">
-              <div class="w-8 h-8 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin"></div>
+              <div class="w-8 h-8 border-4 border-slate-700 border-t-indigo-600 rounded-full animate-spin"></div>
               <span class="text-sm font-medium text-slate-500">데이터를 불러오는 중...</span>
             </div>
           </div>
         }
 
         <div class="flex flex-col gap-1.5">
-          <label for="input-job-title" class="text-sm font-semibold text-slate-700">채용 제목 <span class="text-indigo-500">*</span></label>
-          <input id="input-job-title" type="text" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" placeholder="채용 제목을 입력해주세요" [ngModel]="fTitle()" (ngModelChange)="fTitle.set($event)" />
+          <label for="input-job-title" class="text-sm font-semibold text-slate-200">채용 제목 <span class="text-indigo-500">*</span></label>
+          <input id="input-job-title" type="text" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all" placeholder="채용 제목을 입력해주세요" [ngModel]="fTitle()" (ngModelChange)="fTitle.set($event)" />
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col gap-1.5">
-            <label for="input-job-title-en" class="text-sm font-semibold text-slate-700">영문 제목</label>
-            <input id="input-job-title-en" type="text" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-indigo-500 transition-all" [ngModel]="fTitleEn()" (ngModelChange)="fTitleEn.set($event)" />
+            <label for="input-job-title-en" class="text-sm font-semibold text-slate-200">영문 제목</label>
+            <input id="input-job-title-en" type="text" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500 transition-all" [ngModel]="fTitleEn()" (ngModelChange)="fTitleEn.set($event)" />
           </div>
           <div class="flex flex-col gap-1.5">
-            <label for="input-job-title-ja" class="text-sm font-semibold text-slate-700">일본어 제목</label>
-            <input id="input-job-title-ja" type="text" class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-indigo-500 transition-all" [ngModel]="fTitleJa()" (ngModelChange)="fTitleJa.set($event)" />
+            <label for="input-job-title-ja" class="text-sm font-semibold text-slate-200">일본어 제목</label>
+            <input id="input-job-title-ja" type="text" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500 transition-all" [ngModel]="fTitleJa()" (ngModelChange)="fTitleJa.set($event)" />
           </div>
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <span class="text-sm font-semibold text-slate-700">채용 직군(분류) <span class="text-indigo-500">*</span></span>
+          <span class="text-sm font-semibold text-slate-200">채용 직군(분류) <span class="text-indigo-500">*</span></span>
           <div class="flex flex-wrap gap-2 mt-1">
             @for (cat of categories(); track cat.key) {
               <label class="cursor-pointer">
                 <input type="radio" name="category" [value]="cat.key" [ngModel]="fCategory()" (ngModelChange)="fCategory.set($event)" class="sr-only peer" />
-                <div class="px-4 py-2 rounded-xl text-sm font-medium transition-all peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:shadow-sm bg-white border border-slate-200 text-slate-600 hover:border-indigo-300">
+                <div class="px-4 py-2 rounded-xl text-sm font-medium transition-all peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:shadow-sm bg-slate-800 border border-slate-700 text-slate-600 hover:border-indigo-300">
                   {{ cat.labelKo }}
                 </div>
               </label>
@@ -248,46 +241,46 @@
         </div>
 
         <div class="flex flex-col gap-1.5 mt-2">
-          <label for="input-job-url" class="text-sm font-semibold text-slate-700">채용 공고 링크 (URL)</label>
+          <label for="input-job-url" class="text-sm font-semibold text-slate-200">채용 공고 링크 (URL)</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
             </div>
-            <input id="input-job-url" type="text" class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all" placeholder="https://..." [ngModel]="fJobUrl()" (ngModelChange)="fJobUrl.set($event)" />
+            <input id="input-job-url" type="text" class="w-full pl-11 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-200 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all" placeholder="https://..." [ngModel]="fJobUrl()" (ngModelChange)="fJobUrl.set($event)" />
           </div>
         </div>
 
-        <div class="bg-white p-6 rounded-xl border border-slate-200 mt-2">
-          <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+        <div class="bg-slate-800/60 p-6 rounded-xl border border-slate-700/50 mt-2">
+          <h3 class="text-sm font-bold text-slate-200 mb-4 flex items-center gap-2">
             <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             모집 기간 설정
           </h3>
           <div class="flex items-center gap-4">
             <div class="flex-1 flex flex-col gap-1.5">
               <label for="input-job-start" class="text-xs font-semibold text-slate-500">시작일</label>
-              <input id="input-job-start" type="date" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-indigo-500 transition-all text-sm" [ngModel]="fStartDate()" (ngModelChange)="fStartDate.set($event)" />
+              <input id="input-job-start" type="date" class="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500 transition-all text-sm" [ngModel]="fStartDate()" (ngModelChange)="fStartDate.set($event)" />
             </div>
             <span class="text-slate-400 mt-5">~</span>
             <div class="flex-1 flex flex-col gap-1.5">
               <label for="input-job-deadline" class="text-xs font-semibold text-slate-500">마감일 (비워두면 상시모집)</label>
-              <input id="input-job-deadline" type="date" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-indigo-500 transition-all text-sm" [ngModel]="fDeadline()" (ngModelChange)="fDeadline.set($event)" />
+              <input id="input-job-deadline" type="date" class="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-200 focus:outline-none focus:border-indigo-500 transition-all text-sm" [ngModel]="fDeadline()" (ngModelChange)="fDeadline.set($event)" />
             </div>
           </div>
         </div>
       </div>
 
       <!-- 푸터 -->
-      <div class="px-8 py-5 border-t border-slate-100 flex items-center justify-between bg-white shrink-0">
+      <div class="px-8 py-5 border-t border-slate-800 flex items-center justify-between bg-slate-900 shrink-0">
         <label class="flex items-center gap-3 cursor-pointer group">
-          <div class="relative w-11 h-6 bg-slate-200 rounded-full transition-colors" [class.bg-indigo-600]="fPublished()">
-            <div class="absolute top-[2px] left-[2px] bg-white border border-slate-300 rounded-full h-5 w-5 transition-transform shadow-sm group-hover:scale-105" [class.translate-x-5]="fPublished()"></div>
+          <div class="relative w-11 h-6 bg-slate-700 rounded-full transition-colors" [class.bg-indigo-600]="fPublished()">
+            <div class="absolute top-[2px] left-[2px] bg-white border border-slate-600 rounded-full h-5 w-5 transition-transform shadow-sm group-hover:scale-105" [class.translate-x-5]="fPublished()"></div>
           </div>
-          <span class="text-sm font-bold text-slate-700">모집 중 표시</span>
+          <span class="text-sm font-bold text-slate-200">모집 중 표시</span>
           <input type="checkbox" class="sr-only" [ngModel]="fPublished()" (ngModelChange)="fPublished.set($event)">
         </label>
 
         <div class="flex items-center gap-3">
-          <button class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors" (click)="closeForm()">취소</button>
+          <button class="px-5 py-2.5 text-sm font-medium text-slate-300 hover:bg-slate-800 rounded-xl transition-colors" (click)="closeForm()">취소</button>
           <button class="px-6 py-2.5 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-sm transition-all flex items-center gap-2" (click)="save()" [disabled]="saving()">
             @if (saving()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
             저장하기

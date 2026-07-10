@@ -7,38 +7,37 @@
 
 <div class="flex flex-col gap-6 p-6">
 
-  <!-- ── 헤더 ── -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h2 class="text-xl font-bold text-white">인증서 관리</h2>
-      <p class="text-xs text-slate-400 mt-0.5">인증서 이미지를 등록하고 관리합니다.</p>
-    </div>
-    <div class="flex items-center gap-2">
-      <button
-        class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors"
-        (click)="openForm()">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-        인증서 등록
-      </button>
-      <button
-        class="p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg border border-slate-700 hover:border-emerald-500/30 transition-colors"
-        title="엑셀 다운로드"
-        (click)="onExportExcel()"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#217346" d="M23 1.5q.41 0 .7.3.3.29.3.7v19q0 .41-.3.7-.29.3-.7.3H7q-.41 0-.7-.3-.3-.29-.3-.7V18H2.5q-.41 0-.7-.3-.3-.29-.3-.7V7q0-.41.3-.7.29-.3.7-.3H6V2.5q0-.41.3-.7.29-.3.7-.3zM6 13.28l1.42 2.66h2.14l-2.38-3.87 2.34-3.8H7.46l-1.3 2.4-.05.08-.04.09-.64-1.28-.66-1.29H2.59l2.27 3.82-2.48 3.85h2.2zM23 17V7h-6v1.4h4.2v1.43h-4.2v1.4h4.2v1.44h-4.2v1.4h4.2v1.43h-4.2V17z"/></svg>
-      </button>
-    </div>
-  </div>
+  <admin-page-header title="인증서 관리" />
 
   <!-- ── 데이터 그리드 ── -->
   <admin-data-table
     [columns]="columns"
-    [data]="$any(data())"
+    [data]="$any(filteredData())"
     [loading]="loading()"
     [total]="data().length"
     (edit)="openForm($any($event))"
-    (delete)="onDelete($any($event))"
-  />
+    (delete)="onDelete($any($event))">
+
+    <!-- 검색 바를 데이터 테이블 내부의 슬롯으로 주입 (순서: 검색창 -> 라벨 -> 데이터 그리드) -->
+    <div search-bar class="relative max-w-sm">
+      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+        </svg>
+      </div>
+      <input type="text" class="w-full bg-slate-800/60 border border-slate-700/60 text-slate-200 text-sm rounded-lg pl-10 pr-10 py-2.5 focus:outline-none focus:border-indigo-500/60 focus:bg-slate-800 placeholder-slate-500 transition-colors" placeholder="인증서명 검색" [(ngModel)]="searchTerm" (keydown.enter)="onSearch()" />
+    </div>
+      <!-- 액션 바 -->
+    <div action-bar class="flex items-center gap-2">
+      <button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors" (click)="openForm()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        인증서 등록
+      </button>
+      <button class="p-2 text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg border border-slate-700 hover:border-emerald-500/30 transition-colors" title="엑셀 다운로드" (click)="onExportExcel()">
+        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#217346" d="M23 1.5q.41 0 .7.3.3.29.3.7v19q0 .41-.3.7-.29.3-.7.3H7q-.41 0-.7-.3-.3-.29-.3-.7V18H2.5q-.41 0-.7-.3-.3-.29-.3-.7V7q0-.41.3-.7.29-.3.7-.3H6V2.5q0-.41.3-.7.29-.3.7-.3zM6 13.28l1.42 2.66h2.14l-2.38-3.87 2.34-3.8H7.46l-1.3 2.4-.05.08-.04.09-.64-1.28-.66-1.29H2.59l2.27 3.82-2.48 3.85h2.2zM23 17V7h-6v1.4h4.2v1.43h-4.2v1.4h4.2v1.44h-4.2v1.4h4.2v1.43h-4.2V17z"/></svg>
+      </button>
+    </div>
+  </admin-data-table>
 
 </div>
 
@@ -46,8 +45,8 @@
 <!-- 사이드 서랍: 인증서 등록/수정 -->
 @if (showForm()) {
   <div class="fixed inset-0 z-50 flex justify-end">
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-backdrop" (click)="closeForm()"></div>
-    <div class="relative w-full max-w-md h-full bg-slate-900 border-l border-slate-700/60 shadow-2xl flex flex-col animate-drawer" (click)="$event.stopPropagation()">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-backdrop" role="button" tabindex="-1" (click)="closeForm()" (keydown.escape)="closeForm()"></div>
+    <div class="relative w-full max-w-md h-full bg-slate-900 border-l border-slate-700/60 shadow-2xl flex flex-col animate-drawer">
 
       <!-- 헤더 -->
       <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
@@ -62,7 +61,7 @@
 
         <!-- 인증서 이미지 -->
         <div class="flex flex-col gap-1.5">
-          <label class="text-sm font-semibold text-slate-200">인증서 이미지 <span class="text-red-400">*</span></label>
+          <span class="text-sm font-semibold text-slate-200">인증서 이미지 <span class="text-red-400">*</span></span>
           @if (fImagePreview()) {
             <div class="relative rounded-lg overflow-hidden border border-slate-700">
               <img [src]="fImagePreview()" class="w-full object-contain max-h-52 bg-slate-800" alt="인증서 미리보기" />
@@ -83,25 +82,25 @@
 
         <!-- 인증서명 -->
         <div class="flex flex-col gap-1.5">
-          <label class="text-sm font-semibold text-slate-200">인증서명 <span class="text-red-400">*</span></label>
+          <span class="text-sm font-semibold text-slate-200">인증서명 <span class="text-red-400">*</span></span>
           <input type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="인증서명" [ngModel]="fTitle()" (ngModelChange)="fTitle.set($event)" />
         </div>
 
         <!-- 영문명 -->
         <div class="flex flex-col gap-1.5">
-          <label class="text-sm font-semibold text-slate-200">영문명 <span class="text-red-400">*</span></label>
+          <span class="text-sm font-semibold text-slate-200">영문명 <span class="text-red-400">*</span></span>
           <input type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="Certificate name in English" [ngModel]="fTitleEn()" (ngModelChange)="fTitleEn.set($event)" />
         </div>
 
         <!-- 일어명 -->
         <div class="flex flex-col gap-1.5">
-          <label class="text-sm font-semibold text-slate-200">일어명 <span class="text-red-400">*</span></label>
+          <span class="text-sm font-semibold text-slate-200">일어명 <span class="text-red-400">*</span></span>
           <input type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="認定書名" [ngModel]="fTitleJa()" (ngModelChange)="fTitleJa.set($event)" />
         </div>
 
         <!-- 정렬 순서 -->
         <div class="flex flex-col gap-1.5">
-          <label class="text-sm font-semibold text-slate-200">정렬 순서</label>
+          <span class="text-sm font-semibold text-slate-200">정렬 순서</span>
           <input type="number" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="fSortOrder()" (ngModelChange)="fSortOrder.set(+$event)" />
         </div>
 

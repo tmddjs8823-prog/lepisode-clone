@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
 
 export interface MarketingCompany {
@@ -18,7 +20,7 @@ export interface MarketingCompany {
 
 @Component({
   selector: 'admin-marketing-companies-page',
-  imports: [FormsModule, DataTableComponent],
+  imports: [FormsModule, DataTableComponent, PageHeaderComponent, ConfirmDialogComponent],
   templateUrl: './marketing-companies.page.html',
 })
 export class MarketingCompaniesPage {
@@ -26,27 +28,32 @@ export class MarketingCompaniesPage {
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
 
-  data = signal<MarketingCompany[]>([
-    { id: 1, name: '(주)디지털마케팅', slug: 'digital-marketing', manager: '김마케팅', monthlyBudget: 5000000, status: '활성', createdAt: '2025-06-01' },
-    { id: 2, name: '소셜미디어랩', slug: 'social-media-lab', manager: '이소셜', monthlyBudget: 3000000, status: '활성', createdAt: '2025-05-15' },
-    { id: 3, name: '퍼포먼스원', slug: 'performance-one', manager: '박퍼포', monthlyBudget: 8000000, status: '일시정지', createdAt: '2025-04-20' },
-    { id: 4, name: '콘텐츠팩토리', slug: 'contents-factory', manager: '최콘텐', monthlyBudget: 2500000, status: '비활성', createdAt: '2025-03-10' },
-    { id: 5, name: '브랜드커넥트', slug: 'brand-connect', manager: '정브랜', monthlyBudget: 6000000, status: '활성', createdAt: '2025-02-01' },
-  ]);
-  total = signal(5);
+  data = signal<MarketingCompany[]>([]);
+  total = signal(0);
   loading = signal(false);
+  searchTerm = '';
+
+  filteredData = computed(() => {
+    const term = this.searchTerm.toLowerCase();
+    if (!term) return this.data();
+    return this.data().filter(item =>
+      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  });
+
+  onSearch(): void { /* triggered by enter key, searchTerm is bound via ngModel */ }
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'id',            label: '순번',     type: 'number', align: 'center', width: '5rem' },
-    { key: 'name',          label: '업체명',   align: 'left' },
-    { key: 'slug',          label: '슬러그',   align: 'left' },
-    { key: 'manager',       label: '담당자',   align: 'center', width: '6rem' },
-    { key: 'monthlyBudget', label: '월 예산',  align: 'right',  width: '8rem', transform: (row: Record<string, unknown>) => {
+    { key: 'id',            label: '순번',     type: 'number', align: 'center', width: '6%' },
+    { key: 'name',          label: '업체명',   align: 'center', width: '18%' },
+    { key: 'slug',          label: '슬러그',   align: 'center', width: '16%' },
+    { key: 'manager',       label: '담당자',   align: 'center', width: '12%' },
+    { key: 'monthlyBudget', label: '월 예산',  align: 'center',  width: '14%', transform: (row: Record<string, unknown>) => {
       const v = row['monthlyBudget'] as number;
       return v ? v.toLocaleString('ko-KR') + '원' : '—';
     }},
-    { key: 'status',        label: '상태',     align: 'center', width: '6rem' },
-    { key: 'createdAt',     label: '등록일자', align: 'center', width: '8rem', type: 'date' },
+    { key: 'status',        label: '상태',     align: 'center', width: '10%' },
+    { key: 'createdAt',     label: '등록일자', align: 'center', width: '12%', type: 'date' },
   ];
 
   /* ── 폼 ── */
@@ -119,11 +126,51 @@ export class MarketingCompaniesPage {
     if (!this.fManager().trim()) { this.toast.warning('담당자명을 입력하세요.'); return; }
 
     this.saving.set(true);
-    // TODO: API 연동
     setTimeout(() => {
-      this.toast.success(this.editingItem() ? '수정되었습니다.' : '등록되었습니다.');
+      const editing = this.editingItem();
+      if (editing) {
+        // 수정
+        this.data.update(list => list.map(item =>
+          item.id === editing.id
+            ? { ...item, name: this.fName().trim(), slug: this.fSlug().trim(), manager: this.fManager().trim(), monthlyBudget: this.fBudget() }
+            : item
+        ));
+        this.toast.success('수정되었습니다.');
+      } else {
+        // 등록
+        const newItem: MarketingCompany = {
+          id: this.data().length > 0 ? Math.max(...this.data().map(d => d.id)) + 1 : 1,
+          name: this.fName().trim(),
+          slug: this.fSlug().trim(),
+          manager: this.fManager().trim(),
+          monthlyBudget: this.fBudget(),
+          status: '활성',
+          createdAt: new Date().toISOString(),
+        };
+        this.data.update(list => [...list, newItem]);
+        this.total.update(t => t + 1);
+        this.toast.success('등록되었습니다.');
+      }
       this.saving.set(false);
       this.closeForm();
     }, 500);
   }
+
+  /* ── 삭제 ── */
+  deleteTarget = signal<MarketingCompany | null>(null);
+  deleting = signal(false);
+
+  onDelete(item: MarketingCompany): void { this.deleteTarget.set(item); }
+  confirmDelete(): void {
+    const t = this.deleteTarget(); if (!t) return;
+    this.deleting.set(true);
+    setTimeout(() => {
+      this.data.update(list => list.filter(d => d.id !== t.id));
+      this.total.update(n => Math.max(0, n - 1));
+      this.toast.success('삭제되었습니다.');
+      this.deleteTarget.set(null);
+      this.deleting.set(false);
+    }, 500);
+  }
+  cancelDelete(): void { this.deleteTarget.set(null); }
 }

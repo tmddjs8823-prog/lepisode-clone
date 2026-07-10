@@ -5,11 +5,12 @@ import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
 
 @Component({
   selector: 'admin-marketing-consents-page',
-  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent],
+  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent, PageHeaderComponent],
   templateUrl: './marketing-consents.page.html',
 })
 export class MarketingConsentsPage implements OnInit {
@@ -18,9 +19,10 @@ export class MarketingConsentsPage implements OnInit {
   private excel = inject(ExcelExportService);
 
   data = signal<MarketingConsentItem[]>([]);
+  searchTerm = signal('');
   total = signal(0);
   page = signal(1);
-  readonly limit = 20;
+  limit = signal(20);
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
@@ -35,7 +37,7 @@ export class MarketingConsentsPage implements OnInit {
   revokeTarget = signal<MarketingConsentItem | null>(null);
   revoking = signal(false);
 
-  totalPages = computed(() => Math.ceil(this.total() / this.limit));
+  totalPages = computed(() => Math.ceil(this.total() / this.limit()));
   pages = computed(() => {
     const cur = this.page(), tot = this.totalPages(), delta = 2;
     const list: number[] = [];
@@ -43,7 +45,16 @@ export class MarketingConsentsPage implements OnInit {
     return list;
   });
 
+  filteredData = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return this.data();
+    return this.data().filter(item =>
+      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  });
   ngOnInit(): void { this.loadData(); }
+
+  onSearch(term?: string): void { this.searchTerm.set(typeof term === 'string' ? term : ''); }
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [
@@ -57,7 +68,7 @@ export class MarketingConsentsPage implements OnInit {
 
   loadData(): void {
     this.loading.set(true);
-    this.api.getConsents({ page: this.page(), limit: this.limit }).subscribe({
+    this.api.getConsents({ page: this.page(), limit: this.limit() }).subscribe({
       next: (res) => { this.data.set(res.data); this.total.set(res.total); this.loading.set(false); },
       error: () => { this.toast.error('목록을 불러오지 못했습니다.'); this.loading.set(false); },
     });

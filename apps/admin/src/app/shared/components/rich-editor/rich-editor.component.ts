@@ -37,8 +37,8 @@ export class RichEditorComponent implements ControlValueAccessor, AfterViewInit 
     '#EC4899','#06B6D4','#10B981','#F59E0B','#6366F1','#84CC16',
   ];
 
-  private _onChange: (v: string) => void = () => {};
-  private _onTouched: () => void = () => {};
+  private _onChange: (v: string) => void = () => { /* noop – replaced by registerOnChange */ };
+  private _onTouched: () => void = () => { /* noop – replaced by registerOnTouched */ };
   private _savedRange: Range | null = null;
 
   ngAfterViewInit(): void {

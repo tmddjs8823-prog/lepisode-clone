@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { NoticeApiService, NoticeItem, CreateNoticePayload } from '../../shared/services/notice-api.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
+import { UploadService } from '../../shared/services/upload.service';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
@@ -17,32 +18,36 @@ export class NoticesPage implements OnInit {
   private noticeApi = inject(NoticeApiService);
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
+  private upload = inject(UploadService);
 
   // 리스트 관련 상태
   data = signal<NoticeItem[]>([]);
+  searchTerm = signal('');
   total = signal(0);
   page = signal(1);
-  readonly limit = 10;
+  limit = signal(10);
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'id',           label: 'ID',    align: 'center', width: '4rem', type: 'number' },
-    { key: 'title',        label: '\uc81c\ubaa9',  align: 'left' },
-    { key: 'thumbnailUrl', label: '\uc12c\ub124\uc77c', align: 'center', width: '5.5rem', type: 'image' },
+    { key: 'id',           label: 'ID',        align: 'center', width: '5%',  type: 'number' },
+    { key: 'title',        label: '제목',       align: 'left',   width: '18%' },
+    { key: 'titleEn',      label: '영문 제목',   align: 'left',   width: '15%' },
+    { key: 'titleJa',      label: '일본어 제목',  align: 'left',   width: '15%' },
+    { key: 'thumbnailUrl', label: '썸네일',      align: 'center', width: '18%', type: 'image' },
     {
-      key: 'published', label: '\ub178\ucd9c', align: 'center', width: '6rem', type: 'badge',
+      key: 'published', label: '노출', align: 'center', width: '10%', type: 'badge',
       badgeMap: {
-        true:  { label: '\ub178\ucd9c', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
-        false: { label: '\uc228\uae40', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
+        true:  { label: '노출', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
+        false: { label: '숨김', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
       },
     },
-    { key: 'createdAt',    label: '\ub4f1\ub85d\uc77c\uc790', align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'createdAt',    label: '생성일자',    align: 'center', width: '12%', type: 'date' },
   ];
 
   deleteTarget = signal<NoticeItem | null>(null);
   deleting = signal(false);
 
-  totalPages = computed(() => Math.ceil(this.total() / this.limit));
+  totalPages = computed(() => Math.ceil(this.total() / this.limit()));
   pages = computed(() => {
     const cur = this.page();
     const total = this.totalPages();
@@ -66,10 +71,22 @@ export class NoticesPage implements OnInit {
   fContentEn = signal('');
   fContentJa = signal('');
   fThumbnailUrl = signal('');
+  fThumbnailPreview = signal('');
+  fThumbnailFile = signal<File | null>(null);
   fPublished = signal(true);
   fIsPinned = signal(false);
 
+  filteredData = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return this.data();
+    return this.data().filter(item =>
+      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  });
+
   ngOnInit(): void { this.loadData(); }
+
+  onSearch(term?: string): void { this.searchTerm.set(term || ''); }
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [
@@ -85,7 +102,7 @@ export class NoticesPage implements OnInit {
 
   loadData(): void {
     this.loading.set(true);
-    this.noticeApi.getList(this.page(), this.limit).subscribe({
+    this.noticeApi.getList(this.page(), this.limit()).subscribe({
       next: (res) => { this.data.set(res.data); this.total.set(res.total); this.loading.set(false); },
       error: () => { this.toast.error('목록을 불러오는데 실패했습니다.'); this.loading.set(false); },
     });
@@ -105,6 +122,8 @@ export class NoticesPage implements OnInit {
           this.fContentEn.set(detail.contentEn ?? '');
           this.fContentJa.set(detail.contentJa ?? '');
           this.fThumbnailUrl.set(detail.thumbnailUrl ?? '');
+          this.fThumbnailPreview.set(detail.thumbnailUrl ?? '');
+          this.fThumbnailFile.set(null);
           this.fPublished.set(detail.published);
           this.fIsPinned.set(detail.isPinned);
         },
@@ -119,6 +138,8 @@ export class NoticesPage implements OnInit {
       this.fContentEn.set('');
       this.fContentJa.set('');
       this.fThumbnailUrl.set('');
+      this.fThumbnailPreview.set('');
+      this.fThumbnailFile.set(null);
       this.fPublished.set(true);
       this.fIsPinned.set(false);
     }
@@ -133,9 +154,15 @@ export class NoticesPage implements OnInit {
   onFileChange(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
-      this.toast.info('이미지 업로드 기능은 서버 연동이 필요합니다.');
-      this.fThumbnailUrl.set('https://via.placeholder.com/150');
+      this.fThumbnailFile.set(file);
+      this.fThumbnailPreview.set(URL.createObjectURL(file));
     }
+  }
+
+  removeThumbnail(): void {
+    this.fThumbnailUrl.set('');
+    this.fThumbnailPreview.set('');
+    this.fThumbnailFile.set(null);
   }
 
   save(): void {
@@ -144,36 +171,48 @@ export class NoticesPage implements OnInit {
       return;
     }
 
-    const payload: CreateNoticePayload = {
-      title: this.fTitle().trim(),
-      titleEn: this.fTitleEn().trim() || undefined,
-      titleJa: this.fTitleJa().trim() || undefined,
-      content: this.fContent().trim(),
-      contentEn: this.fContentEn().trim() || undefined,
-      contentJa: this.fContentJa().trim() || undefined,
-      thumbnailUrl: this.fThumbnailUrl() || undefined,
-      published: this.fPublished(),
-      isPinned: this.fIsPinned(),
+    this.saving.set(true);
+
+    const doSave = (thumbnailUrl?: string) => {
+      const payload: CreateNoticePayload = {
+        title: this.fTitle().trim(),
+        titleEn: this.fTitleEn().trim() || undefined,
+        titleJa: this.fTitleJa().trim() || undefined,
+        content: this.fContent().trim(),
+        contentEn: this.fContentEn().trim() || undefined,
+        contentJa: this.fContentJa().trim() || undefined,
+        thumbnailUrl: thumbnailUrl || this.fThumbnailUrl() || undefined,
+        published: this.fPublished(),
+        isPinned: this.fIsPinned(),
+      };
+
+      const editing = this.editingItem();
+      const req = editing
+        ? this.noticeApi.update(editing.id, payload)
+        : this.noticeApi.create(payload);
+
+      req.subscribe({
+        next: () => {
+          this.toast.success(this.editingItem() ? '수정되었습니다.' : '등록되었습니다.');
+          this.closeForm();
+          this.loadData();
+          this.saving.set(false);
+        },
+        error: () => {
+          this.toast.error('저장에 실패했습니다.');
+          this.saving.set(false);
+        },
+      });
     };
 
-    this.saving.set(true);
-    const editing = this.editingItem();
-    const req = editing
-      ? this.noticeApi.update(editing.id, payload)
-      : this.noticeApi.create(payload);
-
-    req.subscribe({
-      next: () => {
-        this.toast.success(this.editingItem() ? '수정되었습니다.' : '등록되었습니다.');
-        this.closeForm();
-        this.loadData();
-        this.saving.set(false);
-      },
-      error: () => {
-        this.toast.error('저장에 실패했습니다.');
-        this.saving.set(false);
-      },
-    });
+    if (this.fThumbnailFile()) {
+      this.upload.upload(this.fThumbnailFile()!, 'notices').subscribe({
+        next: (res) => doSave(res.url),
+        error: () => { this.toast.error('이미지 업로드에 실패했습니다.'); this.saving.set(false); },
+      });
+    } else {
+      doSave();
+    }
   }
 
   onDelete(item: NoticeItem): void { this.deleteTarget.set(item); }

@@ -9,6 +9,12 @@ export class CreateSupportProjectDto {
   @IsString()
   slug: string;
 
+  @IsOptional() @IsString()
+  bannerUrl?: string;
+
+  @IsOptional() @IsString()
+  ogImageUrl?: string;
+
   @IsOptional() @IsBoolean()
   published?: boolean;
 
@@ -22,6 +28,12 @@ export class UpdateSupportProjectDto {
 
   @IsOptional() @IsString()
   slug?: string;
+
+  @IsOptional() @IsString()
+  bannerUrl?: string;
+
+  @IsOptional() @IsString()
+  ogImageUrl?: string;
 
   @IsOptional() @IsBoolean()
   published?: boolean;

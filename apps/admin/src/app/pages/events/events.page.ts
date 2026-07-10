@@ -1,37 +1,45 @@
 import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ContentApiService, EventItem, EventPayload } from '../../shared/services/content-api.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
 
 @Component({
   selector: 'admin-events-page',
-  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent],
+  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent, PageHeaderComponent],
   templateUrl: './events.page.html',
 })
 export class EventsPage implements OnInit {
   private api = inject(ContentApiService);
+  private router = inject(Router);
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
 
   data = signal<EventItem[]>([]);
+  searchTerm = signal('');
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'title', label: '이벤트명', align: 'left' },
-    { key: 'startDate', label: '시작일', align: 'center', width: '7.5rem', type: 'date' },
-    { key: 'endDate', label: '종료일', align: 'center', width: '7.5rem', type: 'date' },
-    {
-      key: 'published', label: '공개', align: 'center', width: '5.5rem', type: 'badge',
-      badgeMap: {
-        true:  { label: '공개', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
-        false: { label: '숨김', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
-      },
-    },
-    { key: 'createdAt', label: '등록일', align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'id', label: '번호', align: 'center', width: '10%', transform: (row) => {
+      return 'EV' + String(row['id']).padStart(8, '0');
+    }},
+    { key: 'title', label: '이벤트명', align: 'left', width: '25%' },
+    { key: 'startDate', label: '이벤트 기간', align: 'center', width: '20%', transform: (row) => {
+      const s = row['startDate'] as string | null;
+      const e = row['endDate'] as string | null;
+      if (!s && !e) return '-';
+      return `${s ? s.slice(0, 10) : '?'} ~ ${e ? e.slice(0, 10) : '?'}`;
+    }},
+    { key: 'selectedDate', label: '선정일', align: 'center', width: '12%', type: 'date' },
+    { key: 'attachmentUrl', label: '첨부파일', align: 'center', width: '10%', transform: (row) => {
+      return row['attachmentUrl'] ? '1개' : '0개';
+    }},
+    { key: 'createdAt', label: '등록일자', align: 'center', width: '15%', type: 'date' },
   ];
 
   showForm = signal(false);
@@ -68,7 +76,20 @@ export class EventsPage implements OnInit {
     this.fAttachmentUrl.set('');
   }
 
+  filteredData = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    if (!term) return this.data();
+    return this.data().filter(item =>
+      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+    );
+  });
   ngOnInit(): void { this.loadData(); }
+
+  onSearch(term?: string): void { this.searchTerm.set(typeof term === 'string' ? term : ''); }
+
+  goDetail(item: EventItem): void {
+    this.router.navigate(['/content/events', item.id]);
+  }
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [
@@ -109,7 +130,6 @@ export class EventsPage implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       this.toast.info('이미지 업로드 기능은 서버 연동이 필요합니다.');
-      this.fImageUrl.set('https://dummyimage.com/100x100/ccc/000.png&text=IMG');
     }
   }
 

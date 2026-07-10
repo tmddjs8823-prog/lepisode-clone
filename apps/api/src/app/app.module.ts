@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 // Core
 import { PrismaModule } from '../prisma/prisma.module';
 import { AuthModule } from '../modules/auth/auth.module';
+import { UploadModule } from '../common/upload/upload.module';
 
 // Phase 2: 핵심 CRUD
 import { PortfolioModule } from '../modules/portfolio/portfolio.module';
@@ -35,6 +36,7 @@ import { CodyModule } from '../modules/cody/cody.module';
     }),
     PrismaModule,
     AuthModule,
+    UploadModule,
     // Phase 2
     PortfolioModule,
     ServiceManageModule,

@@ -3,13 +3,15 @@
 // ============================================================
 
 model SupportProject {
-  id        Int      @id @default(autoincrement())
-  title     String
-  slug      String   @unique
-  published Boolean  @default(false)
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  title      String
+  slug       String   @unique
+  bannerUrl  String?
+  ogImageUrl String?
+  published  Boolean  @default(false)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("support_projects")
 }

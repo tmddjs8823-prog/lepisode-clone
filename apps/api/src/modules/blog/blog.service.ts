@@ -36,12 +36,25 @@ export class BlogService {
   }
 
   async create(dto: CreateBlogPostDto) {
-    return this.prisma.blogPost.create({ data: dto });
+    const { publishedAt, ...rest } = dto;
+    return this.prisma.blogPost.create({
+      data: {
+        ...rest,
+        publishedAt: publishedAt ? new Date(publishedAt) : undefined,
+      },
+    });
   }
 
   async update(id: number, dto: UpdateBlogPostDto) {
     await this.findOne(id);
-    return this.prisma.blogPost.update({ where: { id }, data: dto });
+    const { publishedAt, ...rest } = dto;
+    return this.prisma.blogPost.update({
+      where: { id },
+      data: {
+        ...rest,
+        publishedAt: publishedAt ? new Date(publishedAt) : undefined,
+      },
+    });
   }
 
   async remove(id: number) {

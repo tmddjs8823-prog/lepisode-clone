@@ -11,11 +11,12 @@ import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
 
 @Component({
   selector: 'admin-faq-page',
-  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent],
+  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent, PageHeaderComponent],
   templateUrl: './faq.page.html',
 })
 export class FaqPage implements OnInit {
@@ -64,9 +65,18 @@ export class FaqPage implements OnInit {
 
   faqFormTitle = computed(() => (this.editingFaq() ? 'FAQ 수정' : 'FAQ 등록'));
 
+  searchTerm = '';
+
   filteredFaqs = computed(() => {
     const catId = this.selectedCatId();
-    return catId === '' ? this.faqs() : this.faqs().filter((f) => f.categoryId === catId);
+    let list = catId === '' ? this.faqs() : this.faqs().filter((f) => f.categoryId === catId);
+    const term = this.searchTerm.toLowerCase();
+    if (term) {
+      list = list.filter(item =>
+        Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+      );
+    }
+    return list;
   });
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
@@ -90,6 +100,8 @@ export class FaqPage implements OnInit {
     this.loadCategories();
     this.loadFaqs();
   }
+
+  onSearch(): void { /* searchTerm is bound via ngModel in template */ }
 
   onExportExcel(): void {
     this.excel.export(this.filteredFaqs() as unknown as Record<string, unknown>[], [

@@ -9,6 +9,8 @@ export type SupportProjectItem = {
   id: number;
   title: string;
   slug: string;
+  bannerUrl: string | null;
+  ogImageUrl: string | null;
   published: boolean;
   sortOrder: number;
   createdAt: string;
@@ -18,6 +20,8 @@ export type SupportProjectItem = {
 export interface CreateSupportProjectPayload {
   title: string;
   slug: string;
+  bannerUrl?: string;
+  ogImageUrl?: string;
   published?: boolean;
   sortOrder?: number;
 }

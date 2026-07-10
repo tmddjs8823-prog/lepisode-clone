@@ -1,0 +1,76 @@
+<div class="flex items-center justify-between gap-4 flex-wrap">
+  <!-- 왼쪽: 총 건수 -->
+  <div class="flex items-center">
+    <span class="text-xs text-slate-500">총 <span class="font-semibold text-slate-300">{{ totalItems() }}</span>건</span>
+  </div>
+
+  <!-- 오른쪽: 페이지 버튼 + 페이지 사이즈 드롭다운 -->
+  <div class="flex items-center gap-3">
+    <!-- 페이지 버튼 -->
+    <div class="flex items-center gap-1">
+      <!-- 처음 -->
+      <button
+        class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+        [disabled]="currentPage() === 1"
+        (click)="goTo(1)"
+        title="처음"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5"/></svg>
+      </button>
+      <!-- 이전 -->
+      <button
+        class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+        [disabled]="currentPage() === 1"
+        (click)="goTo(currentPage() - 1)"
+        title="이전"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      </button>
+
+      <!-- 페이지 번호 -->
+      @for (page of visiblePages(); track page) {
+        @if (page === -1) {
+          <span class="px-1 text-xs text-slate-600">…</span>
+        } @else {
+          <button
+            class="min-w-[2rem] h-8 text-xs font-medium rounded-lg transition-colors"
+            [class]="page === currentPage()
+              ? 'bg-indigo-600 text-white'
+              : 'text-slate-400 hover:text-white hover:bg-slate-700'"
+            (click)="goTo(page)"
+          >{{ page }}</button>
+        }
+      }
+
+      <!-- 다음 -->
+      <button
+        class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+        [disabled]="currentPage() === totalPages()"
+        (click)="goTo(currentPage() + 1)"
+        title="다음"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+      </button>
+      <!-- 마지막 -->
+      <button
+        class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+        [disabled]="currentPage() === totalPages()"
+        (click)="goTo(totalPages())"
+        title="마지막"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 4.5l7.5 7.5-7.5 7.5m6-15l7.5 7.5-7.5 7.5"/></svg>
+      </button>
+    </div>
+
+    <!-- 페이지 사이즈 드롭다운 -->
+    <select
+      class="bg-slate-800 border border-slate-700 text-slate-300 text-xs rounded-lg px-2 py-1.5 focus:outline-none focus:border-indigo-500"
+      [value]="pageSize()"
+      (change)="onPageSizeChange($event)"
+    >
+      @for (size of pageSizeOptions(); track size) {
+        <option [value]="size">{{ size }}개</option>
+      }
+    </select>
+  </div>
+</div>
