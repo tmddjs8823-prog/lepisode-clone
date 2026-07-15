@@ -23,17 +23,17 @@ export class QrPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'name', label: 'QR 코드명', align: 'center', width: '22%' },
+    { key: '_index', label: '순번', align: 'center', width: '8%', type: 'index' },
+    { key: 'name', label: 'QR 코드명', align: 'center', width: '25%' },
     {
-      key: 'type', label: '유형', align: 'center', width: '10%', type: 'badge',
+      key: 'type', label: '유형', align: 'center', width: '12%', type: 'badge',
       badgeMap: {
         URL: { label: 'URL', class: 'bg-violet-500/10 text-violet-400 border border-violet-500/20' },
         PDF: { label: 'PDF', class: 'bg-rose-500/10 text-rose-400 border border-rose-500/20' },
       },
     },
     { key: 'targetUrl', label: '연결 URL', align: 'center', width: '40%' },
-    { key: 'scanCount', label: '스캔', align: 'center', width: '8%', type: 'number' },
-    { key: 'createdAt', label: '생성일', align: 'center', width: '14%', type: 'date' },
+    { key: 'createdAt', label: '생성일', align: 'center', width: '15%', type: 'date' },
   ];
 
   showForm = signal(false);

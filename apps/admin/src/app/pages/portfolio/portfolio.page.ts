@@ -44,8 +44,8 @@ export class PortfolioPage implements OnInit {
     {
       key: '_category', label: '카테고리', align: 'center', width: '8rem',
       transform: (row) => {
-        const types = row['serviceTypes'] as string[] | null;
-        return types?.join(', ') || '—';
+        const cat = row['category'] as string | null;
+        return cat || '—';
       },
     },
     { key: 'title',   label: '프로젝트', align: 'center' },

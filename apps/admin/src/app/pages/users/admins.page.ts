@@ -45,10 +45,10 @@ export class AdminsPage implements OnInit {
   readonly roleOptions = ['SUPER_ADMIN', 'ADMIN', 'EDITOR'];
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'id', label: '순번', align: 'center', width: '4.5rem', type: 'number' },
-    { key: 'name', label: '이름', align: 'center' },
+    { key: 'id', label: '순번', align: 'center', width: '8%', type: 'number' },
+    { key: 'name', label: '이름', align: 'center', width: '30%' },
     {
-      key: 'role', label: '역할', align: 'center', width: '7rem', type: 'badge',
+      key: 'role', label: '역할', align: 'center', width: '25%', type: 'badge',
       badgeMap: {
         SUPER_ADMIN: { label: '최고관리자', class: 'bg-purple-500/10 text-purple-400 border border-purple-500/20' },
         ADMIN:       { label: '관리자',     class: 'bg-blue-500/10 text-blue-400 border border-blue-500/20' },
@@ -56,13 +56,13 @@ export class AdminsPage implements OnInit {
       },
     },
     {
-      key: 'isActive', label: '권한', align: 'center', width: '5rem', type: 'badge',
+      key: 'isActive', label: '권한', align: 'center', width: '15%', type: 'badge',
       badgeMap: {
         true:  { label: '활성', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
         false: { label: '비활성', class: 'bg-red-500/10 text-red-400 border border-red-500/20' },
       },
     },
-    { key: 'createdAt', label: '등록일자', align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'createdAt', label: '등록일자', align: 'center', width: '22%', type: 'date' },
   ];
 
   /* ── 폼 ── */

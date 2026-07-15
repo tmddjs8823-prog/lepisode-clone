@@ -80,15 +80,15 @@ export class FaqPage implements OnInit {
   });
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'id', label: 'No.', align: 'center', width: '6%' },
+    { key: 'sortOrder', label: '순서', align: 'center', width: '8%' },
     {
       key: 'categoryId', label: '카테고리', align: 'center', width: '14%',
       transform: (row) => this.getCategoryName((row as unknown as FaqItem).categoryId),
     },
-    { key: 'question', label: '질문', align: 'center', width: '52%' },
-    { key: 'sortOrder', label: '순서', align: 'center', width: '8%' },
+    { key: 'question', label: '질문', align: 'center', width: '30%' },
+    { key: 'answer', label: '답변', align: 'center', width: '30%' },
     {
-      key: 'published', label: '게시', align: 'center', width: '8%', type: 'badge',
+      key: 'published', label: '게시', align: 'center', width: '10%', type: 'badge',
       badgeMap: {
         true:  { label: '활성', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
         false: { label: '비활성', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },

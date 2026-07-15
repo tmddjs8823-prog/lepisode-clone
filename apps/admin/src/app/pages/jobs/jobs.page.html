@@ -63,9 +63,7 @@
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
             카테고리 추가
           </button>
-          <button class="p-2 -mr-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors" (click)="closeCatManager()">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
+          <button class="text-slate-500 hover:text-white text-lg transition-colors" (click)="closeCatManager()">&raquo;</button>
         </div>
       </div>
 
@@ -118,11 +116,9 @@
   <div class="fixed inset-0 flex justify-end" style="z-index:60">
     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-backdrop" role="button" tabindex="-1" (click)="closeCatForm()" (keydown.escape)="closeCatForm()"></div>
     <div class="relative w-full max-w-md h-full bg-slate-950 border-l border-slate-600/60 shadow-2xl flex flex-col animate-drawer" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
-        <h4 class="text-base font-semibold text-white">{{ catFormTitle() }}</h4>
-        <button class="p-2 -mr-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors" (click)="closeCatForm()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
+      <div class="px-6 py-4 border-b border-slate-800 shrink-0">
+        <button class="text-slate-500 hover:text-white text-lg mb-2 transition-colors" (click)="closeCatForm()">&raquo;</button>
+        <h3 class="text-base font-semibold text-white">{{ catFormTitle() }}</h3>
       </div>
       <div class="flex flex-col gap-5 p-6 overflow-y-auto flex-1">
         <div class="flex flex-col gap-1.5">

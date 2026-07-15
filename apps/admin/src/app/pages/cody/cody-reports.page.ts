@@ -1,6 +1,6 @@
 import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -20,7 +20,7 @@ export interface CodyReportListItem {
 
 @Component({
   selector: 'admin-cody-reports-page',
-  imports: [FormsModule, PageHeaderComponent, ConfirmDialogComponent, DataTableComponent],
+  imports: [FormsModule, RouterLink, PageHeaderComponent, ConfirmDialogComponent, DataTableComponent],
   templateUrl: './cody-reports.page.html',
 })
 export class CodyReportsPage implements OnInit {

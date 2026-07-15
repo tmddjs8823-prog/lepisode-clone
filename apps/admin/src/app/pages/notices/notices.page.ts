@@ -213,8 +213,9 @@ export class NoticesPage implements OnInit {
       });
     };
 
-    if (this.fThumbnailFile()) {
-      this.upload.upload(this.fThumbnailFile()!, 'notices').subscribe({
+    const thumbFile = this.fThumbnailFile();
+    if (thumbFile) {
+      this.upload.upload(thumbFile, 'notices').subscribe({
         next: (res) => doSave(res.url),
         error: () => { this.toast.error('이미지 업로드에 실패했습니다.'); this.saving.set(false); },
       });

@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../shared/services/toast.service';
 import { CodyApiService, CodyReportApiItem } from '../../shared/services/cody-api.service';
 import { RichEditorComponent } from '../../shared/components/rich-editor/rich-editor.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'admin-cody-report-detail-page',
-  imports: [FormsModule, RichEditorComponent],
+  imports: [FormsModule, RichEditorComponent, PageHeaderComponent],
   templateUrl: './cody-report-detail.page.html',
 })
 export class CodyReportDetailPage implements OnInit {
@@ -22,7 +23,7 @@ export class CodyReportDetailPage implements OnInit {
   loading = signal(false);
 
   /* 아코디언 */
-  previewOpen = signal(false);
+  previewOpen = signal(true);
   formOpen = signal(true);
 
   /* 프로젝트 드롭다운 */
@@ -82,6 +83,11 @@ export class CodyReportDetailPage implements OnInit {
 
   togglePreview(): void { this.previewOpen.update(v => !v); }
   toggleForm(): void { this.formOpen.update(v => !v); }
+
+  getProjectName(): string {
+    const p = this.projectOptions().find(o => o.id === this.fProjectId());
+    return p?.name ?? '';
+  }
 
   goBack(): void {
     this.router.navigate(['/cody/reports']);

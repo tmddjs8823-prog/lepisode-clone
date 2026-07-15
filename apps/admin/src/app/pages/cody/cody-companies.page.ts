@@ -40,12 +40,12 @@ export class CodyCompaniesPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'id', label: '순번', align: 'center', width: '5rem' },
-    { key: 'companyName', label: '기업명', align: 'center' },
-    { key: 'bizNumber', label: '사업자등록번호', align: 'center', width: '10rem' },
-    { key: 'ceoName', label: '대표자명', align: 'center', width: '7rem' },
-    { key: 'ceoPhone', label: '대표 연락처', align: 'center', width: '9rem' },
-    { key: 'createdAt', label: '등록일자', align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'id', label: '순번', align: 'center', width: '8%' },
+    { key: 'companyName', label: '기업명', align: 'center', width: '25%' },
+    { key: 'bizNumber', label: '사업자등록번호', align: 'center', width: '20%' },
+    { key: 'ceoName', label: '대표자명', align: 'center', width: '15%' },
+    { key: 'ceoPhone', label: '대표 연락처', align: 'center', width: '17%' },
+    { key: 'createdAt', label: '등록일자', align: 'center', width: '15%', type: 'date' },
   ];
 
   /* ── 폼 ── */

@@ -14,6 +14,7 @@ import { ServiceDetailPage } from './pages/services/service-detail.page';
 import { InquiriesPage } from './pages/inquiries/inquiries.page';
 import { SupportProjectsPage } from './pages/support/support-projects.page';
 import { ProjectStatusesPage } from './pages/support/project-statuses.page';
+import { ProjectStatusDetailPage } from './pages/support/project-status-detail.page';
 import { WeeklyReportFormPage } from './pages/support/weekly-report-form.page';
 import { PortfolioPage } from './pages/portfolio/portfolio.page';
 import { PortfolioDetailPage } from './pages/portfolio/portfolio-detail.page';
@@ -91,6 +92,7 @@ export const appRoutes: Route[] = [
       // Support — 실제 구현
       { path: 'support/projects', component: SupportProjectsPage },
       { path: 'support/statuses', component: ProjectStatusesPage },
+      { path: 'support/statuses/:id', component: ProjectStatusDetailPage },
 
       // Marketing
       // 마케팅 수신동의 — 실제 구현

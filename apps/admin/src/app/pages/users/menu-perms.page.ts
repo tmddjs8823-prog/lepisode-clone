@@ -95,8 +95,8 @@ export class MenuPermsPage implements OnInit {
   permMap = computed(() => {
     const map = new Map<string, { permId: number; roleId: number; level: number; roleName: string; permName: string }[]>();
     const addToMap = (key: string, entry: { permId: number; roleId: number; level: number; roleName: string; permName: string }) => {
-      if (!map.has(key)) map.set(key, []);
-      const arr = map.get(key)!;
+      let arr = map.get(key);
+      if (!arr) { arr = []; map.set(key, arr); }
       if (!arr.some(e => e.permId === entry.permId)) arr.push(entry);
     };
     for (const role of this.roleOptions()) {

@@ -204,8 +204,9 @@ export class ServicesPage implements OnInit {
         published: this.fPublished(),
       };
 
-      const req = this.editingItem()
-        ? this.api.update(this.editingItem()!.id, payload)
+      const editing = this.editingItem();
+      const req = editing
+        ? this.api.update(editing.id, payload)
         : this.api.create(payload);
 
       req.subscribe({
@@ -222,8 +223,9 @@ export class ServicesPage implements OnInit {
       });
     };
 
-    if (this.fThumbnailFile()) {
-      this.upload.upload(this.fThumbnailFile()!, 'services').subscribe({
+    const thumbFile = this.fThumbnailFile();
+    if (thumbFile) {
+      this.upload.upload(thumbFile, 'services').subscribe({
         next: (res) => doSave(res.url),
         error: () => { this.toast.error('이미지 업로드에 실패했습니다.'); this.saving.set(false); },
       });

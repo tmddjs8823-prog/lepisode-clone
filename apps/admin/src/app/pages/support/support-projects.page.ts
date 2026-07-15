@@ -102,16 +102,16 @@ export class SupportProjectsPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'title',     label: '지원사업명', align: 'center' },
-    { key: 'slug',      label: '슬러그',    align: 'center' },
+    { key: 'title',     label: '지원사업명', align: 'center',   width: '10%' },
+    { key: 'slug',      label: '슬러그',    align: 'center', width: '30%' },
     {
-      key: 'published', label: '노출여부', align: 'center', width: '6rem', type: 'badge',
+      key: 'published', label: '노출여부', align: 'center', width: '15%', type: 'badge',
       badgeMap: {
         true:  { label: '노출', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
         false: { label: '숨김', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
       },
     },
-    { key: 'updatedAt', label: '수정일', align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'updatedAt', label: '수정일', align: 'center', width: '15%', type: 'date' },
   ];
 
   /* ── 폼 상태 ── */
@@ -396,10 +396,11 @@ export class SupportProjectsPage implements OnInit {
     const uploads: Promise<string | null>[] = [];
 
     // 배너 이미지
-    if (this.fBannerFile()) {
+    const bannerFile = this.fBannerFile();
+    if (bannerFile) {
       uploads.push(
         new Promise((resolve, reject) => {
-          this.upload.upload(this.fBannerFile()!, 'support-banners').subscribe({
+          this.upload.upload(bannerFile, 'support-banners').subscribe({
             next: (res) => resolve(res.url),
             error: () => reject('배너'),
           });
@@ -410,10 +411,11 @@ export class SupportProjectsPage implements OnInit {
     }
 
     // OG 이미지
-    if (this.fOgFile()) {
+    const ogFile = this.fOgFile();
+    if (ogFile) {
       uploads.push(
         new Promise((resolve, reject) => {
-          this.upload.upload(this.fOgFile()!, 'support-og').subscribe({
+          this.upload.upload(ogFile, 'support-og').subscribe({
             next: (res) => resolve(res.url),
             error: () => reject('OG'),
           });
@@ -432,8 +434,9 @@ export class SupportProjectsPage implements OnInit {
         published: this.fPublished(),
       };
 
-      const req = this.editingItem()
-        ? this.api.updateProject(this.editingItem()!.id, payload)
+      const editing = this.editingItem();
+      const req = editing
+        ? this.api.updateProject(editing.id, payload)
         : this.api.createProject(payload);
       req.subscribe({
         next: () => { this.toast.success(this.editingItem() ? '수정되었습니다.' : '등록되었습니다.'); this.closeForm(); this.loadData(); this.saving.set(false); },

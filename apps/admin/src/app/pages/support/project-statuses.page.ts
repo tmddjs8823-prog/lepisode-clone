@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   SupportApiService,
   ProjectStatusItem,
@@ -28,6 +29,7 @@ export class ProjectStatusesPage implements OnInit {
   private api = inject(SupportApiService);
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
+  private router = inject(Router);
 
   readonly statusMeta = STATUS_META;
   readonly statusOptions: ProjectStatusType[] = ['ESTIMATING', 'IN_PROGRESS', 'COMPLETE'];
@@ -39,9 +41,7 @@ export class ProjectStatusesPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'sortOrder',  label: '순서',     align: 'center', width: '4.5rem', type: 'number' },
-    { key: 'title',      label: '프로젝트명', align: 'center' },
-    { key: 'clientName', label: '클라이언트', align: 'center' },
+    { key: 'id',         label: '번호',     align: 'center', width: '4.5rem', type: 'number' },
     {
       key: 'status', label: '상태', align: 'center', width: '7rem', type: 'badge',
       badgeMap: {
@@ -50,14 +50,13 @@ export class ProjectStatusesPage implements OnInit {
         COMPLETE:    { label: '납품 완료', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
       },
     },
-    { key: 'createdAt',  label: '등록일자', align: 'center', width: '7.5rem', type: 'date' },
-    {
-      key: 'published', label: '노출여부', align: 'center', width: '6rem', type: 'badge',
-      badgeMap: {
-        true:  { label: '노출', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
-        false: { label: '숨김', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
-      },
-    },
+    { key: 'title',      label: '제목',     align: 'center' },
+    { key: 'titleEn',    label: '영문제목', align: 'center' },
+    { key: 'client',     label: '클라이언트', align: 'center' },
+    { key: 'platforms',  label: '플랫폼',   align: 'center' },
+    { key: 'startDate',  label: '시작일',   align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'endDate',    label: '마감일',   align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'createdAt',  label: '등록일',   align: 'center', width: '7.5rem', type: 'date' },
   ];
   showForm = signal(false);
   editingItem = signal<ProjectStatusItem | null>(null);
@@ -85,11 +84,18 @@ export class ProjectStatusesPage implements OnInit {
   fSortOrder = signal(0);
 
   filteredData = computed(() => {
+    let result = this.data();
+    const status = this.filterStatus();
+    if (status) {
+      result = result.filter(item => item.status === status);
+    }
     const term = this.searchTerm().toLowerCase();
-    if (!term) return this.data();
-    return this.data().filter(item =>
-      Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
-    );
+    if (term) {
+      result = result.filter(item =>
+        Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
+      );
+    }
+    return result;
   });
   ngOnInit(): void { this.loadData(); }
 
@@ -210,4 +216,8 @@ export class ProjectStatusesPage implements OnInit {
   cancelDelete(): void { this.deleteTarget.set(null); }
 
   getStatusMeta(s: ProjectStatusType) { return STATUS_META[s]; }
+
+  navigateToDetail(item: ProjectStatusItem): void {
+    this.router.navigate(['/support/statuses', item.id]);
+  }
 }

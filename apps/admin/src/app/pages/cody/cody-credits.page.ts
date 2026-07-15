@@ -51,17 +51,17 @@ export class CodyCreditsPage implements OnInit {
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
     { key: 'id', label: '순번', align: 'center', width: '6%', type: 'number' },
     {
-      key: 'type', label: '유형', align: 'center', width: '8%', type: 'badge',
+      key: 'type', label: '유형', align: 'center', width: '13%', type: 'badge',
       badgeMap: {
         '충전': { label: '충전', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
         '차감': { label: '차감', class: 'bg-red-500/10 text-red-400 border border-red-500/20' },
       },
     },
-    { key: 'companyName', label: '기업',   align: 'left',   width: '15%' },
-    { key: 'projectName', label: '프로젝트', align: 'left',   width: '15%' },
-    { key: 'description', label: '내용',   align: 'left',   width: '28%' },
+    { key: 'companyName', label: '기업',   align: 'center',   width: '13%' },
+    { key: 'projectName', label: '프로젝트', align: 'center',   width: '13%' },
+    { key: 'description', label: '내용',   align: 'center',   width: '20%' },
     {
-      key: 'amount', label: '금액', align: 'right', width: '12%',
+      key: 'amount', label: '금액', align: 'center', width: '12%',
       transform: (row) => {
         const val = row['amount'] as number;
         return val.toLocaleString('ko-KR') + '원';

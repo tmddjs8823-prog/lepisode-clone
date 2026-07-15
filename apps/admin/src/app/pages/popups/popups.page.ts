@@ -159,8 +159,9 @@ export class PopupsPage implements OnInit {
       });
     };
 
-    if (this.fImageFile()) {
-      this.upload.upload(this.fImageFile()!, 'popups').subscribe({
+    const file = this.fImageFile();
+    if (file) {
+      this.upload.upload(file, 'popups').subscribe({
         next: (res) => doSave(res.url),
         error: () => { this.toast.error('이미지 업로드에 실패했습니다.'); this.saving.set(false); },
       });
