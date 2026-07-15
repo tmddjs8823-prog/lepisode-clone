@@ -19,6 +19,7 @@
     [total]="total()"
     [page]="page()"
     [limit]="limit()"
+    (rowClick)="navigateToDetail($any($event))"
     (edit)="openForm($any($event))"
     (delete)="onDelete($any($event))"
     (pageChange)="onPageChange($event)"
@@ -59,11 +60,9 @@
     <div class="relative w-full max-w-2xl h-full bg-slate-900 border-l border-slate-700/60 shadow-2xl flex flex-col animate-drawer" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()" tabindex="-1">
 
       <!-- 헤더 -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
+      <div class="px-6 py-4 border-b border-slate-800 shrink-0">
+        <button class="text-slate-500 hover:text-white text-lg mb-2 transition-colors" (click)="closeForm()">&raquo;</button>
         <h3 class="text-base font-semibold text-white">{{ formTitle() }}</h3>
-        <button class="p-2 -mr-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors" (click)="closeForm()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
       </div>
 
       <!-- 본문 -->
@@ -160,11 +159,24 @@
 
           <!-- 썸네일 -->
           <div class="flex flex-col gap-1.5 border-t border-slate-800/60 pt-5">
-            <label for="portfolio-thumbnail" class="text-sm font-semibold text-slate-200">썸네일 <span class="text-red-400">*</span></label>
-            <input id="portfolio-thumbnail" type="text" class="w-full bg-slate-800/60 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" placeholder="https://... (이미지 URL 입력)" [ngModel]="fThumbnailUrl()" (ngModelChange)="fThumbnailUrl.set($event)" />
-            @if (fThumbnailUrl()) {
-              <img [src]="fThumbnailUrl()" alt="썸네일 미리보기" class="mt-2 w-full h-32 object-cover rounded-lg border border-slate-700" (error)="$any($event.target).style.display='none'" />
-            }
+            <div class="text-sm font-semibold text-slate-200">썸네일 <span class="text-red-400">*</span></div>
+            <div class="flex flex-col gap-2">
+              @if (fThumbnailUrl()) {
+                <div class="relative group">
+                  <img [src]="fThumbnailUrl()" alt="썸네일 미리보기" class="w-full h-40 object-cover rounded-xl border border-slate-700" />
+                  <button class="absolute top-2 right-2 p-1.5 bg-slate-900/80 border border-slate-700 rounded-lg text-slate-400 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100" (click)="fThumbnailUrl.set('')">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              } @else {
+                <label class="flex flex-col items-center justify-center gap-3 px-6 py-8 bg-slate-800/40 border-2 border-dashed border-slate-700 hover:border-indigo-500/50 rounded-xl cursor-pointer transition-colors">
+                  <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                  <span class="text-sm text-slate-400">클릭하여 썸네일 이미지를 선택하세요</span>
+                  <span class="text-[11px] text-slate-600">JPG, PNG, WebP 파일 지원</span>
+                  <input type="file" accept=".jpg,.jpeg,.png,.webp" class="hidden" (change)="onThumbnailChange($event)" />
+                </label>
+              }
+            </div>
           </div>
 
           <!-- 키워드 -->

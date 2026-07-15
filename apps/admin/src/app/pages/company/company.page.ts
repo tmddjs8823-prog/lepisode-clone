@@ -41,9 +41,9 @@ export class CompanyPage implements OnInit {
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
     { key: 'sortOrder', label: '순서',   align: 'center', width: '5rem', type: 'number' },
-    { key: 'name',      label: '이름',   align: 'left' },
-    { key: 'position',  label: '직함',   align: 'left' },
-    { key: 'bio',       label: '분야',   align: 'left' },
+    { key: 'name',      label: '이름',   align: 'center' },
+    { key: 'position',  label: '직함',   align: 'center' },
+    { key: 'bio',       label: '분야',   align: 'center' },
     { key: 'createdAt', label: '등록일', align: 'center', width: '7.5rem', type: 'date' },
   ];
 

@@ -4,11 +4,16 @@
 
 model CodyCompany {
   id             Int                @id @default(autoincrement())
-  name           String
+  name           String             @unique
   businessNumber String?
   ceoName        String?
   ceoPhone       String?
+  companyPhone   String?
+  companyEmail   String?
   address        String?
+  addressDetail  String?
+  homepage       String?
+  bizFileUrl     String?
   email          String?
   memo           String?            @db.Text
   createdAt      DateTime           @default(now())

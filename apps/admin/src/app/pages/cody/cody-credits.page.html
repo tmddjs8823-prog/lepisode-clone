@@ -9,6 +9,7 @@
     [total]="total()"
     [page]="page()"
     [limit]="limit()"
+    (rowClick)="openForm($any($event))"
     (edit)="openForm($any($event))"
     (delete)="onDelete($any($event))"
     (pageChange)="onPageChange($event)"
@@ -42,11 +43,9 @@
   <div class="fixed inset-0 z-50 flex justify-end">
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" role="button" tabindex="-1" (click)="closeForm()" (keydown.escape)="closeForm()"></div>
     <div class="relative w-full max-w-md h-full bg-slate-900 border-l border-slate-700/60 shadow-2xl flex flex-col animate-drawer">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
+      <div class="px-6 py-4 border-b border-slate-800 shrink-0">
+        <button class="text-slate-500 hover:text-white text-lg mb-2 transition-colors" (click)="closeForm()">&raquo;</button>
         <h3 class="text-base font-semibold text-white">{{ formTitle() }}</h3>
-        <button class="p-2 -mr-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors" (click)="closeForm()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
       </div>
       <div class="flex flex-col gap-5 p-6 flex-1 overflow-y-auto">
 
@@ -75,10 +74,10 @@
           <label for="input-company" class="text-sm font-semibold text-slate-200">기업 <span class="text-red-400">*</span></label>
           <select id="input-company"
             class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
-            [ngModel]="fCompanyName()" (ngModelChange)="fCompanyName.set($event)">
-            <option value="" disabled>기업 선택</option>
+            [ngModel]="fCompanyId()" (ngModelChange)="fCompanyId.set($event); fProjectId.set(null)">
+            <option [ngValue]="null" disabled>기업 선택</option>
             @for (c of companyOptions(); track c.id) {
-              <option [ngValue]="c.name">{{ c.name }}</option>
+              <option [ngValue]="c.id">{{ c.name }}</option>
             }
           </select>
         </div>
@@ -88,10 +87,10 @@
           <label for="input-project" class="text-sm font-semibold text-slate-200">프로젝트</label>
           <select id="input-project"
             class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
-            [ngModel]="fProjectName()" (ngModelChange)="fProjectName.set($event)">
-            <option value="" disabled>프로젝트 선택</option>
-            @for (p of projectOptions(); track p.id) {
-              <option [ngValue]="p.name">{{ p.name }}</option>
+            [ngModel]="fProjectId()" (ngModelChange)="fProjectId.set($event)">
+            <option [ngValue]="null">프로젝트 선택 (선택사항)</option>
+            @for (p of filteredProjectOptions(); track p.id) {
+              <option [ngValue]="p.id">{{ p.name }}</option>
             }
           </select>
         </div>

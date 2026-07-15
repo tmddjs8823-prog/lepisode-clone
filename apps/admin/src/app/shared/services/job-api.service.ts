@@ -15,6 +15,8 @@ export type JobItem = {
   startDate: string | null;
   deadline: string | null;
   createdAt: string;
+  seoTitle: string | null;
+  metaDesc: string | null;
 };
 
 export interface CreateJobPayload {
@@ -26,6 +28,8 @@ export interface CreateJobPayload {
   published?: boolean;
   startDate?: string;
   deadline?: string;
+  seoTitle?: string;
+  metaDesc?: string;
 }
 
 export type UpdateJobPayload = Partial<CreateJobPayload>;

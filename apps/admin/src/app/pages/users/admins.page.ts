@@ -46,7 +46,7 @@ export class AdminsPage implements OnInit {
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
     { key: 'id', label: '순번', align: 'center', width: '4.5rem', type: 'number' },
-    { key: 'name', label: '이름', align: 'left' },
+    { key: 'name', label: '이름', align: 'center' },
     {
       key: 'role', label: '역할', align: 'center', width: '7rem', type: 'badge',
       badgeMap: {
@@ -76,6 +76,12 @@ export class AdminsPage implements OnInit {
   fPassword = signal('');
   fRole = signal('ADMIN');
   fIsActive = signal(true);
+  fPermission = signal('');
+  roleList = signal<{ id: number; name: string }[]>([
+    { id: 1, name: 'SUPER_ADMIN' },
+    { id: 2, name: 'ADMIN' },
+    { id: 3, name: 'MANAGER' },
+  ]);
 
   /* ── 삭제 ── */
   deleteTarget = signal<AdminUserItem | null>(null);

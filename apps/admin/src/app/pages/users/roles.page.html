@@ -1,5 +1,7 @@
 <div class="flex flex-col gap-6 p-6">
 
+  <admin-page-header title="역할 및 권한 관리" />
+
   <!-- ── 상단 바 ── -->
   <div class="flex items-center justify-between gap-4 flex-wrap">
     <div class="relative">
@@ -10,11 +12,7 @@
         [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
     </div>
     <div class="flex items-center gap-3">
-      <button class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-        JSON으로 가져오기
-      </button>
-      <button class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors">
+      <button class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors" (click)="exportJson()">
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
         JSON으로 내보내기
       </button>
@@ -25,86 +23,105 @@
     </div>
   </div>
 
+  <!-- ── 로딩 ── -->
+  @if (loading()) {
+    <div class="text-center py-16 text-sm text-slate-500">불러오는 중...</div>
+  }
+
   <!-- ── 아코디언 리스트 ── -->
-  <div class="flex flex-col gap-2">
-    @for (role of filteredData(); track role.id) {
-      <div class="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
-        <!-- 헤더 -->
-        <div
-          class="flex items-center gap-3 px-5 py-3.5 cursor-pointer hover:bg-slate-800/80 transition-colors select-none"
-          (click)="toggleExpand(role.id)" (keydown.enter)="toggleExpand(role.id)" tabindex="0" role="button"
-        >
-          <svg
-            class="w-3.5 h-3.5 text-slate-400 transition-transform shrink-0"
-            [class.rotate-180]="isExpanded(role.id)"
-            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-          ><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-          <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/20">역할</span>
-          <span class="text-sm font-medium text-slate-200">{{ role.name }}</span>
-          <span class="text-slate-600">-</span>
-          <div class="flex-1"></div>
+  @if (!loading()) {
+    <div class="flex flex-col gap-2">
+      @for (role of filteredData(); track role.id) {
+        <div class="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
+          <!-- 헤더 -->
+          <div
+            class="flex items-center gap-3 px-5 py-3.5 cursor-pointer hover:bg-slate-800/80 transition-colors select-none"
+            (click)="toggleExpand(role.id)" (keydown.enter)="toggleExpand(role.id)" tabindex="0" role="button"
+          >
+            <svg
+              class="w-3.5 h-3.5 text-slate-400 transition-transform shrink-0"
+              [class.rotate-180]="isExpanded(role.id)"
+              fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+            ><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/20">역할</span>
+            <span class="text-sm font-medium text-slate-200">{{ role.name }}</span>
+            @if (role.description) {
+              <span class="text-slate-600">-</span>
+              <span class="text-xs text-slate-500">{{ role.description }}</span>
+            }
+            <div class="flex-1"></div>
 
-          <!-- 로우 액션 버튼 -->
-          <div class="flex items-center gap-2">
-            <button
-              class="px-2.5 py-1 text-[11px] font-medium text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 rounded-lg hover:bg-emerald-500/15 transition-colors"
-              (click)="$event.stopPropagation(); openPermForm(role)"
-            >
-              권한 등록
-            </button>
-            <button
-              class="px-2.5 py-1 text-[11px] font-medium text-indigo-400 border border-indigo-500/20 bg-indigo-500/5 rounded-lg hover:bg-indigo-500/15 transition-colors"
-              (click)="$event.stopPropagation(); openEditRole(role)"
-            >
-              역할 수정
-            </button>
+            <!-- 권한 수 배지 -->
+            <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-slate-700/50 text-slate-400 border border-slate-600/30">
+              권한 {{ role.permissions.length }}개
+            </span>
+
+            <!-- 로우 액션 버튼 -->
+            <div class="flex items-center gap-2">
+              <button
+                class="px-2.5 py-1 text-[11px] font-medium text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 rounded-lg hover:bg-emerald-500/15 transition-colors"
+                (click)="$event.stopPropagation(); openPermForm(role)"
+              >
+                권한 등록
+              </button>
+              <button
+                class="px-2.5 py-1 text-[11px] font-medium text-indigo-400 border border-indigo-500/20 bg-indigo-500/5 rounded-lg hover:bg-indigo-500/15 transition-colors"
+                (click)="$event.stopPropagation(); openEditRole(role)"
+              >
+                역할 수정
+              </button>
+            </div>
           </div>
-        </div>
 
-        <!-- 확장 영역 -->
-        @if (isExpanded(role.id)) {
-          <div class="border-t border-slate-700/30">
-            <!-- 수정 가능한 권한 목록 -->
-            @for (perm of role.permissions; track perm.id) {
-              <div class="flex items-center gap-2 px-5 py-2.5 border-b border-slate-700/20 last:border-b-0 hover:bg-slate-800/40 transition-colors group">
-                <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-700/50 text-slate-400 border border-slate-600/30 shrink-0">권한</span>
-                <select
-                  class="w-16 bg-slate-800 border border-slate-700 text-emerald-400 text-xs font-semibold rounded px-1.5 py-1 focus:outline-none focus:border-indigo-500 shrink-0"
-                  [ngModel]="perm.level" (ngModelChange)="updatePermLevel(role.id, perm.id, +$event)"
-                >
-                  @for (lv of levels; track lv) {
-                    <option [ngValue]="lv">Lv {{ lv }}</option>
-                  }
-                </select>
-                <input type="text"
-                  class="flex-1 min-w-0 bg-transparent border-b border-transparent hover:border-slate-700 focus:border-indigo-500 text-sm text-slate-300 px-1 py-0.5 focus:outline-none transition-colors"
-                  [ngModel]="perm.name" (ngModelChange)="updatePermName(role.id, perm.id, $event)" />
-                <input type="text"
-                  class="flex-1 min-w-0 bg-transparent border-b border-transparent hover:border-slate-700 focus:border-indigo-500 text-sm text-slate-500 px-1 py-0.5 focus:outline-none transition-colors"
-                  [ngModel]="perm.description" (ngModelChange)="updatePermDesc(role.id, perm.id, $event)" />
-                <button
-                  class="p-1 text-slate-600 hover:text-red-400 rounded opacity-0 group-hover:opacity-100 transition-all shrink-0"
-                  title="권한 삭제"
-                  (click)="removePerm(role.id, perm.id)"
-                >
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
+          <!-- 확장 영역 -->
+          @if (isExpanded(role.id)) {
+            <div class="border-t border-slate-700/30">
+              <!-- 헤더 -->
+              <div class="flex items-center gap-3 px-5 py-2 text-[11px] font-medium text-slate-500 uppercase tracking-wider border-b border-slate-700/20">
+                <span class="w-12 shrink-0 text-center">권한</span>
+                <span class="w-16 shrink-0 text-center">레벨</span>
+                <span class="min-w-[8rem]">권한명</span>
+                <span class="flex-1">설명</span>
+                <span class="w-8 shrink-0"></span>
               </div>
-            }
+              <!-- 권한 행 -->
+              @for (perm of role.permissions; track perm.id) {
+                <div class="flex items-center gap-3 px-5 py-2.5 border-b border-slate-700/20 last:border-b-0 hover:bg-slate-800/40 transition-colors group">
+                  <span class="w-12 shrink-0 text-center">
+                    <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">권한</span>
+                  </span>
+                  <span class="w-16 shrink-0 text-center">
+                    <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Lv {{ perm.level }}</span>
+                  </span>
+                  <span class="text-sm text-slate-200 min-w-[8rem] font-medium">{{ perm.name }}</span>
+                  <span class="flex-1 text-xs text-slate-500 truncate">{{ perm.description || '—' }}</span>
+                  <button
+                    class="px-2 py-1 text-[11px] font-medium text-indigo-400 border border-indigo-500/20 bg-indigo-500/5 rounded-lg hover:bg-indigo-500/15 opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                    (click)="openEditPerm(role.id, perm)"
+                  >수정</button>
+                  <button
+                    class="p-1 text-slate-600 hover:text-red-400 rounded opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                    (click)="deletePermission(role.id, perm.id)"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              }
 
-            @if (role.permissions.length === 0) {
-              <div class="px-5 py-4 text-xs text-slate-500 text-center">등록된 권한이 없습니다.</div>
-            }
+              @if (role.permissions.length === 0) {
+                <div class="px-5 py-4 text-xs text-slate-500 text-center">등록된 권한이 없습니다.</div>
+              }
 
-          </div>
-        }
-      </div>
-    }
+            </div>
+          }
+        </div>
+      }
 
-    @if (filteredData().length === 0) {
-      <div class="text-center py-16 text-sm text-slate-500">등록된 역할이 없습니다.</div>
-    }
-  </div>
+      @if (filteredData().length === 0 && !loading()) {
+        <div class="text-center py-16 text-sm text-slate-500">등록된 역할이 없습니다.</div>
+      }
+    </div>
+  }
 </div>
 
 <!-- ════════════ 역할 등록 드로어 ════════════ -->
@@ -112,11 +129,9 @@
   <div class="fixed inset-0 z-50 flex justify-end">
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" role="button" tabindex="-1" (click)="closeForm()" (keydown.escape)="closeForm()"></div>
     <div class="relative w-full max-w-md h-full bg-slate-900 border-l border-slate-700/60 shadow-2xl flex flex-col animate-drawer">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
+      <div class="px-6 py-4 border-b border-slate-800 shrink-0">
+        <button class="text-slate-500 hover:text-white text-lg mb-2 transition-colors" (click)="closeForm()">&raquo;</button>
         <h3 class="text-base font-semibold text-white">{{ formTitle() }}</h3>
-        <button class="p-2 -mr-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors" (click)="closeForm()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
       </div>
       <div class="flex flex-col gap-5 p-6 flex-1 overflow-y-auto">
         <div class="flex flex-col gap-1.5">
@@ -187,39 +202,36 @@
 @if (showPermForm()) {
   <div class="fixed inset-0 z-[60] flex items-center justify-center">
     <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" role="button" tabindex="-1" (click)="closePermForm()" (keydown.escape)="closePermForm()"></div>
-    <div class="relative w-full max-w-md bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl">
+    <div class="relative w-full max-w-sm bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl">
       <div class="px-6 py-4 border-b border-slate-800">
         <h3 class="text-base font-semibold text-white">권한 등록</h3>
-        <p class="text-[11px] text-slate-500 mt-0.5">{{ permTarget()?.name }} 역할에 권한을 추가합니다.</p>
+        <p class="text-[11px] text-slate-500 mt-0.5">{{ permTarget()?.name }} 역할에 메뉴 권한을 추가합니다.</p>
       </div>
       <div class="flex flex-col gap-5 p-6">
+        <!-- 1행: 2컬럼 — 레벨 드롭다운 + 권한명 -->
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col gap-1.5">
-            <label for="input-perm-level" class="text-sm font-semibold text-slate-200">레벨</label>
-            <select id="input-perm-level"
-              class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
-              [ngModel]="permLevel()" (ngModelChange)="permLevel.set($event)"
-            >
-              <option [ngValue]="null" disabled>선택</option>
-              @for (lv of levels; track lv) {
-                <option [ngValue]="lv">{{ lv }}</option>
-              }
+            <label for="input-perm-level" class="text-sm font-semibold text-slate-200">레벨 <span class="text-red-400">*</span></label>
+            <select id="input-perm-level" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="pfLevel()" (ngModelChange)="pfLevel.set($event)">
+              <option value="" disabled>선택</option>
+              @for (lv of levelOptions; track lv) { <option [ngValue]="lv">{{ lv }}</option> }
             </select>
           </div>
           <div class="flex flex-col gap-1.5">
-            <label for="input-perm-name" class="text-sm font-semibold text-slate-200">권한명</label>
+            <label for="input-perm-name" class="text-sm font-semibold text-slate-200">권한명 <span class="text-red-400">*</span></label>
             <input id="input-perm-name" type="text"
               class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
               placeholder="권한명을 입력하세요"
-              [ngModel]="permName()" (ngModelChange)="permName.set($event)" />
+              [ngModel]="pfName()" (ngModelChange)="pfName.set($event)" />
           </div>
         </div>
+        <!-- 2행: 1컬럼 — 설명 -->
         <div class="flex flex-col gap-1.5">
           <label for="input-perm-desc" class="text-sm font-semibold text-slate-200">설명</label>
           <textarea id="input-perm-desc" rows="3"
             class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 resize-y"
             placeholder="권한에 대한 설명을 입력하세요"
-            [ngModel]="permDesc()" (ngModelChange)="permDesc.set($event)"></textarea>
+            [ngModel]="pfDescription()" (ngModelChange)="pfDescription.set($event)"></textarea>
         </div>
       </div>
       <div class="flex items-center gap-3 px-6 py-4 border-t border-slate-800">
@@ -227,6 +239,52 @@
         <div class="flex-1"></div>
         <button class="flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50" [disabled]="permSaving()" (click)="savePermForm()">
           @if (permSaving()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
+          저장
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ════════════ 권한 수정 팝업 ════════════ -->
+@if (showEditPerm()) {
+  <div class="fixed inset-0 z-[60] flex items-center justify-center">
+    <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" role="button" tabindex="-1" (click)="closeEditPerm()" (keydown.escape)="closeEditPerm()"></div>
+    <div class="relative w-full max-w-sm bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl">
+      <div class="px-6 py-4 border-b border-slate-800">
+        <h3 class="text-base font-semibold text-white">권한 수정</h3>
+        <p class="text-[11px] text-slate-500 mt-0.5">{{ editPermTarget()?.name }} 권한을 수정합니다.</p>
+      </div>
+      <div class="flex flex-col gap-5 p-6">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1.5">
+            <label for="input-edit-perm-level" class="text-sm font-semibold text-slate-200">레벨 <span class="text-red-400">*</span></label>
+            <select id="input-edit-perm-level" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="epLevel()" (ngModelChange)="epLevel.set($event)">
+              <option value="" disabled>선택</option>
+              @for (lv of levelOptions; track lv) { <option [ngValue]="lv">{{ lv }}</option> }
+            </select>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label for="input-edit-perm-name" class="text-sm font-semibold text-slate-200">권한명 <span class="text-red-400">*</span></label>
+            <input id="input-edit-perm-name" type="text"
+              class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+              placeholder="권한명을 입력하세요"
+              [ngModel]="epName()" (ngModelChange)="epName.set($event)" />
+          </div>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label for="input-edit-perm-desc" class="text-sm font-semibold text-slate-200">설명</label>
+          <textarea id="input-edit-perm-desc" rows="3"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 resize-y"
+            placeholder="권한에 대한 설명을 입력하세요"
+            [ngModel]="epDescription()" (ngModelChange)="epDescription.set($event)"></textarea>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 px-6 py-4 border-t border-slate-800">
+        <button class="px-4 py-2.5 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors" (click)="closeEditPerm()">취소</button>
+        <div class="flex-1"></div>
+        <button class="flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50" [disabled]="editPermSaving()" (click)="saveEditPerm()">
+          @if (editPermSaving()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
           저장
         </button>
       </div>

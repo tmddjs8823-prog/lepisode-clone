@@ -2,6 +2,7 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from '../../shared/services/toast.service';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { forkJoin, catchError, of } from 'rxjs';
 
 interface SeoConfig {
@@ -28,7 +29,7 @@ export interface PageSeoForm {
 @Component({
   selector: 'admin-seo-page',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, PageHeaderComponent],
   templateUrl: './seo.page.html',
 })
 export class SeoPage implements OnInit {

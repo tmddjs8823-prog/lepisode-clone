@@ -40,7 +40,7 @@ export class InquiriesPage implements OnInit {
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
     {
-      key: '_caseNo', label: '번호', align: 'left', width: '8rem',
+      key: '_caseNo', label: '번호', align: 'center', width: '8rem',
       transform: (row) => {
         const r = row as unknown as InquiryItem;
         return 'CS' + String(r.id).padStart(8, '0');
@@ -56,12 +56,12 @@ export class InquiriesPage implements OnInit {
       },
     },
     {
-      key: '_source', label: '문의 경로', align: 'left', width: '6rem',
+      key: '_source', label: '문의 경로', align: 'center', width: '6rem',
       transform: () => '홈페이지',
     },
-    { key: 'name', label: '고객명', align: 'left', width: '5rem' },
-    { key: 'phone', label: '연락처', align: 'left', width: '8.5rem' },
-    { key: 'email', label: '이메일', align: 'left' },
+    { key: 'name', label: '고객명', align: 'center', width: '5rem' },
+    { key: 'phone', label: '연락처', align: 'center', width: '8.5rem' },
+    { key: 'email', label: '이메일', align: 'center' },
     {
       key: '_privacyAgree', label: '개인정보 동의', align: 'center', width: '7rem',
       transform: () => '동의',

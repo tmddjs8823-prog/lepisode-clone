@@ -35,12 +35,13 @@ export class ProjectStatusesPage implements OnInit {
 
   data = signal<ProjectStatusItem[]>([]);
   searchTerm = signal('');
+  filterStatus = signal('');
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
     { key: 'sortOrder',  label: '순서',     align: 'center', width: '4.5rem', type: 'number' },
-    { key: 'title',      label: '프로젝트명', align: 'left' },
-    { key: 'clientName', label: '클라이언트', align: 'left' },
+    { key: 'title',      label: '프로젝트명', align: 'center' },
+    { key: 'clientName', label: '클라이언트', align: 'center' },
     {
       key: 'status', label: '상태', align: 'center', width: '7rem', type: 'badge',
       badgeMap: {

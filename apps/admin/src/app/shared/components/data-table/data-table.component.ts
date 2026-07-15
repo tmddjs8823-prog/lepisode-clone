@@ -33,6 +33,7 @@ export class DataTableComponent<T extends Record<string, unknown>> {
   pageSizeChange = output<number>();
   edit = output<T>();
   delete = output<T>();
+  rowClick = output<T>();
 
   /* ── 정렬 ── */
   sortKey = signal<string>('');

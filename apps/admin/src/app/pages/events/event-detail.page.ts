@@ -61,10 +61,10 @@ export class EventDetailPage implements OnInit {
         'CANCELLED':   { label: '취소',   class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
       },
     },
-    { key: 'name', label: '고객명', align: 'left' },
+    { key: 'name', label: '고객명', align: 'center' },
     { key: 'phone', label: '연락처', align: 'center', width: '9rem' },
     { key: 'projectType', label: '플랫폼', align: 'center', width: '6rem' },
-    { key: 'content', label: '문의 내용', align: 'left' },
+    { key: 'content', label: '문의 내용', align: 'center' },
     { key: 'createdAt', label: '접수일', align: 'center', width: '9.5rem', type: 'date' },
   ];
 

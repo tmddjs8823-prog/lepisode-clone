@@ -15,6 +15,7 @@
     [data]="$any(filteredFaqs())"
     [loading]="loading()"
     [total]="filteredFaqs().length"
+    (rowClick)="openFaqForm($any($event))"
     (edit)="openFaqForm($any($event))"
     (delete)="deleteFaq($any($event))"
   >

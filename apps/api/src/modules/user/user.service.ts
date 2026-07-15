@@ -11,7 +11,7 @@ export class UserService {
   async findAllUsers() {
     return this.prisma.adminUser.findMany({
       orderBy: { createdAt: 'asc' },
-      select: { id: true, email: true, name: true, role: true, isActive: true, lastLoginAt: true, createdAt: true, updatedAt: true },
+      select: { id: true, email: true, name: true, role: true, roleId: true, roleRef: { select: { id: true, name: true } }, isActive: true, lastLoginAt: true, createdAt: true, updatedAt: true },
     });
   }
 
@@ -50,7 +50,7 @@ export class UserService {
 
   // ── Role ───────────────────────────────────────────────
   async findAllRoles() {
-    return this.prisma.role.findMany({ include: { permissions: { include: { menu: true } } } });
+    return this.prisma.role.findMany({ include: { permissions: true } });
   }
 
   async createRole(dto: CreateRoleDto) {
@@ -67,7 +67,14 @@ export class UserService {
   }
 
   async createMenu(dto: CreateMenuPermissionDto) {
-    return this.prisma.menuPermission.create({ data: dto });
+    try {
+      return await this.prisma.menuPermission.create({ data: dto });
+    } catch (e: any) {
+      if (e.code === 'P2002') {
+        throw new ConflictException('이미 존재하는 메뉴 키입니다.');
+      }
+      throw e;
+    }
   }
 
   async removeMenu(id: number) {
@@ -75,11 +82,29 @@ export class UserService {
   }
 
   // ── RolePermission ─────────────────────────────────────
-  async setRolePermission(roleId: number, menuId: number, dto: SetRolePermissionDto) {
-    return this.prisma.rolePermission.upsert({
-      where: { roleId_menuId: { roleId, menuId } },
-      create: { roleId, menuId, ...dto },
-      update: dto,
+  async createPermission(roleId: number, dto: SetRolePermissionDto) {
+    return this.prisma.rolePermission.create({
+      data: {
+        roleId,
+        level: dto.level,
+        name: dto.name,
+        description: dto.description,
+      },
+    });
+  }
+
+  async removePermission(id: number) {
+    return this.prisma.rolePermission.delete({ where: { id } });
+  }
+
+  async updatePermission(id: number, dto: SetRolePermissionDto) {
+    return this.prisma.rolePermission.update({
+      where: { id },
+      data: {
+        level: dto.level,
+        name: dto.name,
+        description: dto.description,
+      },
     });
   }
 }

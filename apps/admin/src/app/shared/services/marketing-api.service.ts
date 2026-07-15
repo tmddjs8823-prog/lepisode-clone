@@ -15,10 +15,31 @@ export interface MarketingConsentItem {
   createdAt: string;
 }
 
+export interface MarketingCompanyItem {
+  id: number;
+  name: string;
+  slug: string;
+  manager: string | null;
+  monthlyBudget: number;
+  password: string | null;
+  status: string;
+  naverApiKey: string | null;
+  naverSecretKey: string | null;
+  naverCustomerId: string | null;
+  chPowerlink: boolean;
+  chPowerContent: boolean;
+  chPlace: boolean;
+  ga4PropertyId: string | null;
+  ga4ServiceAccountKey: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class MarketingApiService {
   private http = inject(HttpClient);
 
+  // ── Consent ──
   getConsents(params: { page?: number; limit?: number } = {}): Observable<{
     data: MarketingConsentItem[];
     total: number;
@@ -31,5 +52,22 @@ export class MarketingApiService {
 
   revokeConsent(id: number): Observable<MarketingConsentItem> {
     return this.http.put<MarketingConsentItem>(`${API}/consents/${id}/revoke`, {});
+  }
+
+  // ── Company ──
+  getCompanies(): Observable<MarketingCompanyItem[]> {
+    return this.http.get<MarketingCompanyItem[]>(`${API}/companies`);
+  }
+
+  createCompany(dto: Partial<MarketingCompanyItem>): Observable<MarketingCompanyItem> {
+    return this.http.post<MarketingCompanyItem>(`${API}/companies`, dto);
+  }
+
+  updateCompany(id: number, dto: Partial<MarketingCompanyItem>): Observable<MarketingCompanyItem> {
+    return this.http.put<MarketingCompanyItem>(`${API}/companies/${id}`, dto);
+  }
+
+  deleteCompany(id: number): Observable<MarketingCompanyItem> {
+    return this.http.delete<MarketingCompanyItem>(`${API}/companies/${id}`);
   }
 }

@@ -102,8 +102,8 @@ export class SupportProjectsPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'title',     label: '지원사업명', align: 'left' },
-    { key: 'slug',      label: '슬러그',    align: 'left' },
+    { key: 'title',     label: '지원사업명', align: 'center' },
+    { key: 'slug',      label: '슬러그',    align: 'center' },
     {
       key: 'published', label: '노출여부', align: 'center', width: '6rem', type: 'badge',
       badgeMap: {

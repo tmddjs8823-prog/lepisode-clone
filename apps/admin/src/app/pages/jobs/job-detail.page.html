@@ -1,0 +1,140 @@
+<!-- ═══════════════════════════════════════════════ -->
+<!-- 채용 관리 상세                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="flex flex-col gap-6 p-6">
+
+  <!-- ── 헤더: 타이틀 + 브레드크럼 ── -->
+  <div>
+    <h2 class="text-xl font-bold text-white">채용 관리</h2>
+    <p class="text-xs text-blue-400 mt-0.5">레피소드 &gt; <span class="text-slate-200">채용 관리</span></p>
+  </div>
+
+  <!-- ── 제목 + 수정/삭제 ── -->
+  @if (item(); as ev) {
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h3 class="text-lg font-bold text-white">{{ ev.title }}</h3>
+        <p class="text-xs text-slate-400 mt-1">영문 제목: {{ ev.titleEn || '-' }}</p>
+        <p class="text-xs text-slate-400">일본어 제목: {{ ev.titleJa || '-' }}</p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors" (click)="onEdit()">수정</button>
+        <button class="px-4 py-2 text-slate-400 hover:text-red-400 text-sm font-medium transition-colors" (click)="onDelete()">삭제</button>
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- 채용상세 아코디언                        -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="bg-slate-800/60 rounded-xl border border-slate-700/50">
+    <!-- 아코디언 헤더 -->
+    <button class="w-full flex items-center justify-between px-6 py-4 text-left" (click)="toggleDetail()">
+      <span class="text-sm font-bold text-white">채용상세</span>
+      <svg class="w-4 h-4 text-slate-400 transition-transform duration-200" [class.rotate-180]="!detailOpen()" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+    </button>
+
+    <!-- 아코디언 본문 -->
+    @if (detailOpen()) {
+      <div class="border-t border-slate-700/50 px-6 py-5">
+        @if (item(); as ev) {
+          <!-- 메타 정보 -->
+          <div class="flex flex-col gap-3 text-sm text-slate-300">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span>등록일자: {{ ev.createdAt | date:'yyyy-MM-dd' }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <span>모집기간: {{ ev.startDate ? (ev.startDate | date:'yyyy-MM-dd') : '-' }} ~ {{ ev.deadline ? (ev.deadline | date:'yyyy-MM-dd') : '상시모집' }}</span>
+            </div>
+          </div>
+
+          <!-- 썸네일 -->
+          <div class="flex flex-col gap-2 border-t border-slate-700/50 pt-5 mt-5">
+            <span class="text-sm font-semibold text-white">썸네일</span>
+            <div class="min-h-[80px] flex items-center text-sm text-slate-400 pl-1">
+              @if (ev.jobUrl) {
+                <a [href]="ev.jobUrl" target="_blank" class="text-indigo-400 hover:text-indigo-300 underline transition-colors">{{ ev.jobUrl }}</a>
+              } @else {
+                —
+              }
+            </div>
+          </div>
+
+          <!-- 본문 -->
+          <div class="flex flex-col gap-2 border-t border-slate-700/50 pt-5">
+            <span class="text-sm font-semibold text-white">본문</span>
+            <div class="min-h-[80px] flex items-center text-sm text-slate-400 pl-1">
+              {{ ev.category || '' }}
+            </div>
+          </div>
+
+          <!-- 영어 본문 -->
+          <div class="flex flex-col gap-2 border-t border-slate-700/50 pt-5">
+            <span class="text-sm font-semibold text-white">영어 본문</span>
+            <div class="min-h-[80px] flex items-center text-sm text-slate-400 pl-1">
+              —
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- 지원자 내역 아코디언                      -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="bg-slate-800/60 rounded-xl border border-slate-700/50">
+    <!-- 아코디언 헤더 -->
+    <button class="w-full flex items-center justify-between px-6 py-4 text-left" (click)="toggleApplicant()">
+      <span class="text-sm font-bold text-white">지원자 내역</span>
+      <svg class="w-4 h-4 text-slate-400 transition-transform duration-200" [class.rotate-180]="!applicantOpen()" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+    </button>
+
+    <!-- 아코디언 본문 -->
+    @if (applicantOpen()) {
+      <div class="border-t border-slate-700/50 px-6 py-5">
+        <!-- 안내 문구 + 총 건수 -->
+        <div class="flex items-center justify-between mb-4">
+          <p class="text-xs text-slate-500">이 채용 공고에 접수된 지원 내역을 데이터 그리드로 확인하고, 행 클릭으로 상세 화면으로 이동합니다.</p>
+          <div class="flex items-center gap-2 shrink-0 ml-4">
+            <span class="text-xs text-slate-400">총 {{ applicantTotal() }}건</span>
+          </div>
+        </div>
+
+        <!-- 지원자 테이블 또는 빈 상태 -->
+        @if (applicants().length === 0) {
+          <div class="flex items-center justify-center py-10 bg-slate-800/40 rounded-xl border border-slate-700/30">
+            <p class="text-sm text-slate-500">아직 접수된 지원 내역이 없습니다.</p>
+          </div>
+        } @else {
+          <admin-data-table
+            [columns]="applicantColumns"
+            [data]="applicants()"
+            [loading]="applicantLoading()"
+            [total]="applicantTotal()"
+          />
+        }
+      </div>
+    }
+  </div>
+
+  <!-- 목록 버튼 -->
+  <div>
+    <button class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors" (click)="goBack()">목록</button>
+  </div>
+
+</div>
+
+<!-- ── 삭제 확인 모달 ── -->
+@if (deleteTarget()) {
+  <admin-confirm-dialog
+    title="채용 삭제"
+    message="이 채용 공고를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+    confirmLabel="삭제"
+    [loading]="deleting()"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+}

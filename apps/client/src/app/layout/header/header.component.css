@@ -6,7 +6,14 @@
   left: 0;
   right: 0;
   z-index: 50;
-  background: #fff;
+  background: transparent;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header.scrolled {
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
 }
 
 .header-inner {
@@ -193,6 +200,12 @@
 .header-line {
   height: 3px;
   background: linear-gradient(90deg, var(--color-primary, #41539b) 0%, #7c6bc4 50%, #b794d6 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.header.scrolled .header-line {
+  opacity: 1;
 }
 
 /* ── 모바일 토글 ── */

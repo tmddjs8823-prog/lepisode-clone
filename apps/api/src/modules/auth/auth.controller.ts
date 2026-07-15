@@ -1,14 +1,18 @@
 import { Controller, Post, Body, Get, Res, Req, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { AuthenticatedRequest } from '../../common/types/api.types';
 
 class LoginDto {
+  @ApiProperty({ description: '관리자 이메일', example: 'admin@lepisode.com' })
   @IsEmail()
   email: string;
 
+  @ApiProperty({ description: '비밀번호', example: 'password123' })
   @IsNotEmpty()
   @IsString()
   password: string;
@@ -23,10 +27,13 @@ const REFRESH_COOKIE_OPTIONS = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7일
 };
 
+@ApiTags('Auth')
 @Controller('api/v1/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOperation({ summary: '관리자 로그인' })
+  @ApiBody({ type: LoginDto })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
@@ -42,6 +49,7 @@ export class AuthController {
     return { accessToken, user };
   }
 
+  @ApiOperation({ summary: 'Access Token 갱신' })
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
@@ -59,6 +67,7 @@ export class AuthController {
     return { accessToken: result.accessToken, user: result.user };
   }
 
+  @ApiOperation({ summary: '로그아웃' })
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@Res({ passthrough: true }) res: Response) {
@@ -66,6 +75,7 @@ export class AuthController {
     return { message: '로그아웃되었습니다.' };
   }
 
+  @ApiOperation({ summary: '초기 관리자 계정 생성 (시드)' })
   @Post('seed')
   async seed() {
     const admin = await this.authService.createInitialAdmin();
@@ -75,9 +85,12 @@ export class AuthController {
     return { message: '이미 관리자 계정이 존재합니다.' };
   }
 
+  @ApiOperation({ summary: '내 프로필 조회' })
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Req() req: AuthenticatedRequest) {
     return this.authService.getProfile(req.user.sub);
   }
 }
+

@@ -1,6 +1,6 @@
-import { Component, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { MarketingApiService, MarketingCompanyItem } from '../../shared/services/marketing-api.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
@@ -8,27 +8,17 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
 
-export interface MarketingCompany {
-  id: number;
-  name: string;
-  slug: string;
-  manager: string;
-  monthlyBudget: number;
-  status: string;
-  createdAt: string;
-}
-
 @Component({
   selector: 'admin-marketing-companies-page',
   imports: [FormsModule, DataTableComponent, PageHeaderComponent, ConfirmDialogComponent],
   templateUrl: './marketing-companies.page.html',
 })
-export class MarketingCompaniesPage {
-  private http = inject(HttpClient);
+export class MarketingCompaniesPage implements OnInit {
+  private api = inject(MarketingApiService);
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
 
-  data = signal<MarketingCompany[]>([]);
+  data = signal<MarketingCompanyItem[]>([]);
   total = signal(0);
   loading = signal(false);
   searchTerm = '';
@@ -58,7 +48,7 @@ export class MarketingCompaniesPage {
 
   /* ── 폼 ── */
   showForm = signal(false);
-  editingItem = signal<MarketingCompany | null>(null);
+  editingItem = signal<MarketingCompanyItem | null>(null);
   saving = signal(false);
   formTitle = computed(() => this.editingItem() ? '마케팅 업체 수정' : '마케팅 업체 등록');
 
@@ -80,6 +70,25 @@ export class MarketingCompaniesPage {
   fGa4PropertyId = signal('');
   fGa4ServiceAccountKey = signal('');
 
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  loadData(): void {
+    this.loading.set(true);
+    this.api.getCompanies().subscribe({
+      next: (res) => {
+        this.data.set(res);
+        this.total.set(res.length);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.toast.error('업체 목록을 불러오지 못했습니다.');
+        this.loading.set(false);
+      },
+    });
+  }
+
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [
       { key: 'id', header: '순번' },
@@ -92,13 +101,22 @@ export class MarketingCompaniesPage {
     ], '마케팅_업체');
   }
 
-  openForm(item?: MarketingCompany): void {
+  openForm(item?: MarketingCompanyItem): void {
     if (item) {
       this.editingItem.set(item);
       this.fName.set(item.name);
       this.fSlug.set(item.slug);
-      this.fManager.set(item.manager);
+      this.fManager.set(item.manager ?? '');
       this.fBudget.set(item.monthlyBudget);
+      this.fPassword.set(item.password ?? '');
+      this.fNaverApiKey.set(item.naverApiKey ?? '');
+      this.fNaverSecretKey.set(item.naverSecretKey ?? '');
+      this.fNaverCustomerId.set(item.naverCustomerId ?? '');
+      this.fChPowerlink.set(item.chPowerlink);
+      this.fChPowerContent.set(item.chPowerContent);
+      this.fChPlace.set(item.chPlace);
+      this.fGa4PropertyId.set(item.ga4PropertyId ?? '');
+      this.fGa4ServiceAccountKey.set(item.ga4ServiceAccountKey ?? '');
     } else {
       this.editingItem.set(null);
       this.fName.set('');
@@ -126,51 +144,72 @@ export class MarketingCompaniesPage {
     if (!this.fManager().trim()) { this.toast.warning('담당자명을 입력하세요.'); return; }
 
     this.saving.set(true);
-    setTimeout(() => {
-      const editing = this.editingItem();
-      if (editing) {
-        // 수정
-        this.data.update(list => list.map(item =>
-          item.id === editing.id
-            ? { ...item, name: this.fName().trim(), slug: this.fSlug().trim(), manager: this.fManager().trim(), monthlyBudget: this.fBudget() }
-            : item
-        ));
-        this.toast.success('수정되었습니다.');
-      } else {
-        // 등록
-        const newItem: MarketingCompany = {
-          id: this.data().length > 0 ? Math.max(...this.data().map(d => d.id)) + 1 : 1,
-          name: this.fName().trim(),
-          slug: this.fSlug().trim(),
-          manager: this.fManager().trim(),
-          monthlyBudget: this.fBudget(),
-          status: '활성',
-          createdAt: new Date().toISOString(),
-        };
-        this.data.update(list => [...list, newItem]);
-        this.total.update(t => t + 1);
-        this.toast.success('등록되었습니다.');
-      }
-      this.saving.set(false);
-      this.closeForm();
-    }, 500);
+    const body: Partial<MarketingCompanyItem> = {
+      name: this.fName().trim(),
+      slug: this.fSlug().trim(),
+      manager: this.fManager().trim() || undefined,
+      monthlyBudget: this.fBudget() || 0,
+      password: this.fPassword().trim() || undefined,
+      naverApiKey: this.fNaverApiKey().trim() || undefined,
+      naverSecretKey: this.fNaverSecretKey().trim() || undefined,
+      naverCustomerId: this.fNaverCustomerId().trim() || undefined,
+      chPowerlink: this.fChPowerlink(),
+      chPowerContent: this.fChPowerContent(),
+      chPlace: this.fChPlace(),
+      ga4PropertyId: this.fGa4PropertyId().trim() || undefined,
+      ga4ServiceAccountKey: this.fGa4ServiceAccountKey().trim() || undefined,
+    };
+
+    const editing = this.editingItem();
+    if (editing) {
+      this.api.updateCompany(editing.id, body).subscribe({
+        next: () => {
+          this.toast.success('수정되었습니다.');
+          this.saving.set(false);
+          this.closeForm();
+          this.loadData();
+        },
+        error: () => {
+          this.toast.error('수정에 실패했습니다.');
+          this.saving.set(false);
+        },
+      });
+    } else {
+      this.api.createCompany(body).subscribe({
+        next: () => {
+          this.toast.success('등록되었습니다.');
+          this.saving.set(false);
+          this.closeForm();
+          this.loadData();
+        },
+        error: () => {
+          this.toast.error('등록에 실패했습니다.');
+          this.saving.set(false);
+        },
+      });
+    }
   }
 
   /* ── 삭제 ── */
-  deleteTarget = signal<MarketingCompany | null>(null);
+  deleteTarget = signal<MarketingCompanyItem | null>(null);
   deleting = signal(false);
 
-  onDelete(item: MarketingCompany): void { this.deleteTarget.set(item); }
+  onDelete(item: MarketingCompanyItem): void { this.deleteTarget.set(item); }
   confirmDelete(): void {
     const t = this.deleteTarget(); if (!t) return;
     this.deleting.set(true);
-    setTimeout(() => {
-      this.data.update(list => list.filter(d => d.id !== t.id));
-      this.total.update(n => Math.max(0, n - 1));
-      this.toast.success('삭제되었습니다.');
-      this.deleteTarget.set(null);
-      this.deleting.set(false);
-    }, 500);
+    this.api.deleteCompany(t.id).subscribe({
+      next: () => {
+        this.toast.success('삭제되었습니다.');
+        this.deleteTarget.set(null);
+        this.deleting.set(false);
+        this.loadData();
+      },
+      error: () => {
+        this.toast.error('삭제에 실패했습니다.');
+        this.deleting.set(false);
+      },
+    });
   }
   cancelDelete(): void { this.deleteTarget.set(null); }
 }

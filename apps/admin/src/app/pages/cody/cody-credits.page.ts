@@ -6,17 +6,20 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
 import { ColumnDef } from '../../shared/types/api.types';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
-import { CodyApiService } from '../../shared/services/cody-api.service';
+import { CodyApiService, CodyCreditApiItem } from '../../shared/services/cody-api.service';
 
 export type CreditType = '충전' | '차감';
 
 export interface CodyCreditItem {
   id: number;
   type: CreditType;
+  companyId: number;
   companyName: string;
+  projectId: number | null;
   projectName: string;
   description: string;
   amount: number;
+  manager: string;
   createdAt: string;
 }
 
@@ -46,26 +49,26 @@ export class CodyCreditsPage implements OnInit {
   companyOptions = signal<{ id: number; name: string }[]>([]);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'id', label: '순번', align: 'center', width: '4.5rem', type: 'number' },
+    { key: 'id', label: '순번', align: 'center', width: '6%', type: 'number' },
     {
-      key: 'type', label: '유형', align: 'center', width: '5.5rem', type: 'badge',
+      key: 'type', label: '유형', align: 'center', width: '8%', type: 'badge',
       badgeMap: {
         '충전': { label: '충전', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
         '차감': { label: '차감', class: 'bg-red-500/10 text-red-400 border border-red-500/20' },
       },
     },
-    { key: 'companyName', label: '기업', align: 'left', width: '10rem' },
-    { key: 'projectName', label: '프로젝트', align: 'left', width: '10rem' },
-    { key: 'description', label: '내용', align: 'left' },
+    { key: 'companyName', label: '기업',   align: 'left',   width: '15%' },
+    { key: 'projectName', label: '프로젝트', align: 'left',   width: '15%' },
+    { key: 'description', label: '내용',   align: 'left',   width: '28%' },
     {
-      key: 'amount', label: '금액', align: 'right', width: '8rem',
+      key: 'amount', label: '금액', align: 'right', width: '12%',
       transform: (row) => {
         const val = row['amount'] as number;
         return val.toLocaleString('ko-KR') + '원';
       },
     },
-
-    { key: 'createdAt', label: '등록일자', align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'manager',   label: '담당자', align: 'center', width: '8%' },
+    { key: 'createdAt', label: '등록일자', align: 'center', width: '8%', type: 'date' },
   ];
 
   /* ── 폼 ── */
@@ -75,8 +78,8 @@ export class CodyCreditsPage implements OnInit {
   formTitle = computed(() => this.editingItem() ? '크레딧 수정' : '크레딧 등록');
 
   fType = signal<CreditType>('충전');
-  fCompanyName = signal('');
-  fProjectName = signal('');
+  fCompanyId = signal<number | null>(null);
+  fProjectId = signal<number | null>(null);
   fDescription = signal('');
   fAmount = signal(0);
 
@@ -91,6 +94,14 @@ export class CodyCreditsPage implements OnInit {
       Object.values(item).some(v => v != null && String(v).toLowerCase().includes(term))
     );
   });
+
+  /** 선택된 기업에 속하는 프로젝트만 필터 */
+  filteredProjectOptions = computed(() => {
+    const cid = this.fCompanyId();
+    if (!cid) return this.projectOptions();
+    return this.projectOptions().filter(p => p.companyId === cid);
+  });
+
   ngOnInit(): void {
     this.loadData();
     this.loadCompanyOptions();
@@ -113,12 +124,33 @@ export class CodyCreditsPage implements OnInit {
 
   loadData(): void {
     this.loading.set(true);
-    // TODO: API 연동
-    setTimeout(() => {
-      this.data.set([]);
-      this.total.set(0);
-      this.loading.set(false);
-    }, 300);
+    this.codyApi.getCredits(this.page(), this.limit()).subscribe({
+      next: (res) => {
+        this.data.set(res.data.map(this.mapApiToItem));
+        this.total.set(res.total);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.toast.error('크레딧 목록을 불러오지 못했습니다.');
+        this.loading.set(false);
+      },
+    });
+  }
+
+  private mapApiToItem(c: CodyCreditApiItem): CodyCreditItem {
+    const typeMap: Record<string, CreditType> = { 'CHARGE': '충전', 'USE': '차감', 'REFUND': '충전', 'ADJUST': '차감' };
+    return {
+      id: c.id,
+      type: typeMap[c.type] ?? '충전',
+      companyId: c.companyId,
+      companyName: c.company?.name ?? '',
+      projectId: c.projectId,
+      projectName: c.project?.name ?? '',
+      description: c.description ?? '',
+      amount: Number(c.amount),
+      manager: c.manager ?? '',
+      createdAt: c.createdAt,
+    };
   }
 
   /** 코디 > 기업 관리 API에서 데이터를 가져와 드롭다운 옵션 구성 */
@@ -145,15 +177,15 @@ export class CodyCreditsPage implements OnInit {
     if (item) {
       this.editingItem.set(item);
       this.fType.set(item.type);
-      this.fCompanyName.set(item.companyName);
-      this.fProjectName.set(item.projectName);
+      this.fCompanyId.set(item.companyId);
+      this.fProjectId.set(item.projectId);
       this.fDescription.set(item.description);
       this.fAmount.set(item.amount);
     } else {
       this.editingItem.set(null);
       this.fType.set('충전');
-      this.fCompanyName.set('');
-      this.fProjectName.set('');
+      this.fCompanyId.set(null);
+      this.fProjectId.set(null);
       this.fDescription.set('');
       this.fAmount.set(0);
     }
@@ -163,37 +195,34 @@ export class CodyCreditsPage implements OnInit {
   closeForm(): void { this.showForm.set(false); }
 
   save(): void {
-    if (!this.fCompanyName().trim()) { this.toast.warning('기업명을 입력하세요.'); return; }
+    if (!this.fCompanyId()) { this.toast.warning('기업을 선택하세요.'); return; }
     if (!this.fDescription().trim()) { this.toast.warning('내용을 입력하세요.'); return; }
     if (!this.fAmount()) { this.toast.warning('금액을 입력하세요.'); return; }
 
     this.saving.set(true);
-    setTimeout(() => {
-      const editing = this.editingItem();
-      if (editing) {
-        this.data.update(list => list.map(c =>
-          c.id === editing.id
-            ? { ...c, type: this.fType(), companyName: this.fCompanyName().trim(), projectName: this.fProjectName().trim(), description: this.fDescription().trim(), amount: this.fAmount() }
-            : c
-        ));
-        this.toast.success('수정되었습니다.');
-      } else {
-        const newItem: CodyCreditItem = {
-          id: Date.now(),
-          type: this.fType(),
-          companyName: this.fCompanyName().trim(),
-          projectName: this.fProjectName().trim(),
-          description: this.fDescription().trim(),
-          amount: this.fAmount(),
-          createdAt: new Date().toISOString(),
-        };
-        this.data.update(list => [...list, newItem]);
-        this.total.update(t => t + 1);
+    const typeMap: Record<CreditType, string> = { '충전': 'CHARGE', '차감': 'USE' };
+    const companyId = this.fCompanyId();
+    if (!companyId) return;
+    const payload = {
+      type: typeMap[this.fType()],
+      companyId,
+      projectId: this.fProjectId() ?? undefined,
+      description: this.fDescription().trim(),
+      amount: String(this.fAmount()),
+    };
+
+    this.codyApi.createCredit(payload).subscribe({
+      next: () => {
         this.toast.success('등록되었습니다.');
-      }
-      this.saving.set(false);
-      this.closeForm();
-    }, 500);
+        this.saving.set(false);
+        this.closeForm();
+        this.loadData();
+      },
+      error: () => {
+        this.toast.error('등록에 실패했습니다.');
+        this.saving.set(false);
+      },
+    });
   }
 
   onDelete(item: CodyCreditItem): void { this.deleteTarget.set(item); }
@@ -201,13 +230,18 @@ export class CodyCreditsPage implements OnInit {
     const t = this.deleteTarget();
     if (!t) return;
     this.deleting.set(true);
-    setTimeout(() => {
-      this.data.update(list => list.filter(c => c.id !== t.id));
-      this.total.update(v => v - 1);
-      this.toast.success('삭제되었습니다.');
-      this.deleteTarget.set(null);
-      this.deleting.set(false);
-    }, 500);
+    this.codyApi.removeCredit(t.id).subscribe({
+      next: () => {
+        this.toast.success('삭제되었습니다.');
+        this.deleteTarget.set(null);
+        this.deleting.set(false);
+        this.loadData();
+      },
+      error: () => {
+        this.toast.error('삭제에 실패했습니다.');
+        this.deleting.set(false);
+      },
+    });
   }
   cancelDelete(): void { this.deleteTarget.set(null); }
 }

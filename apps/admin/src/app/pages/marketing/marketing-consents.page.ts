@@ -26,9 +26,9 @@ export class MarketingConsentsPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'name',  label: '이름',     align: 'left' },
-    { key: 'email', label: '이메일',   align: 'left' },
-    { key: 'phone', label: '전화번호', align: 'left' },
+    { key: 'name',  label: '이름',     align: 'center' },
+    { key: 'email', label: '이메일',   align: 'center' },
+    { key: 'phone', label: '전화번호', align: 'center' },
     { key: 'createdAt', label: '동의일', align: 'center', width: '7.5rem', type: 'date' },
   ];
 

@@ -9,6 +9,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiOperation, ApiConsumes, ApiQuery } from '@nestjs/swagger';
 import { UploadService } from './upload.service';
 
 interface MulterFile {
@@ -20,6 +21,7 @@ interface MulterFile {
   buffer: Buffer;
 }
 
+@ApiTags('Upload')
 @Controller('api/v1/upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
@@ -28,6 +30,9 @@ export class UploadController {
    * POST /api/v1/upload?folder=blog
    * multipart/form-data 로 file 필드에 이미지 전송
    */
+  @ApiOperation({ summary: '이미지 업로드' })
+  @ApiConsumes('multipart/form-data')
+  @ApiQuery({ name: 'folder', required: false, example: 'blog' })
   @Post()
   @UseInterceptors(
     FileInterceptor('file', {
@@ -61,6 +66,8 @@ export class UploadController {
   /**
    * DELETE /api/v1/upload?path=blog/uuid.png
    */
+  @ApiOperation({ summary: '업로드 파일 삭제' })
+  @ApiQuery({ name: 'path', required: true, description: '삭제할 파일 경로' })
   @Delete()
   @HttpCode(204)
   async remove(@Query('path') filePath: string) {
@@ -70,3 +77,4 @@ export class UploadController {
     await this.uploadService.remove(filePath);
   }
 }
+

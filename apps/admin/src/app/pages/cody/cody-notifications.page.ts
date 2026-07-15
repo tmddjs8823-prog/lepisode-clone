@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
 
 const API = 'http://localhost:3000/api/v1/cody';
@@ -18,7 +19,7 @@ export interface CodyNotificationItem {
 
 @Component({
   selector: 'admin-cody-notifications-page',
-  imports: [FormsModule, DataTableComponent],
+  imports: [FormsModule, DataTableComponent, PageHeaderComponent],
   templateUrl: './cody-notifications.page.html',
 })
 export class CodyNotificationsPage implements OnInit {
@@ -51,8 +52,8 @@ export class CodyNotificationsPage implements OnInit {
         READ:    { label: '읽음', class: 'bg-blue-500/10 text-blue-400 border border-blue-500/20' },
       },
     },
-    { key: 'companyName', label: '기업명', align: 'left', width: '10rem' },
-    { key: 'content', label: '내용', align: 'left' },
+    { key: 'companyName', label: '기업명', align: 'center', width: '10rem' },
+    { key: 'content', label: '내용', align: 'center' },
     { key: 'createdAt', label: '등록일자', align: 'center', width: '7.5rem', type: 'date' },
   ];
 

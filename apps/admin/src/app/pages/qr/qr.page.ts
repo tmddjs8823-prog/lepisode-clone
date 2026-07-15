@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ContentApiService, QrCodeItem, QrCodePayload } from '../../shared/services/content-api.service';
 import { ToastService } from '../../shared/services/toast.service';
@@ -23,23 +23,23 @@ export class QrPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'name', label: 'QR \ucf54\ub4dc\uba85', align: 'left' },
+    { key: 'name', label: 'QR 코드명', align: 'center', width: '22%' },
     {
-      key: 'type', label: '\uc720\ud615', align: 'center', width: '7rem', type: 'badge',
+      key: 'type', label: '유형', align: 'center', width: '10%', type: 'badge',
       badgeMap: {
         URL: { label: 'URL', class: 'bg-violet-500/10 text-violet-400 border border-violet-500/20' },
         PDF: { label: 'PDF', class: 'bg-rose-500/10 text-rose-400 border border-rose-500/20' },
       },
     },
-    { key: 'targetUrl', label: '\uc5f0\uacb0 URL', align: 'left' },
-    { key: 'scanCount', label: '\uc2a4\uce94', align: 'center', width: '4.5rem', type: 'number' },
-    { key: 'createdAt', label: '\uc0dd\uc131\uc77c', align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'targetUrl', label: '연결 URL', align: 'center', width: '40%' },
+    { key: 'scanCount', label: '스캔', align: 'center', width: '8%', type: 'number' },
+    { key: 'createdAt', label: '생성일', align: 'center', width: '14%', type: 'date' },
   ];
 
   showForm = signal(false);
   saving = signal(false);
   editingItem = signal<QrCodeItem | null>(null);
-  formTitle = computed(() => this.editingItem() ? 'QR \ucf54\ub4dc \uc218\uc815' : 'QR \ucf54\ub4dc \ub4f1\ub85d');
+  formTitle = computed(() => this.editingItem() ? 'QR 코드 수정' : 'QR 코드 등록');
 
   readonly typeOptions = [
     { value: 'URL', label: 'URL' },
@@ -67,20 +67,20 @@ export class QrPage implements OnInit {
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [
       { key: 'id', header: 'ID' },
-      { key: 'name', header: 'QR\uba85' },
-      { key: 'type', header: '\uc720\ud615' },
-      { key: 'targetUrl', header: '\ub300\uc0c1 URL' },
-      { key: 'scanCount', header: '\uc2a4\uce94 \uc218' },
-      { key: 'isActive', header: '\ud65c\uc131' },
-      { key: 'createdAt', header: '\ub4f1\ub85d\uc77c' },
-    ], 'QR\ucf54\ub4dc');
+      { key: 'name', header: 'QR명' },
+      { key: 'type', header: '유형' },
+      { key: 'targetUrl', header: '대상 URL' },
+      { key: 'scanCount', header: '스캔 수' },
+      { key: 'isActive', header: '활성' },
+      { key: 'createdAt', header: '등록일' },
+    ], 'QR코드');
   }
 
   loadData(): void {
     this.loading.set(true);
     this.api.getQrCodes().subscribe({
       next: (list) => { this.data.set(list); this.loading.set(false); },
-      error: () => { this.toast.error('\ubaa9\ub85d\uc744 \ubd88\ub7ec\uc624\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.'); this.loading.set(false); },
+      error: () => { this.toast.error('목록을 불러오지 못했습니다.'); this.loading.set(false); },
     });
   }
 
@@ -95,9 +95,9 @@ export class QrPage implements OnInit {
   closeForm(): void { this.showForm.set(false); }
 
   save(): void {
-    if (!this.fName().trim()) { this.toast.warning('QR \ucf54\ub4dc\uba85\uc744 \uc785\ub825\ud558\uc138\uc694.'); return; }
-    if (!this.fType()) { this.toast.warning('\uc720\ud615\uc744 \uc120\ud0dd\ud558\uc138\uc694.'); return; }
-    if (!this.fTargetUrl().trim()) { this.toast.warning('URL\uc744 \uc785\ub825\ud558\uc138\uc694.'); return; }
+    if (!this.fName().trim()) { this.toast.warning('QR 코드명을 입력하세요.'); return; }
+    if (!this.fType()) { this.toast.warning('유형을 선택하세요.'); return; }
+    if (!this.fTargetUrl().trim()) { this.toast.warning('URL을 입력하세요.'); return; }
     const payload: QrCodePayload = {
       name: this.fName().trim(),
       type: this.fType(),
@@ -112,10 +112,10 @@ export class QrPage implements OnInit {
 
     req.subscribe({
       next: () => {
-        this.toast.success(this.editingItem() ? '\uc218\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.' : '\uc0dd\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.');
+        this.toast.success(this.editingItem() ? '수정되었습니다.' : '생성되었습니다.');
         this.closeForm(); this.loadData(); this.saving.set(false);
       },
-      error: () => { this.toast.error('\uc800\uc7a5\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.'); this.saving.set(false); },
+      error: () => { this.toast.error('저장에 실패했습니다.'); this.saving.set(false); },
     });
   }
 
@@ -124,8 +124,8 @@ export class QrPage implements OnInit {
     const t = this.deleteTarget(); if (!t) return;
     this.deleting.set(true);
     this.api.removeQrCode(t.id).subscribe({
-      next: () => { this.toast.success('\uc0ad\uc81c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.'); this.deleteTarget.set(null); this.deleting.set(false); this.loadData(); },
-      error: () => { this.toast.error('\uc0ad\uc81c\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.'); this.deleting.set(false); },
+      next: () => { this.toast.success('삭제되었습니다.'); this.deleteTarget.set(null); this.deleting.set(false); this.loadData(); },
+      error: () => { this.toast.error('삭제에 실패했습니다.'); this.deleting.set(false); },
     });
   }
   cancelDelete(): void { this.deleteTarget.set(null); }

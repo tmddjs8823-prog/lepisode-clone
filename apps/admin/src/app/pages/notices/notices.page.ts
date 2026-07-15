@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NoticeApiService, NoticeItem, CreateNoticePayload } from '../../shared/services/notice-api.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
@@ -16,6 +17,7 @@ import { ColumnDef } from '../../shared/types/api.types';
 })
 export class NoticesPage implements OnInit {
   private noticeApi = inject(NoticeApiService);
+  private router = inject(Router);
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
   private upload = inject(UploadService);
@@ -30,9 +32,9 @@ export class NoticesPage implements OnInit {
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
     { key: 'id',           label: 'ID',        align: 'center', width: '5%',  type: 'number' },
-    { key: 'title',        label: '제목',       align: 'left',   width: '18%' },
-    { key: 'titleEn',      label: '영문 제목',   align: 'left',   width: '15%' },
-    { key: 'titleJa',      label: '일본어 제목',  align: 'left',   width: '15%' },
+    { key: 'title',        label: '제목',       align: 'center',   width: '18%' },
+    { key: 'titleEn',      label: '영문 제목',   align: 'center',   width: '15%' },
+    { key: 'titleJa',      label: '일본어 제목',  align: 'center',   width: '15%' },
     { key: 'thumbnailUrl', label: '썸네일',      align: 'center', width: '18%', type: 'image' },
     {
       key: 'published', label: '노출', align: 'center', width: '10%', type: 'badge',
@@ -75,6 +77,8 @@ export class NoticesPage implements OnInit {
   fThumbnailFile = signal<File | null>(null);
   fPublished = signal(true);
   fIsPinned = signal(false);
+  fSeoTitle = signal('');
+  fMetaDesc = signal('');
 
   filteredData = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -87,6 +91,10 @@ export class NoticesPage implements OnInit {
   ngOnInit(): void { this.loadData(); }
 
   onSearch(term?: string): void { this.searchTerm.set(term || ''); }
+
+  navigateToDetail(item: NoticeItem): void {
+    this.router.navigate(['/homepage/notices', item.id]);
+  }
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [

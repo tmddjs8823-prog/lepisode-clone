@@ -31,8 +31,4 @@ export class SidebarComponent {
       return next;
     });
   }
-
-  logout() {
-    this.authService.logout();
-  }
 }

@@ -1,0 +1,140 @@
+<div class="flex flex-col gap-6 p-6 max-w-5xl mx-auto">
+  <!-- 페이지 헤더 -->
+  <div class="flex items-center gap-3">
+    <button class="p-2 text-slate-400 hover:text-white hover:bg-slate-700/60 rounded-lg transition-colors" (click)="goBack()">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <h1 class="text-xl font-bold text-white">주간보고서 등록</h1>
+  </div>
+
+  <!-- ───── 1. 미리보기 아코디언 ───── -->
+  <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl overflow-hidden">
+    <div
+      class="flex items-center gap-3 px-6 py-4 cursor-pointer hover:bg-slate-800/80 transition-colors select-none"
+      tabindex="0" role="button" (click)="togglePreview()" (keydown.enter)="togglePreview()">
+      <svg class="w-4 h-4 text-slate-400 transition-transform shrink-0" [class.rotate-180]="previewOpen()" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      <span class="text-base font-semibold text-white">미리보기</span>
+    </div>
+
+    @if (previewOpen()) {
+      <div class="px-6 pb-6 border-t border-slate-700/40">
+        <div class="mt-5 bg-slate-900/50 border border-slate-700/30 rounded-xl p-6 flex flex-col gap-5">
+          <!-- 제목 -->
+          <h2 class="text-lg font-bold text-white">
+            {{ title() || '제목을 입력해주세요.' }}
+          </h2>
+
+          <!-- 기간 -->
+          <div class="flex items-center gap-2 text-sm text-slate-400">
+            <svg class="w-4 h-4 text-indigo-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            @if (startDate() && endDate()) {
+              <span>{{ startDate() }} ~ {{ endDate() }}</span>
+            } @else {
+              <span class="text-slate-500">보고서 진행기간을 선택해주세요.</span>
+            }
+          </div>
+
+          <!-- 프로젝트 -->
+          <div class="flex items-center gap-2 text-sm text-slate-400">
+            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+            @if (project()) {
+              <span>{{ project() }}</span>
+            } @else {
+              <span class="text-slate-500">프로젝트를 선택해주세요.</span>
+            }
+          </div>
+
+          <!-- 1. 진행사항 -->
+          <div class="flex flex-col gap-2">
+            <h3 class="text-sm font-bold text-indigo-300">1. 진행사항</h3>
+            <div class="text-sm text-slate-300 min-h-[40px] bg-slate-800/40 rounded-lg p-3 border border-slate-700/30" [innerHTML]="progress() || '진행사항을 입력해주세요.'"></div>
+          </div>
+
+          <!-- 2. 이슈/공유사항 -->
+          <div class="flex flex-col gap-2">
+            <h3 class="text-sm font-bold text-amber-300">2. 이슈/공유사항</h3>
+            <div class="text-sm text-slate-300 min-h-[40px] bg-slate-800/40 rounded-lg p-3 border border-slate-700/30" [innerHTML]="issues() || '이슈/공유사항을 입력해주세요.'"></div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ───── 2. 주간보고서 등록 아코디언 ───── -->
+  <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl overflow-hidden">
+    <div
+      class="flex items-center gap-3 px-6 py-4 cursor-pointer hover:bg-slate-800/80 transition-colors select-none"
+      tabindex="0" role="button" (click)="toggleForm()" (keydown.enter)="toggleForm()">
+      <svg class="w-4 h-4 text-slate-400 transition-transform shrink-0" [class.rotate-180]="formOpen()" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      <span class="text-base font-semibold text-white">주간보고서 등록</span>
+    </div>
+
+    @if (formOpen()) {
+      <div class="px-6 pb-6 border-t border-slate-700/40">
+        <div class="mt-5 flex flex-col gap-5">
+          <!-- 프로젝트 -->
+          <div class="flex flex-col gap-1.5">
+            <label for="wr-project" class="text-sm font-semibold text-slate-200">프로젝트</label>
+            <select id="wr-project" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="project()" (ngModelChange)="project.set($event)">
+              <option value="">프로젝트를 선택해주세요</option>
+              @for (p of projectOptions(); track p) {
+                <option [ngValue]="p">{{ p }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- 보고서 제목 -->
+          <div class="flex flex-col gap-1.5">
+            <label for="wr-title" class="text-sm font-semibold text-slate-200">보고서 제목</label>
+            <input id="wr-title" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors placeholder:text-slate-500" placeholder="보고서 제목을 입력해주세요" [ngModel]="title()" (ngModelChange)="title.set($event)" />
+          </div>
+
+          <!-- 보고서 진행기간 -->
+          <div class="flex flex-col gap-1.5">
+            <span class="text-sm font-semibold text-slate-200">보고서 진행기간</span>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1">
+                <label for="wr-start" class="text-[11px] text-slate-500">시작일</label>
+                <input id="wr-start" type="date" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="startDate()" (ngModelChange)="startDate.set($event)" />
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="wr-end" class="text-[11px] text-slate-500">종료일</label>
+                <input id="wr-end" type="date" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="endDate()" (ngModelChange)="endDate.set($event)" />
+              </div>
+            </div>
+          </div>
+
+          <!-- 진행사항 (리치 텍스트 에디터) -->
+          <div class="flex flex-col gap-1.5">
+            <div class="text-sm font-semibold text-slate-200">진행사항</div>
+            <div class="min-h-[240px] flex flex-col">
+              <admin-rich-editor [ngModel]="progress()" (ngModelChange)="progress.set($event)"></admin-rich-editor>
+            </div>
+          </div>
+
+          <!-- 이슈사항 (리치 텍스트 에디터) -->
+          <div class="flex flex-col gap-1.5">
+            <div class="text-sm font-semibold text-slate-200">이슈사항</div>
+            <div class="min-h-[240px] flex flex-col">
+              <admin-rich-editor [ngModel]="issues()" (ngModelChange)="issues.set($event)"></admin-rich-editor>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- ───── 하단 버튼 ───── -->
+  <div class="flex items-center gap-3">
+    <button class="px-5 py-2.5 text-sm font-medium text-slate-300 bg-slate-800 border border-slate-700 hover:bg-slate-700 rounded-lg transition-colors" (click)="goBack()">
+      목록
+    </button>
+    <div class="flex-1"></div>
+    <button class="flex items-center justify-center gap-2 px-8 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50" [disabled]="saving()" (click)="save()">
+      @if (saving()) {
+        <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+      }
+      저장
+    </button>
+  </div>
+</div>

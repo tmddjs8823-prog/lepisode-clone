@@ -18,7 +18,12 @@ export interface CodyCompanyApiItem {
   businessNumber: string | null;
   ceoName: string | null;
   ceoPhone: string | null;
+  companyPhone: string | null;
+  companyEmail: string | null;
   address: string | null;
+  addressDetail: string | null;
+  homepage: string | null;
+  bizFileUrl: string | null;
   email: string | null;
   memo: string | null;
   createdAt: string;
@@ -29,7 +34,12 @@ export interface CodyCompanyPayload {
   businessNumber?: string;
   ceoName?: string;
   ceoPhone?: string;
+  companyPhone?: string;
+  companyEmail?: string;
   address?: string;
+  addressDetail?: string;
+  homepage?: string;
+  bizFileUrl?: string;
   email?: string;
   memo?: string;
 }
@@ -125,6 +135,41 @@ export class CodyApiService {
   removeReport(id: number): Observable<void> {
     return this.http.delete<void>(`${API}/reports/${id}`);
   }
+
+  /* ── Credit ── */
+  getCredits(page = 1, limit = 20): Observable<PaginatedResponse<CodyCreditApiItem>> {
+    return this.http.get<PaginatedResponse<CodyCreditApiItem>>(`${API}/credits?page=${page}&limit=${limit}`);
+  }
+
+  createCredit(dto: CodyCreditPayload): Observable<CodyCreditApiItem> {
+    return this.http.post<CodyCreditApiItem>(`${API}/credits`, dto);
+  }
+
+  removeCredit(id: number): Observable<void> {
+    return this.http.delete<void>(`${API}/credits/${id}`);
+  }
+}
+
+export interface CodyCreditApiItem {
+  id: number;
+  type: string;
+  companyId: number;
+  projectId: number | null;
+  company: { id: number; name: string };
+  project: { id: number; name: string } | null;
+  description: string | null;
+  amount: string; // Decimal comes as string
+  manager: string | null;
+  createdAt: string;
+}
+
+export interface CodyCreditPayload {
+  type: string;
+  companyId: number;
+  projectId?: number;
+  description?: string;
+  amount: string;
+  manager?: string;
 }
 
 export interface CodyReportApiItem {

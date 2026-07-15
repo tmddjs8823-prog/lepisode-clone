@@ -34,12 +34,12 @@ export class SupportService {
   }
 
   async createProject(dto: CreateSupportProjectDto) {
-    return this.prisma.supportProject.create({ data: dto });
+    return this.prisma.supportProject.create({ data: dto as never });
   }
 
   async updateProject(id: number, dto: UpdateSupportProjectDto) {
     await this.findOneProject(id);
-    return this.prisma.supportProject.update({ where: { id }, data: dto });
+    return this.prisma.supportProject.update({ where: { id }, data: dto as never });
   }
 
   async removeProject(id: number) {

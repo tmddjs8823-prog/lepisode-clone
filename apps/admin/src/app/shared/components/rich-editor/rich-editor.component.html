@@ -76,6 +76,11 @@
                   (mousedown)="$event.preventDefault(); applyColor(c)"></button>
               }
             </div>
+            <button type="button"
+              class="w-full mt-2 flex items-center justify-center gap-1.5 px-2 py-1.5 text-[11px] text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-md transition-colors"
+              (mousedown)="$event.preventDefault(); removeColor()">
+              <span>🚫</span> 색상 초기화
+            </button>
           </div>
         }
       </div>
@@ -100,6 +105,11 @@
                   (mousedown)="$event.preventDefault(); applyBgColor(c)"></button>
               }
             </div>
+            <button type="button"
+              class="w-full mt-2 flex items-center justify-center gap-1.5 px-2 py-1.5 text-[11px] text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-md transition-colors"
+              (mousedown)="$event.preventDefault(); removeBgColor()">
+              <span>🚫</span> 배경색 초기화
+            </button>
           </div>
         }
       </div>

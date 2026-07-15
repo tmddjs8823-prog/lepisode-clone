@@ -1,4 +1,5 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 interface SubItem {
@@ -20,8 +21,18 @@ interface NavItem {
   styleUrl: './header.component.css',
 })
 export class HeaderComponent {
+  private platformId = inject(PLATFORM_ID);
+
   mobileMenuOpen = false;
   activeDropdown: string | null = null;
+  scrolled = false;
+
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.scrolled = window.scrollY > 50;
+    }
+  }
 
   readonly navItems: NavItem[] = [
     {

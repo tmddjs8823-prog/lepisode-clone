@@ -121,6 +121,16 @@ export class RichEditorComponent implements ControlValueAccessor, AfterViewInit 
     this.exec('hiliteColor', color);
     this.showBgPicker.set(false);
   }
+  removeBgColor(): void {
+    this.restoreRange();
+    this.exec('hiliteColor', 'transparent');
+    this.showBgPicker.set(false);
+  }
+  removeColor(): void {
+    this.restoreRange();
+    this.exec('removeFormat');
+    this.showColorPicker.set(false);
+  }
   openColorPicker(): void {
     this.saveRange();
     this.showBgPicker.set(false);

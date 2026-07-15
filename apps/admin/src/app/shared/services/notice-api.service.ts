@@ -18,6 +18,8 @@ export type NoticeItem = Pick<
     thumbnailUrl: string | null;
     published: boolean;
     isPinned: boolean;
+    seoTitle: string | null;
+    metaDescription: string | null;
     createdAt: string;
     updatedAt: string;
   },
@@ -31,6 +33,8 @@ export type NoticeItem = Pick<
   | 'thumbnailUrl'
   | 'published'
   | 'isPinned'
+  | 'seoTitle'
+  | 'metaDescription'
   | 'createdAt'
   | 'updatedAt'
 >;

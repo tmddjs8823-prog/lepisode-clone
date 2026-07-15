@@ -13,6 +13,19 @@ export type SupportProjectItem = {
   ogImageUrl: string | null;
   published: boolean;
   sortOrder: number;
+  description: string | null;
+  badge: string | null;
+  maxGrant: string | null;
+  heroColor: string | null;
+  themes: string[];
+  seoTitle: string | null;
+  seoDesc: string | null;
+  seoKeywords: string | null;
+  steps: unknown[] | null;
+  points: unknown[] | null;
+  mappings: unknown[] | null;
+  roadmaps: unknown[] | null;
+  faqs: unknown[] | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -24,6 +37,19 @@ export interface CreateSupportProjectPayload {
   ogImageUrl?: string;
   published?: boolean;
   sortOrder?: number;
+  description?: string;
+  badge?: string;
+  maxGrant?: string;
+  heroColor?: string;
+  themes?: string[];
+  seoTitle?: string;
+  seoDesc?: string;
+  seoKeywords?: string;
+  steps?: unknown[];
+  points?: unknown[];
+  mappings?: unknown[];
+  roadmaps?: unknown[];
+  faqs?: unknown[];
 }
 export type UpdateSupportProjectPayload = Partial<CreateSupportProjectPayload>;
 

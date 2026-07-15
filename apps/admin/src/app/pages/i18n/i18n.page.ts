@@ -109,18 +109,27 @@ export class I18nPage implements OnInit {
     if (!this.fKey().trim()) { this.toast.warning('키를 입력하세요.'); return; }
     if (!this.fKo().trim()) { this.toast.warning('한국어 값을 입력하세요.'); return; }
 
+    const en = this.fEn().trim() || null;
+    const ja = this.fJa().trim() || null;
+
     const payload: UpsertTranslationPayload = {
       key: this.fKey().trim(),
       ko: this.fKo().trim(),
-      en: this.fEn().trim() || undefined,
-      ja: this.fJa().trim() || undefined,
+      en,
+      ja,
     };
 
     this.saving.set(true);
     this.api.upsertTranslation(payload).subscribe({
       next: () => {
         this.toast.success(this.editingItem() ? '수정되었습니다.' : '등록되었습니다.');
-        this.closeForm(); this.loadData(); this.saving.set(false);
+        this.closeForm();
+        this.saving.set(false);
+        // 미번역 항목이면 미번역 탭으로 자동 전환
+        if (!en || !ja) {
+          this.activeTab.set('untranslated');
+        }
+        this.loadData();
       },
       error: () => { this.toast.error('저장에 실패했습니다.'); this.saving.set(false); },
     });

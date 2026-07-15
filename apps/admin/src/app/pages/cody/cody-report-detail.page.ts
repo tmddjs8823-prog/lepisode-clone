@@ -97,7 +97,7 @@ export class CodyReportDetailPage implements OnInit {
 
     const payload = {
       companyId: project?.companyId ?? 0,
-      projectId: this.fProjectId()!,
+      projectId: this.fProjectId() ?? 0,
       title: this.fTitle().trim(),
       periodStart: this.fPeriodStart(),
       periodEnd: this.fPeriodEnd(),
@@ -106,7 +106,7 @@ export class CodyReportDetailPage implements OnInit {
 
     const obs = this.isNew()
       ? this.codyApi.createReport(payload)
-      : this.codyApi.updateReport(this.reportId()!, payload);
+      : this.codyApi.updateReport(this.reportId() ?? 0, payload);
 
     obs.subscribe({
       next: () => {

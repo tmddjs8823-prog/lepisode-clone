@@ -8,6 +8,8 @@ model AdminUser {
   password    String
   name        String
   role        String    @default("ADMIN") // SUPER_ADMIN, ADMIN, EDITOR
+  roleRef     Role?     @relation(fields: [roleId], references: [id], onDelete: SetNull)
+  roleId      Int?
   isActive    Boolean   @default(true)
   lastLoginAt DateTime?
   createdAt   DateTime  @default(now())
@@ -21,6 +23,7 @@ model Role {
   name        String           @unique
   description String?
   permissions RolePermission[]
+  users       AdminUser[]
   createdAt   DateTime         @default(now())
 
   @@map("roles")
@@ -31,22 +34,21 @@ model MenuPermission {
   menuKey         String           @unique
   menuName        String
   parentKey       String?
+  routeUrl        String?
+  apiUrl          String?
+  pageType        String?          // 조회, 등록, 수정
   sortOrder       Int              @default(0)
-  rolePermissions RolePermission[]
 
   @@map("menu_permissions")
 }
 
 model RolePermission {
-  id        Int            @id @default(autoincrement())
-  role      Role           @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId    Int
-  menu      MenuPermission @relation(fields: [menuId], references: [id], onDelete: Cascade)
-  menuId    Int
-  canRead   Boolean        @default(false)
-  canWrite  Boolean        @default(false)
-  canDelete Boolean        @default(false)
+  id          Int     @id @default(autoincrement())
+  role        Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId      Int
+  level       Int     @default(0)
+  name        String  @default("")
+  description String?
 
-  @@unique([roleId, menuId])
   @@map("role_permissions")
 }

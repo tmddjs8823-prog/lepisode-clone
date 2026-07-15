@@ -18,12 +18,24 @@ model MarketingConsent {
 model MarketingCompany {
   id            Int      @id @default(autoincrement())
   name          String
-  contactPerson String?
-  phone         String?
-  email         String?
-  serviceType   String?
-  memo          String?  @db.Text
-  isActive      Boolean  @default(true)
+  slug          String   @unique
+  manager       String?
+  monthlyBudget Int      @default(0)
+  password      String?
+  status        String   @default("활성")
+
+  // 네이버 검색광고
+  naverApiKey      String?
+  naverSecretKey   String?
+  naverCustomerId  String?
+  chPowerlink      Boolean @default(false)
+  chPowerContent   Boolean @default(false)
+  chPlace          Boolean @default(false)
+
+  // GA4
+  ga4PropertyId        String?
+  ga4ServiceAccountKey String? @db.Text
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

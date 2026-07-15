@@ -99,12 +99,13 @@ export class BlogPage implements OnInit {
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [
-      { key: 'id', header: 'ID' },
+      { key: 'id', header: '순번' },
       { key: 'title', header: '제목' },
       { key: 'category', header: '카테고리' },
+      { key: 'subCategory', header: '서브 카테고리' },
       { key: 'author', header: '작성자' },
-      { key: 'published', header: '공개여부' },
-      { key: 'createdAt', header: '등록일' },
+      { key: 'publishedAt', header: '발행일' },
+      { key: 'createdAt', header: '생성일' },
     ], '블로그');
   }
 
@@ -230,6 +231,7 @@ export class BlogPage implements OnInit {
     const publishedAt = this.fPublishedAt();
     const payload: Record<string, unknown> = {
       title: this.fTitle().trim(),
+      description: this.fDescription().trim() || undefined,
       content: this.fContent().trim(),
       category: this.fCategory().trim() || undefined,
       subCategory: this.fSubCategory().trim() || undefined,
@@ -242,7 +244,7 @@ export class BlogPage implements OnInit {
     this.saving.set(true);
     const editing = this.editingItem();
     const req = editing
-      ? this.http.patch(`${API}/blog/${editing.id}`, payload)
+      ? this.http.put(`${API}/blog/${editing.id}`, payload)
       : this.http.post(`${API}/blog`, payload);
 
     req.subscribe({

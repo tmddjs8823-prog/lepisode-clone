@@ -1,5 +1,7 @@
 <div class="flex flex-col gap-6 p-6">
 
+  <admin-page-header title="메뉴별 권한 관리" />
+
   <!-- ── 상단 바 ── -->
   <div class="flex items-center justify-between gap-4 flex-wrap">
     <div class="relative">
@@ -25,120 +27,124 @@
     </div>
   </div>
 
+  <!-- ── 로딩 ── -->
+  @if (loading()) {
+    <div class="text-center py-16 text-sm text-slate-500">불러오는 중...</div>
+  }
+
   <!-- ── 아코디언 리스트 ── -->
-  <div class="flex flex-col gap-2">
-    @for (menu of filteredData(); track menu.id) {
-      <div class="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
-        <!-- 헤더 -->
-        <div
-          class="flex items-center gap-3 px-5 py-3.5 cursor-pointer hover:bg-slate-800/80 transition-colors select-none"
-          (click)="toggleExpand(menu.id)" (keydown.enter)="toggleExpand(menu.id)" tabindex="0" role="button"
-        >
-          <svg class="w-3.5 h-3.5 text-slate-400 transition-transform shrink-0" [class.rotate-180]="isExpanded(menu.id)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-          <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/20">메뉴</span>
-          <span class="text-sm font-medium text-slate-200">{{ menu.menuName }}</span>
-          <span class="text-slate-600">-</span>
-          <span class="text-xs text-slate-500 font-mono">{{ menu.path }}</span>
-          <div class="flex-1"></div>
-
-          <!-- 페이지 유형 뱃지 -->
-          <span class="px-2 py-0.5 text-[10px] font-medium rounded-full mr-2"
-            [class]="menu.pageType === '조회' ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
-                   : menu.pageType === '등록' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                   : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'"
-          >{{ menu.pageType }}</span>
-
-          <!-- 로우 액션 버튼 -->
-          <div class="flex items-center gap-2">
-            <button
-              class="px-2.5 py-1 text-[11px] font-medium text-cyan-400 border border-cyan-500/20 bg-cyan-500/5 rounded-lg hover:bg-cyan-500/15 transition-colors"
-              (click)="$event.stopPropagation(); openSubMenuForm(menu)"
-            >하위메뉴 등록</button>
-            <button
-              class="px-2.5 py-1 text-[11px] font-medium text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 rounded-lg hover:bg-emerald-500/15 transition-colors"
-              (click)="$event.stopPropagation(); openPermForm(menu)"
-            >권한 추가</button>
-            <button
-              class="px-2.5 py-1 text-[11px] font-medium text-indigo-400 border border-indigo-500/20 bg-indigo-500/5 rounded-lg hover:bg-indigo-500/15 transition-colors"
-              (click)="$event.stopPropagation(); openEditMenu(menu)"
-            >메뉴 수정</button>
+  @if (!loading()) {
+    <div class="flex flex-col gap-2">
+      @for (menu of parentMenus(); track menu.id) {
+        <div class="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
+          <!-- 부모 데이터 행 -->
+          <div
+            class="flex items-center gap-3 px-5 py-3.5 cursor-pointer hover:bg-slate-800/80 transition-colors select-none"
+            (click)="toggleExpand(menu.id)" (keydown.enter)="toggleExpand(menu.id)" tabindex="0" role="button"
+          >
+            <svg class="w-3.5 h-3.5 text-slate-400 transition-transform shrink-0" [class.rotate-180]="isExpanded(menu.id)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            <span class="text-sm font-semibold text-slate-200 shrink-0">{{ menu.menuName }}</span>
+            <span class="text-xs text-slate-500 font-mono truncate">{{ menu.menuKey }}</span>
+            <button class="p-0.5 text-slate-600 hover:text-slate-300 transition-colors shrink-0" title="키 복사" (click)="$event.stopPropagation(); copyToClipboard(menu.menuKey)">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            </button>
+            <div class="flex-1"></div>
+            <div class="flex flex-col gap-1 shrink-0" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+              @for (mp of (permMap().get(menu.menuName) ?? permMap().get(menu.menuKey) ?? []); track mp.permId) {
+                <div class="flex items-center gap-1.5 text-xs text-slate-400">
+                  <span>· 역할</span>
+                  <span class="font-semibold text-slate-200">{{ mp.roleName }}</span>
+                  <span>· 레벨</span>
+                  <span class="font-semibold text-slate-200">{{ mp.level }}</span>
+                  <button class="p-0.5 text-slate-500 hover:text-indigo-400 hover:bg-indigo-500/10 rounded transition-colors" title="권한 수정" (click)="openEditMenuPerm(mp, menu.menuName)">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                  </button>
+                </div>
+              }
+            </div>
+            <div class="flex items-center gap-1 shrink-0" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+              <button class="p-1.5 text-slate-500 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors" title="하위메뉴 등록" (click)="openSubMenuForm(menu)">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+              </button>
+              <button class="p-1.5 text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-colors" title="권한 추가" (click)="openPermForm(menu)">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              </button>
+              <button class="p-1.5 text-slate-500 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors" title="메뉴 수정" (click)="openEditMenu(menu)">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- 확장 영역 -->
-        @if (isExpanded(menu.id)) {
-          <div class="border-t border-slate-700/30">
-
-            <!-- 하위메뉴 목록 -->
-            @if (menu.subMenus.length > 0) {
-              <div class="px-5 pt-3 pb-1">
-                <span class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">하위메뉴</span>
-              </div>
-              @for (sub of menu.subMenus; track sub.id) {
-                <div class="flex items-center gap-2 px-5 py-2 border-b border-slate-700/20 hover:bg-slate-800/40 transition-colors group">
-                  <span class="w-4 shrink-0"></span>
-                  <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shrink-0">하위</span>
-                  <input type="text"
-                    class="min-w-0 w-28 bg-transparent border-b border-transparent hover:border-slate-700 focus:border-indigo-500 text-sm text-slate-300 px-1 py-0.5 focus:outline-none transition-colors"
-                    [ngModel]="sub.menuName" (ngModelChange)="updateSub(menu.id, sub.id, 'menuName', $event)" />
-                  <input type="text"
-                    class="min-w-0 w-32 bg-transparent border-b border-transparent hover:border-slate-700 focus:border-indigo-500 text-xs text-slate-500 font-mono px-1 py-0.5 focus:outline-none transition-colors"
-                    [ngModel]="sub.path" (ngModelChange)="updateSub(menu.id, sub.id, 'path', $event)" />
-                  <input type="text"
-                    class="min-w-0 flex-1 bg-transparent border-b border-transparent hover:border-slate-700 focus:border-indigo-500 text-xs text-slate-500 font-mono px-1 py-0.5 focus:outline-none transition-colors"
-                    [ngModel]="sub.apiUrl" (ngModelChange)="updateSub(menu.id, sub.id, 'apiUrl', $event)" />
-                  <span class="px-2 py-0.5 text-[10px] font-medium rounded-full shrink-0"
-                    [class]="sub.pageType === '조회' ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
-                           : sub.pageType === '등록' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                           : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'"
-                  >{{ sub.pageType }}</span>
-                  <button
-                    class="p-1 text-slate-600 hover:text-red-400 rounded opacity-0 group-hover:opacity-100 transition-all shrink-0"
-                    (click)="removeSubMenu(menu.id, sub.id)"
-                  >
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                  </button>
-                </div>
-              }
-            }
-
-            <!-- 권한 목록 -->
-            @if (menu.permissions.length > 0) {
-              <div class="px-5 pt-3 pb-1">
-                <span class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">권한</span>
-              </div>
-              @for (perm of menu.permissions; track perm.id) {
-                <div class="flex items-center gap-2 px-5 py-2 border-b border-slate-700/20 last:border-b-0 hover:bg-slate-800/40 transition-colors group">
-                  <span class="w-4 shrink-0"></span>
-                  <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-700/50 text-slate-400 border border-slate-600/30 shrink-0">권한</span>
-                  <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 shrink-0">Lv {{ perm.level }}</span>
-                  <span class="text-sm text-slate-300">{{ perm.roleName }}</span>
+        <!-- 하위 서브 그리드 (독립 카드) -->
+        @if (isExpanded(menu.id) && childMenus(menu.menuKey).length > 0) {
+          <div class="flex flex-col gap-1.5 ml-8">
+            @for (child of childMenus(menu.menuKey); track child.id) {
+              <div class="bg-slate-800/40 border border-slate-700/40 rounded-xl overflow-hidden">
+                <div class="flex items-center gap-3 px-5 py-3 cursor-pointer hover:bg-slate-800/60 transition-colors group"
+                  (click)="toggleExpand(child.id)" (keydown.enter)="toggleExpand(child.id)" tabindex="0" role="button">
+                  <svg class="w-3 h-3 text-slate-500 transition-transform shrink-0" [class.rotate-180]="isExpanded(child.id)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  <!-- 메뉴명 + URL 세로 정렬 -->
+                  <div class="flex flex-col min-w-0 shrink-0">
+                    <span class="text-sm font-semibold text-slate-300">{{ child.menuName }}</span>
+                    <span class="text-[11px] text-slate-500 font-mono truncate">라우트 URL : {{ child.routeUrl ?? '—' }}</span>
+                    <span class="text-[11px] text-slate-500 font-mono truncate">API URL : {{ child.apiUrl ?? '—' }}</span>
+                  </div>
                   <div class="flex-1"></div>
-                  <button
-                    class="p-1 text-slate-600 hover:text-red-400 rounded opacity-0 group-hover:opacity-100 transition-all shrink-0"
-                    (click)="removePerm(menu.id, perm.id)"
-                  >
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                  </button>
+                  <!-- 권한 배지 -->
+                  <div class="flex flex-col gap-1 shrink-0" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+                    @for (group of getGroupedPerms(child.menuName, child.menuKey); track group.roleId) {
+                      <div class="flex items-center gap-3 text-xs text-slate-400">
+                        <span>· 역할</span>
+                        <span class="font-semibold text-slate-200">{{ group.roleName }}</span>
+                        <span>· 레벨</span>
+                        <span class="font-semibold text-slate-200">{{ group.level }}</span>
+                        @for (t of group.types; track t.type) {
+                          <span class="inline-flex items-center gap-1" [class]="t.active ? 'text-indigo-400' : 'text-slate-600'">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                              @if (t.active) {
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                              } @else {
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                              }
+                            </svg>
+                            <span class="text-[11px] font-medium">{{ t.type }}</span>
+                          </span>
+                        }
+                        <button class="p-0.5 text-slate-500 hover:text-indigo-400 hover:bg-indigo-500/10 rounded transition-colors" title="권한 수정" (click)="openEditMenuPerm({permId: getFirstActivePermId(group.types), roleId: group.roleId, level: group.level, roleName: group.roleName}, child.menuName)">
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        </button>
+                      </div>
+                    }
+                  </div>
+                  <!-- 액션 버튼 -->
+                  <div class="flex items-center gap-1 shrink-0" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+                    <button class="p-1.5 text-slate-500 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors" title="하위메뉴 등록" (click)="openSubMenuForm(child)">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                    </button>
+                    <button class="p-1.5 text-slate-500 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-colors" title="권한 추가" (click)="openPermForm(child)">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </button>
+                    <button class="p-1.5 text-slate-500 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors" title="수정" (click)="openEditMenu(child)">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                    </button>
+                  </div>
                 </div>
-              }
-            }
-
-            @if (menu.subMenus.length === 0 && menu.permissions.length === 0) {
-              <div class="px-5 py-4 text-xs text-slate-500 text-center">등록된 하위메뉴 및 권한이 없습니다.</div>
+              </div>
             }
           </div>
         }
-      </div>
-    }
+      }
 
-    @if (filteredData().length === 0) {
-      <div class="text-center py-16 text-sm text-slate-500">등록된 메뉴 권한이 없습니다.</div>
-    }
-  </div>
+
+      @if (filteredData().length === 0 && !loading()) {
+        <div class="text-center py-16 text-sm text-slate-500">등록된 메뉴 권한이 없습니다.</div>
+      }
+    </div>
+  }
 </div>
 
-<!-- ════════════ 메뉴 등록 팝업 (상단) ════════════ -->
+<!-- ════════════ 메뉴 등록 팝업 ════════════ -->
 @if (showForm()) {
   <div class="fixed inset-0 z-[60] flex items-center justify-center">
     <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" role="button" tabindex="-1" (click)="closeForm()" (keydown.escape)="closeForm()"></div>
@@ -148,22 +154,17 @@
       </div>
       <div class="flex flex-col gap-5 p-6">
         <div class="flex flex-col gap-1.5">
+          <label for="input-menu-key" class="text-sm font-semibold text-slate-200">메뉴 키 <span class="text-red-400">*</span></label>
+          <input id="input-menu-key" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="blog, portfolio 등" [ngModel]="fMenuKey()" (ngModelChange)="fMenuKey.set($event)" />
+        </div>
+        <div class="flex flex-col gap-1.5">
           <label for="input-menu-name" class="text-sm font-semibold text-slate-200">메뉴명 <span class="text-red-400">*</span></label>
           <input id="input-menu-name" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="메뉴명을 입력하세요" [ngModel]="fMenuName()" (ngModelChange)="fMenuName.set($event)" />
         </div>
         <div class="flex flex-col gap-1.5">
-          <label for="input-menu-path" class="text-sm font-semibold text-slate-200">경로 <span class="text-red-400">*</span></label>
-          <input id="input-menu-path" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="/path/to/menu" [ngModel]="fPath()" (ngModelChange)="fPath.set($event)" />
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <label for="input-menu-api" class="text-sm font-semibold text-slate-200">API URL</label>
-          <input id="input-menu-api" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="/api/resource" [ngModel]="fApiUrl()" (ngModelChange)="fApiUrl.set($event)" />
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <label for="input-menu-type" class="text-sm font-semibold text-slate-200">페이지 유형</label>
-          <select id="input-menu-type" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="fPageType()" (ngModelChange)="fPageType.set($event)">
-            @for (pt of pageTypes; track pt) { <option [ngValue]="pt">{{ pt }}</option> }
-          </select>
+          <label for="input-parent-key" class="text-sm font-semibold text-slate-200">상위 메뉴 키</label>
+          <input id="input-parent-key" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="없으면 비워두세요" [ngModel]="fParentKey()" (ngModelChange)="fParentKey.set($event)" />
+          <span class="text-[11px] text-slate-500">비워두면 최상위 메뉴로 등록됩니다.</span>
         </div>
       </div>
       <div class="flex items-center gap-3 px-6 py-4 border-t border-slate-800">
@@ -187,23 +188,24 @@
         <h3 class="text-base font-semibold text-white">하위메뉴 등록</h3>
         <p class="text-[11px] text-slate-500 mt-0.5">{{ subMenuTarget()?.menuName }}의 하위메뉴를 추가합니다.</p>
       </div>
-      <div class="flex flex-col gap-5 p-6">
+      <div class="flex flex-col gap-4 p-6">
         <div class="flex flex-col gap-1.5">
           <label for="input-sub-name" class="text-sm font-semibold text-slate-200">메뉴명 <span class="text-red-400">*</span></label>
           <input id="input-sub-name" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="하위 메뉴명" [ngModel]="sfMenuName()" (ngModelChange)="sfMenuName.set($event)" />
         </div>
         <div class="flex flex-col gap-1.5">
-          <label for="input-sub-path" class="text-sm font-semibold text-slate-200">경로 <span class="text-red-400">*</span></label>
-          <input id="input-sub-path" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="/path/to/sub" [ngModel]="sfPath()" (ngModelChange)="sfPath.set($event)" />
+          <label for="input-sub-route" class="text-sm font-semibold text-slate-200">라우트 URL</label>
+          <input id="input-sub-route" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="/admin/menus/list" [ngModel]="sfRouteUrl()" (ngModelChange)="sfRouteUrl.set($event)" />
         </div>
         <div class="flex flex-col gap-1.5">
           <label for="input-sub-api" class="text-sm font-semibold text-slate-200">API URL</label>
-          <input id="input-sub-api" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="/api/resource" [ngModel]="sfApiUrl()" (ngModelChange)="sfApiUrl.set($event)" />
+          <input id="input-sub-api" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="/api/v1/menus" [ngModel]="sfApiUrl()" (ngModelChange)="sfApiUrl.set($event)" />
         </div>
         <div class="flex flex-col gap-1.5">
           <label for="input-sub-type" class="text-sm font-semibold text-slate-200">페이지 유형</label>
           <select id="input-sub-type" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="sfPageType()" (ngModelChange)="sfPageType.set($event)">
-            @for (pt of pageTypes; track pt) { <option [ngValue]="pt">{{ pt }}</option> }
+            <option value="">선택 안 함</option>
+            @for (pt of pageTypeOptions; track pt) { <option [ngValue]="pt">{{ pt }}</option> }
           </select>
         </div>
       </div>
@@ -229,22 +231,17 @@
       </div>
       <div class="flex flex-col gap-5 p-6">
         <div class="flex flex-col gap-1.5">
+          <label for="input-edit-key" class="text-sm font-semibold text-slate-200">메뉴 키</label>
+          <input id="input-edit-key" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="메뉴 키" [ngModel]="efMenuKey()" (ngModelChange)="efMenuKey.set($event)" disabled />
+          <span class="text-[11px] text-slate-500">메뉴 키는 수정할 수 없습니다.</span>
+        </div>
+        <div class="flex flex-col gap-1.5">
           <label for="input-edit-name" class="text-sm font-semibold text-slate-200">메뉴명 <span class="text-red-400">*</span></label>
           <input id="input-edit-name" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="메뉴명" [ngModel]="efMenuName()" (ngModelChange)="efMenuName.set($event)" />
         </div>
         <div class="flex flex-col gap-1.5">
-          <label for="input-edit-path" class="text-sm font-semibold text-slate-200">경로 <span class="text-red-400">*</span></label>
-          <input id="input-edit-path" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="/path/to/menu" [ngModel]="efPath()" (ngModelChange)="efPath.set($event)" />
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <label for="input-edit-api" class="text-sm font-semibold text-slate-200">API URL</label>
-          <input id="input-edit-api" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="/api/resource" [ngModel]="efApiUrl()" (ngModelChange)="efApiUrl.set($event)" />
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <label for="input-edit-type" class="text-sm font-semibold text-slate-200">페이지 유형</label>
-          <select id="input-edit-type" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="efPageType()" (ngModelChange)="efPageType.set($event)">
-            @for (pt of pageTypes; track pt) { <option [ngValue]="pt">{{ pt }}</option> }
-          </select>
+          <label for="input-edit-parent" class="text-sm font-semibold text-slate-200">상위 메뉴 키</label>
+          <input id="input-edit-parent" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 font-mono text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="없으면 비워두세요" [ngModel]="efParentKey()" (ngModelChange)="efParentKey.set($event)" />
         </div>
       </div>
       <div class="flex items-center gap-3 px-6 py-4 border-t border-slate-800">
@@ -264,25 +261,48 @@
 @if (showPermForm()) {
   <div class="fixed inset-0 z-[60] flex items-center justify-center">
     <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" role="button" tabindex="-1" (click)="closePermForm()" (keydown.escape)="closePermForm()"></div>
-    <div class="relative w-full max-w-sm bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl">
+    <div class="relative w-full max-w-md bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl">
       <div class="px-6 py-4 border-b border-slate-800">
         <h3 class="text-base font-semibold text-white">권한 추가</h3>
         <p class="text-[11px] text-slate-500 mt-0.5">{{ permTarget()?.menuName }} 메뉴에 권한을 추가합니다.</p>
       </div>
       <div class="flex flex-col gap-5 p-6">
+        <!-- 역할 -->
         <div class="flex flex-col gap-1.5">
-          <label for="input-perm-level" class="text-sm font-semibold text-slate-200">레벨</label>
-          <select id="input-perm-level" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="pfLevel()" (ngModelChange)="pfLevel.set($event)">
+          <label for="input-perm-role" class="text-sm font-semibold text-slate-200">역할 <span class="text-red-400">*</span></label>
+          <select id="input-perm-role" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="pfRoleId()" (ngModelChange)="pfRoleId.set($event)">
             <option [ngValue]="null" disabled>선택</option>
-            @for (lv of levels; track lv) { <option [ngValue]="lv">{{ lv }}</option> }
+            @for (role of roleOptions(); track role.id) { <option [ngValue]="role.id">{{ role.name }}</option> }
           </select>
         </div>
+        <!-- 레벨 -->
         <div class="flex flex-col gap-1.5">
-          <label for="input-perm-role" class="text-sm font-semibold text-slate-200">역할</label>
-          <select id="input-perm-role" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="pfRole()" (ngModelChange)="pfRole.set($event)">
-            <option value="" disabled>선택</option>
-            @for (role of roleOptions(); track role) { <option [ngValue]="role">{{ role }}</option> }
+          <label for="input-perm-level" class="text-sm font-semibold text-slate-200">레벨 <span class="text-red-400">*</span></label>
+          <select id="input-perm-level" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="pfLevel()" (ngModelChange)="pfLevel.set($event)">
+            @for (lv of levelOptions; track lv) { <option [ngValue]="lv">{{ lv }}</option> }
           </select>
+        </div>
+        <!-- 권한 체크박스 -->
+        <div class="flex flex-col gap-2">
+          <span class="text-sm font-semibold text-slate-200">권한</span>
+          <div class="grid grid-cols-4 gap-3">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0" [ngModel]="pfRead()" (ngModelChange)="pfRead.set($event)" />
+              <span class="text-sm text-slate-300">조회</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0" [ngModel]="pfCreate()" (ngModelChange)="pfCreate.set($event)" />
+              <span class="text-sm text-slate-300">등록</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0" [ngModel]="pfUpdate()" (ngModelChange)="pfUpdate.set($event)" />
+              <span class="text-sm text-slate-300">수정</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0" [ngModel]="pfDelete()" (ngModelChange)="pfDelete.set($event)" />
+              <span class="text-sm text-slate-300">삭제</span>
+            </label>
+          </div>
         </div>
       </div>
       <div class="flex items-center gap-3 px-6 py-4 border-t border-slate-800">
@@ -290,6 +310,66 @@
         <div class="flex-1"></div>
         <button class="flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50" [disabled]="permSaving()" (click)="savePermForm()">
           @if (permSaving()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
+          저장
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ════════════ 메뉴 권한 수정 팝업 ════════════ -->
+@if (showEditMenuPerm()) {
+  <div class="fixed inset-0 z-[60] flex items-center justify-center">
+    <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" role="button" tabindex="-1" (click)="closeEditMenuPerm()" (keydown.escape)="closeEditMenuPerm()"></div>
+    <div class="relative w-full max-w-md bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl">
+      <div class="px-6 py-4 border-b border-slate-800">
+        <h3 class="text-base font-semibold text-white">메뉴 권한 수정</h3>
+        <p class="text-[11px] text-slate-500 mt-0.5">{{ empName() }} 메뉴의 권한을 수정합니다.</p>
+      </div>
+      <div class="flex flex-col gap-5 p-6">
+        <div class="flex flex-col gap-1.5">
+          <label for="input-emp-level" class="text-sm font-semibold text-slate-200">레벨</label>
+          <select id="input-emp-level" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="empLevel()" (ngModelChange)="empLevel.set($event)">
+            @for (lv of levelOptions; track lv) { <option [ngValue]="lv">{{ lv }}</option> }
+          </select>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label for="input-emp-role" class="text-sm font-semibold text-slate-200">역할</label>
+          <select id="input-emp-role" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" [ngModel]="editMenuPermRoleId()" (ngModelChange)="editMenuPermRoleId.set($event)">
+            @for (role of roleOptions(); track role.id) { <option [ngValue]="role.id">{{ role.name }}</option> }
+          </select>
+        </div>
+        <div class="flex flex-col gap-2">
+          <span class="text-sm font-semibold text-slate-200">권한</span>
+          <div class="grid grid-cols-4 gap-3">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" class="w-4 h-4 rounded bg-slate-800 border-slate-600 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0" [ngModel]="empRead()" (ngModelChange)="empRead.set($event)" />
+              <span class="text-sm text-slate-300">조회</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" class="w-4 h-4 rounded bg-slate-800 border-slate-600 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0" [ngModel]="empCreate()" (ngModelChange)="empCreate.set($event)" />
+              <span class="text-sm text-slate-300">등록</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" class="w-4 h-4 rounded bg-slate-800 border-slate-600 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0" [ngModel]="empUpdate()" (ngModelChange)="empUpdate.set($event)" />
+              <span class="text-sm text-slate-300">수정</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" class="w-4 h-4 rounded bg-slate-800 border-slate-600 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0" [ngModel]="empDelete()" (ngModelChange)="empDelete.set($event)" />
+              <span class="text-sm text-slate-300">삭제</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 px-6 py-4 border-t border-slate-800">
+        <button class="px-4 py-2.5 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors" (click)="closeEditMenuPerm()">취소</button>
+        <div class="flex-1"></div>
+        <button class="flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-500 rounded-lg transition-colors" (click)="deleteEditMenuPerm()">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          삭제
+        </button>
+        <button class="flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50" [disabled]="editMenuPermSaving()" (click)="saveEditMenuPerm()">
+          @if (editMenuPermSaving()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
           저장
         </button>
       </div>

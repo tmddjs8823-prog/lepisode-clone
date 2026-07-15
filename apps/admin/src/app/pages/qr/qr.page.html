@@ -15,6 +15,7 @@
     [data]="$any(filteredData())"
     [loading]="loading()"
     [total]="data().length"
+    (rowClick)="openForm($any($event))"
     (edit)="openForm($any($event))"
     (delete)="onDelete($any($event))">
 
@@ -49,11 +50,9 @@
     <div class="relative w-full max-w-md h-full bg-slate-900 border-l border-slate-700/60 shadow-2xl flex flex-col animate-drawer" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()" tabindex="-1">
 
       <!-- 헤더 -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
+      <div class="px-6 py-4 border-b border-slate-800 shrink-0">
+        <button class="text-slate-500 hover:text-white text-lg mb-2 transition-colors" (click)="closeForm()">&raquo;</button>
         <h3 class="text-base font-semibold text-white">{{ formTitle() }}</h3>
-        <button class="p-2 -mr-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors" (click)="closeForm()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
       </div>
 
       <!-- 본문 -->

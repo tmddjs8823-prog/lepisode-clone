@@ -28,7 +28,7 @@ export class EventsPage implements OnInit {
     { key: 'id', label: '번호', align: 'center', width: '10%', transform: (row) => {
       return 'EV' + String(row['id']).padStart(8, '0');
     }},
-    { key: 'title', label: '이벤트명', align: 'left', width: '25%' },
+    { key: 'title', label: '이벤트명', align: 'center', width: '25%' },
     { key: 'startDate', label: '이벤트 기간', align: 'center', width: '20%', transform: (row) => {
       const s = row['startDate'] as string | null;
       const e = row['endDate'] as string | null;
@@ -67,7 +67,7 @@ export class EventsPage implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       this.fAttachName.set(file.name);
-      this.toast.info('\uD30C\uC77C \uC5C5\uB85C\uB4DC\uB294 \uC11C\uBC84 \uC5F0\uB3D9\uC774 \uD544\uC694\uD569\uB2C8\uB2E4.');
+      this.toast.info('파일 업로드는 서버 연동이 필요합니다.');
     }
   }
 

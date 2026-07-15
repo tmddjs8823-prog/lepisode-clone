@@ -1,31 +1,39 @@
-import { Component, signal, inject, computed } from '@angular/core';
+import { Component, signal, inject, computed, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { ToastService } from '../../shared/services/toast.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
-export interface PermissionItem {
+const API = 'http://localhost:3000/api/v1/users';
+
+export interface RolePermissionItem {
   id: number;
-  name: string;
-  description: string;
+  roleId: number;
   level: number;
+  name: string;
+  description: string | null;
 }
 
 export interface RoleItem {
   id: number;
   name: string;
-  description: string;
-  permissions: PermissionItem[];
+  description: string | null;
+  permissions: RolePermissionItem[];
+  createdAt: string;
 }
 
 @Component({
   selector: 'admin-roles-page',
-  imports: [FormsModule, ConfirmDialogComponent],
+  imports: [FormsModule, ConfirmDialogComponent, PageHeaderComponent],
   templateUrl: './roles.page.html',
 })
-export class RolesPage {
+export class RolesPage implements OnInit {
+  private http = inject(HttpClient);
   private toast = inject(ToastService);
 
   data = signal<RoleItem[]>([]);
+  loading = signal(false);
 
   searchQuery = signal('');
   expandedIds = signal<Set<number>>(new Set());
@@ -33,7 +41,9 @@ export class RolesPage {
   filteredData = computed(() => {
     const q = this.searchQuery().toLowerCase();
     if (!q) return this.data();
-    return this.data().filter(r => r.name.includes(q) || r.description.includes(q));
+    return this.data().filter(r =>
+      r.name.toLowerCase().includes(q) || (r.description ?? '').toLowerCase().includes(q)
+    );
   });
 
   /* ── 역할 등록 드로어 ── */
@@ -54,16 +64,22 @@ export class RolesPage {
   /* ── 권한 등록 팝업 ── */
   showPermForm = signal(false);
   permTarget = signal<RoleItem | null>(null);
-  permLevel = signal<number | null>(null);
-  permName = signal('');
-  permDesc = signal('');
   permSaving = signal(false);
-
-  readonly levels = Array.from({ length: 11 }, (_, i) => i);
+  pfLevel = signal<string>('');
+  pfName = signal('');
+  pfDescription = signal('');
+  pfMenuId = signal<number | null>(null);
+  menuOptions = signal<{ id: number; menuKey: string; menuName: string }[]>([]);
+  levelOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   /* ── 삭제 ── */
   deleteTarget = signal<RoleItem | null>(null);
   deleting = signal(false);
+
+  ngOnInit(): void {
+    this.loadData();
+    this.loadMenus();
+  }
 
   toggleExpand(id: number): void {
     this.expandedIds.update(set => {
@@ -76,6 +92,29 @@ export class RolesPage {
 
   isExpanded(id: number): boolean {
     return this.expandedIds().has(id);
+  }
+
+  /* ── 데이터 로드 ── */
+  loadData(): void {
+    this.loading.set(true);
+    this.http.get<RoleItem[]>(`${API}/roles/list`).subscribe({
+      next: (list) => {
+        this.data.set(list);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.toast.error('역할 목록을 불러오지 못했습니다.');
+        this.loading.set(false);
+      },
+    });
+  }
+
+  /* ── 메뉴 목록 로드 ── */
+  loadMenus(): void {
+    this.http.get<{ id: number; menuKey: string; menuName: string }[]>(`${API}/menus/list`).subscribe({
+      next: (list) => this.menuOptions.set(list),
+      error: () => { /* 조용히 무시 */ },
+    });
   }
 
   /* ── 역할 등록 (상단) ── */
@@ -91,25 +130,30 @@ export class RolesPage {
   save(): void {
     if (!this.fName().trim()) { this.toast.warning('역할명을 입력하세요.'); return; }
     this.saving.set(true);
-    setTimeout(() => {
-      const newRole: RoleItem = {
-        id: Date.now(),
-        name: this.fName().trim(),
-        description: this.fDescription().trim(),
-        permissions: [],
-      };
-      this.data.update(list => [...list, newRole]);
-      this.toast.success('등록되었습니다.');
-      this.saving.set(false);
-      this.closeForm();
-    }, 500);
+    const payload = {
+      name: this.fName().trim(),
+      description: this.fDescription().trim() || undefined,
+    };
+    this.http.post(`${API}/roles`, payload).subscribe({
+      next: () => {
+        this.toast.success('등록되었습니다.');
+        this.saving.set(false);
+        this.closeForm();
+        this.loadData();
+      },
+      error: (err) => {
+        const msg = err?.error?.message || '등록에 실패했습니다.';
+        this.toast.error(msg);
+        this.saving.set(false);
+      },
+    });
   }
 
   /* ── 역할 수정 (팝업) ── */
   openEditRole(role: RoleItem): void {
     this.editRoleTarget.set(role);
     this.editRoleName.set(role.name);
-    this.editRoleDesc.set(role.description);
+    this.editRoleDesc.set(role.description ?? '');
     this.showEditRole.set(true);
   }
 
@@ -120,76 +164,103 @@ export class RolesPage {
     const target = this.editRoleTarget();
     if (!target) return;
     this.editRoleSaving.set(true);
-    setTimeout(() => {
-      this.data.update(roles => roles.map(r =>
-        r.id === target.id
-          ? { ...r, name: this.editRoleName().trim(), description: this.editRoleDesc().trim() }
-          : r
-      ));
-      this.toast.success('역할이 수정되었습니다.');
-      this.editRoleSaving.set(false);
-      this.closeEditRole();
-    }, 500);
+    // 백엔드에 역할 수정 API가 없으므로 삭제 후 재생성 대신 메모리에서만 반영하고 리로드
+    // NOTE: 향후 PUT /roles/:id API 추가 시 교체 필요
+    this.toast.warning('역할 수정 API가 아직 구현되지 않았습니다.');
+    this.editRoleSaving.set(false);
+    this.closeEditRole();
   }
 
-  /* ── 권한 등록 팝업 ── */
+  /* ── 권한 등록 ── */
   openPermForm(role: RoleItem): void {
     this.permTarget.set(role);
-    this.permLevel.set(null);
-    this.permName.set('');
-    this.permDesc.set('');
+    this.pfLevel.set('');
+    this.pfName.set('');
+    this.pfDescription.set('');
+    this.pfMenuId.set(null);
     this.showPermForm.set(true);
   }
-
   closePermForm(): void { this.showPermForm.set(false); }
-
   savePermForm(): void {
-    if (this.permLevel() === null) { this.toast.warning('레벨을 선택하세요.'); return; }
-    if (!this.permName().trim()) { this.toast.warning('권한명을 입력하세요.'); return; }
+    if (!this.pfName().trim()) { this.toast.warning('권한명을 입력하세요.'); return; }
+    if (!this.pfLevel()) { this.toast.warning('레벨을 선택하세요.'); return; }
     const target = this.permTarget();
     if (!target) return;
     this.permSaving.set(true);
-    setTimeout(() => {
-      const newPerm = {
-        id: Date.now(),
-        name: this.permName().trim(),
-        description: this.permDesc().trim(),
-        level: this.permLevel()!,
-      };
-      this.data.update(roles => roles.map(r =>
-        r.id === target.id ? { ...r, permissions: [...r.permissions, newPerm] } : r
-      ));
-      // 아코디언 자동 펼치기
-      this.expandedIds.update(set => { const next = new Set(set); next.add(target.id); return next; });
-      this.toast.success('권한이 등록되었습니다.');
-      this.permSaving.set(false);
-      this.closePermForm();
-    }, 500);
-  }
-
-  /* ── 권한 인라인 수정 (직접 변경으로 재렌더링 방지) ── */
-  updatePermLevel(roleId: number, permId: number, level: number): void {
-    const role = this.data().find(r => r.id === roleId);
-    const perm = role?.permissions.find(p => p.id === permId);
-    if (perm) perm.level = level;
-  }
-  updatePermName(roleId: number, permId: number, name: string): void {
-    const role = this.data().find(r => r.id === roleId);
-    const perm = role?.permissions.find(p => p.id === permId);
-    if (perm) perm.name = name;
-  }
-  updatePermDesc(roleId: number, permId: number, description: string): void {
-    const role = this.data().find(r => r.id === roleId);
-    const perm = role?.permissions.find(p => p.id === permId);
-    if (perm) perm.description = description;
+    const payload = {
+      level: Number(this.pfLevel()),
+      name: this.pfName().trim(),
+      description: this.pfDescription().trim() || undefined,
+    };
+    this.http.post(`${API}/roles/${target.id}/permissions`, payload).subscribe({
+      next: () => {
+        this.toast.success('권한이 등록되었습니다.');
+        this.permSaving.set(false);
+        this.closePermForm();
+        this.loadData();
+        // 아코디언 자동 펼치기
+        this.expandedIds.update(set => { const n = new Set(set); n.add(target.id); return n; });
+      },
+      error: () => {
+        this.toast.error('권한 등록에 실패했습니다.');
+        this.permSaving.set(false);
+      },
+    });
   }
 
   /* ── 권한 삭제 ── */
-  removePerm(roleId: number, permId: number): void {
-    this.data.update(roles => roles.map(r =>
-      r.id === roleId ? { ...r, permissions: r.permissions.filter(p => p.id !== permId) } : r
-    ));
-    this.toast.success('권한이 삭제되었습니다.');
+  deletePermission(roleId: number, permId: number): void {
+    this.http.delete(`${API}/roles/${roleId}/permissions/${permId}`).subscribe({
+      next: () => {
+        this.toast.success('권한이 삭제되었습니다.');
+        this.loadData();
+      },
+      error: () => {
+        this.toast.error('권한 삭제에 실패했습니다.');
+      },
+    });
+  }
+
+  /* ── 권한 수정 팝업 ── */
+  showEditPerm = signal(false);
+  editPermTarget = signal<RolePermissionItem | null>(null);
+  editPermRoleId = signal(0);
+  editPermSaving = signal(false);
+  epLevel = signal<string>('');
+  epName = signal('');
+  epDescription = signal('');
+
+  openEditPerm(roleId: number, perm: RolePermissionItem): void {
+    this.editPermRoleId.set(roleId);
+    this.editPermTarget.set(perm);
+    this.epLevel.set(String(perm.level));
+    this.epName.set(perm.name);
+    this.epDescription.set(perm.description ?? '');
+    this.showEditPerm.set(true);
+  }
+  closeEditPerm(): void { this.showEditPerm.set(false); }
+  saveEditPerm(): void {
+    if (!this.epName().trim()) { this.toast.warning('권한명을 입력하세요.'); return; }
+    const target = this.editPermTarget();
+    if (!target) return;
+    this.editPermSaving.set(true);
+    const payload = {
+      level: Number(this.epLevel()) || 0,
+      name: this.epName().trim(),
+      description: this.epDescription().trim() || undefined,
+    };
+    this.http.put(`${API}/roles/${this.editPermRoleId()}/permissions/${target.id}`, payload).subscribe({
+      next: () => {
+        this.toast.success('권한이 수정되었습니다.');
+        this.editPermSaving.set(false);
+        this.closeEditPerm();
+        this.loadData();
+      },
+      error: () => {
+        this.toast.error('권한 수정에 실패했습니다.');
+        this.editPermSaving.set(false);
+      },
+    });
   }
 
   /* ── 역할 삭제 ── */
@@ -198,12 +269,31 @@ export class RolesPage {
     const t = this.deleteTarget();
     if (!t) return;
     this.deleting.set(true);
-    setTimeout(() => {
-      this.data.update(list => list.filter(r => r.id !== t.id));
-      this.toast.success('삭제되었습니다.');
-      this.deleteTarget.set(null);
-      this.deleting.set(false);
-    }, 500);
+    this.http.delete(`${API}/roles/${t.id}`).subscribe({
+      next: () => {
+        this.toast.success('삭제되었습니다.');
+        this.deleteTarget.set(null);
+        this.deleting.set(false);
+        this.loadData();
+      },
+      error: () => {
+        this.toast.error('삭제에 실패했습니다.');
+        this.deleting.set(false);
+      },
+    });
   }
   cancelDelete(): void { this.deleteTarget.set(null); }
+
+  /* ── JSON 내보내기 ── */
+  exportJson(): void {
+    const json = JSON.stringify(this.data(), null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `roles_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    this.toast.success('JSON 파일이 다운로드되었습니다.');
+  }
 }

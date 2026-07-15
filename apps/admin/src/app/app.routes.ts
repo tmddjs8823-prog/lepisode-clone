@@ -5,13 +5,18 @@ import { LoginPage } from './pages/login/login.page';
 import { DashboardPage } from './pages/dashboard/dashboard.page';
 import { StubPage } from './pages/stub/stub.page';
 import { NoticesPage } from './pages/notices/notices.page';
+import { NoticeDetailPage } from './pages/notices/notice-detail.page';
 import { FaqPage } from './pages/faq/faq.page';
 import { JobsPage } from './pages/jobs/jobs.page';
+import { JobDetailPage } from './pages/jobs/job-detail.page';
 import { ServicesPage } from './pages/services/services.page';
+import { ServiceDetailPage } from './pages/services/service-detail.page';
 import { InquiriesPage } from './pages/inquiries/inquiries.page';
 import { SupportProjectsPage } from './pages/support/support-projects.page';
 import { ProjectStatusesPage } from './pages/support/project-statuses.page';
+import { WeeklyReportFormPage } from './pages/support/weekly-report-form.page';
 import { PortfolioPage } from './pages/portfolio/portfolio.page';
+import { PortfolioDetailPage } from './pages/portfolio/portfolio-detail.page';
 import { MarketingConsentsPage } from './pages/marketing/marketing-consents.page';
 import { MarketingCompaniesPage } from './pages/marketing/marketing-companies.page';
 import { CertificatesPage } from './pages/certificates/certificates.page';
@@ -54,18 +59,22 @@ export const appRoutes: Route[] = [
       // Homepage 관리
       // 포트폴리오 — 실제 구현
       { path: 'homepage/portfolio',  component: PortfolioPage },
+      { path: 'homepage/portfolio/:id', component: PortfolioDetailPage },
       // 서비스 소개 — 실제 구현
       { path: 'homepage/services',          component: ServicesPage },
+      { path: 'homepage/services/:id',      component: ServiceDetailPage },
       { path: 'homepage/company',    component: CompanyPage },
       { path: 'homepage/blog',       component: BlogPage },
       // 공지사항 — 실제 구현
       { path: 'homepage/notices',          component: NoticesPage },
+      { path: 'homepage/notices/:id',      component: NoticeDetailPage },
       // FAQ — 실제 구현
       { path: 'homepage/faq',              component: FaqPage },
       // 문의 내역 — 실제 구현
       { path: 'homepage/inquiries',        component: InquiriesPage },
       // 채용 — 실제 구현
       { path: 'homepage/jobs',             component: JobsPage },
+      { path: 'homepage/jobs/:id',          component: JobDetailPage },
 
       // Content
       // 인증서 — 실제 구현
@@ -95,6 +104,7 @@ export const appRoutes: Route[] = [
       { path: 'cody/notifications', component: CodyNotificationsPage },
       { path: 'cody/reports',       component: CodyReportsPage },
       { path: 'cody/reports/:id',    component: CodyReportDetailPage },
+      { path: 'cody/weekly-report/new', component: WeeklyReportFormPage },
 
       // Users
       { path: 'users/admins', component: AdminsPage },

@@ -3,15 +3,32 @@
 // ============================================================
 
 model SupportProject {
-  id         Int      @id @default(autoincrement())
-  title      String
-  slug       String   @unique
-  bannerUrl  String?
-  ogImageUrl String?
-  published  Boolean  @default(false)
-  sortOrder  Int      @default(0)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  bannerUrl   String?
+  ogImageUrl  String?
+  published   Boolean  @default(false)
+  sortOrder   Int      @default(0)
+
+  description String?  @db.Text
+  badge       String?
+  maxGrant    String?
+  heroColor   String?  @default("#DCE7FF")
+  themes      String[] // ['startup', 'smallbiz', 'sme', 'midcap', 'global']
+
+  seoTitle    String?
+  seoDesc     String?  @db.Text
+  seoKeywords String?
+
+  steps       Json?    // 단계별 안내
+  points      Json?    // 선택 포인트
+  mappings    Json?    // 포트폴리오/서비스 매핑
+  roadmaps    Json?    // 사업 로드맵
+  faqs        Json?    // FAQ
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("support_projects")
 }

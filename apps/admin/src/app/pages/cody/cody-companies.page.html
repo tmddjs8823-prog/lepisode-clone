@@ -9,6 +9,7 @@
     [total]="total()"
     [page]="page()"
     [limit]="limit()"
+    (rowClick)="openForm($any($event))"
     (edit)="openForm($any($event))"
     (delete)="onDelete($any($event))"
     (pageChange)="onPageChange($event)"
@@ -42,72 +43,112 @@
   <div class="fixed inset-0 z-50 flex justify-end">
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" role="button" tabindex="-1" (click)="closeForm()" (keydown.escape)="closeForm()"></div>
     <div class="relative w-full max-w-md h-full bg-slate-900 border-l border-slate-700/60 shadow-2xl flex flex-col animate-drawer">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
+      <div class="px-6 py-4 border-b border-slate-800 shrink-0">
+        <button class="text-slate-500 hover:text-white text-lg mb-2 transition-colors" (click)="closeForm()">&raquo;</button>
         <h3 class="text-base font-semibold text-white">{{ formTitle() }}</h3>
-        <button class="p-2 -mr-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors" (click)="closeForm()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
       </div>
       <div class="flex flex-col gap-5 p-6 flex-1 overflow-y-auto">
+        <!-- 기업명 -->
         <div class="flex flex-col gap-1.5">
           <label for="input-company-name" class="text-sm font-semibold text-slate-200">기업명 <span class="text-red-400">*</span></label>
           <input id="input-company-name" type="text"
-            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors"
             placeholder="기업명을 입력하세요"
             [ngModel]="fCompanyName()" (ngModelChange)="fCompanyName.set($event)" />
         </div>
+        <!-- 사업자등록번호 -->
         <div class="flex flex-col gap-1.5">
           <label for="input-biz-number" class="text-sm font-semibold text-slate-200">사업자등록번호</label>
           <input id="input-biz-number" type="text"
-            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors"
             placeholder="000-00-00000"
             [ngModel]="fBizNumber()" (ngModelChange)="fBizNumber.set($event)" />
         </div>
+        <!-- 대표자명 -->
         <div class="flex flex-col gap-1.5">
           <label for="input-ceo-name" class="text-sm font-semibold text-slate-200">대표자명</label>
           <input id="input-ceo-name" type="text"
-            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors"
             placeholder="대표자명을 입력하세요"
             [ngModel]="fCeoName()" (ngModelChange)="fCeoName.set($event)" />
         </div>
+        <!-- 대표 연락처 -->
         <div class="flex flex-col gap-1.5">
           <label for="input-ceo-phone" class="text-sm font-semibold text-slate-200">대표 연락처</label>
           <input id="input-ceo-phone" type="text"
-            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors"
             placeholder="010-0000-0000"
             [ngModel]="fCeoPhone()" (ngModelChange)="fCeoPhone.set($event)" />
         </div>
+        <!-- 기업 연락처 -->
         <div class="flex flex-col gap-1.5">
-          <label for="input-address" class="text-sm font-semibold text-slate-200">주소</label>
-          <input id="input-address" type="text"
-            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
-            placeholder="기업 소재지를 입력하세요"
-            [ngModel]="fAddress()" (ngModelChange)="fAddress.set($event)" />
+          <label for="input-company-phone" class="text-sm font-semibold text-slate-200">기업 연락처</label>
+          <input id="input-company-phone" type="text"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="02-0000-0000"
+            [ngModel]="fCompanyPhone()" (ngModelChange)="fCompanyPhone.set($event)" />
         </div>
+        <!-- 기업 이메일 -->
         <div class="flex flex-col gap-1.5">
-          <label for="input-email" class="text-sm font-semibold text-slate-200">이메일</label>
-          <input id="input-email" type="email"
-            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500"
-            placeholder="이메일을 입력하세요"
-            [ngModel]="fEmail()" (ngModelChange)="fEmail.set($event)" />
+          <label for="input-company-email" class="text-sm font-semibold text-slate-200">기업 이메일</label>
+          <input id="input-company-email" type="email"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="company@example.com"
+            [ngModel]="fCompanyEmail()" (ngModelChange)="fCompanyEmail.set($event)" />
         </div>
+        <!-- 기업 소재지 -->
         <div class="flex flex-col gap-1.5">
-          <label for="input-memo" class="text-sm font-semibold text-slate-200">메모</label>
-          <textarea id="input-memo" rows="3"
-            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 resize-none"
-            placeholder="메모를 입력하세요"
-            [ngModel]="fMemo()" (ngModelChange)="fMemo.set($event)"></textarea>
+          <label for="input-address" class="text-sm font-semibold text-slate-200">기업 소재지</label>
+          <div class="flex gap-2">
+            <input id="input-address" type="text"
+              class="flex-1 bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer"
+              placeholder="주소를 검색하세요"
+              [ngModel]="fAddress()" readonly (click)="openPostcode()" />
+            <button type="button"
+              class="px-4 py-2.5 text-sm font-medium text-white bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg transition-colors whitespace-nowrap"
+              (click)="openPostcode()">
+              주소 검색
+            </button>
+          </div>
+          <input id="input-address-detail" type="text"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="상세 주소를 입력하세요"
+            [ngModel]="fAddressDetail()" (ngModelChange)="fAddressDetail.set($event)" />
+        </div>
+        <!-- 홈페이지 -->
+        <div class="flex flex-col gap-1.5">
+          <label for="input-homepage" class="text-sm font-semibold text-slate-200">홈페이지</label>
+          <input id="input-homepage" type="url"
+            class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="https://example.com"
+            [ngModel]="fHomepage()" (ngModelChange)="fHomepage.set($event)" />
+        </div>
+        <!-- 사업자 등록증 업로드 -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-sm font-semibold text-slate-200">사업자 등록증</label>
+          <div class="flex flex-col gap-2">
+            @if (fBizFileUrl()) {
+              <div class="flex items-center gap-2 px-4 py-3 bg-slate-800/60 border border-slate-700/50 rounded-lg">
+                <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="text-sm text-slate-300 truncate flex-1">{{ fBizFileUrl() }}</span>
+                <button class="p-1 text-slate-500 hover:text-red-400 transition-colors" (click)="fBizFileUrl.set('')">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+              </div>
+            }
+            <label class="flex flex-col items-center justify-center gap-3 px-6 py-8 bg-slate-800/40 border-2 border-dashed border-slate-700 hover:border-indigo-500/50 rounded-xl cursor-pointer transition-colors">
+              <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+              <span class="text-sm text-slate-400">클릭하여 파일을 선택하세요</span>
+              <span class="text-[11px] text-slate-600">PDF, JPG, PNG 파일 지원</span>
+              <input type="file" accept=".pdf,.jpg,.jpeg,.png" class="hidden" (change)="onBizFileChange($event)" />
+            </label>
+          </div>
         </div>
       </div>
-      <div class="flex items-center gap-3 px-6 py-5 border-t border-slate-800 shrink-0">
-        <button class="px-4 py-2.5 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors" (click)="closeForm()">취소</button>
-        <div class="flex-1"></div>
-        @if (editingItem()) {
-          <button class="px-4 py-2.5 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors" (click)="onDelete(editingItem()!); closeForm()">삭제</button>
-        }
-        <button class="flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50" [disabled]="saving()" (click)="save()">
+      <div class="px-6 py-5 border-t border-slate-800 shrink-0">
+        <button class="w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50" [disabled]="saving()" (click)="save()">
           @if (saving()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
-          저장
+          등록
         </button>
       </div>
     </div>

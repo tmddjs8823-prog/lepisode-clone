@@ -15,8 +15,8 @@ export interface TranslationItem {
 export interface UpsertTranslationPayload {
   key: string;
   ko: string;
-  en?: string;
-  ja?: string;
+  en?: string | null;
+  ja?: string | null;
 }
 
 @Injectable({ providedIn: 'root' })

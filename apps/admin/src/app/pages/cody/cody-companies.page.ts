@@ -7,6 +7,7 @@ import { DataTableComponent } from '../../shared/components/data-table/data-tabl
 import { ColumnDef } from '../../shared/types/api.types';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { CodyApiService, CodyCompanyApiItem } from '../../shared/services/cody-api.service';
+import { UploadService } from '../../shared/services/upload.service';
 
 export interface CodyCompanyItem {
   id: number;
@@ -29,6 +30,7 @@ export class CodyCompaniesPage implements OnInit {
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
   private codyApi = inject(CodyApiService);
+  private upload = inject(UploadService);
 
   data = signal<CodyCompanyItem[]>([]);
   searchTerm = signal('');
@@ -39,7 +41,7 @@ export class CodyCompaniesPage implements OnInit {
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
     { key: 'id', label: '순번', align: 'center', width: '5rem' },
-    { key: 'companyName', label: '기업명', align: 'left' },
+    { key: 'companyName', label: '기업명', align: 'center' },
     { key: 'bizNumber', label: '사업자등록번호', align: 'center', width: '10rem' },
     { key: 'ceoName', label: '대표자명', align: 'center', width: '7rem' },
     { key: 'ceoPhone', label: '대표 연락처', align: 'center', width: '9rem' },
@@ -52,13 +54,18 @@ export class CodyCompaniesPage implements OnInit {
   saving = signal(false);
   formTitle = computed(() => this.editingItem() ? '기업 수정' : '기업 등록');
 
-  fCompanyName = signal('');
-  fBizNumber = signal('');
-  fCeoName = signal('');
-  fCeoPhone = signal('');
-  fAddress = signal('');
-  fEmail = signal('');
-  fMemo = signal('');
+  fCompanyName  = signal('');
+  fBizNumber    = signal('');
+  fCeoName      = signal('');
+  fCeoPhone     = signal('');
+  fCompanyPhone = signal('');
+  fCompanyEmail = signal('');
+  fAddress      = signal('');
+  fAddressDetail = signal('');
+  fHomepage     = signal('');
+  fBizFileUrl   = signal('');
+  fEmail        = signal('');
+  fMemo         = signal('');
 
   /* ── 삭제 ── */
   deleteTarget = signal<CodyCompanyItem | null>(null);
@@ -146,6 +153,33 @@ export class CodyCompaniesPage implements OnInit {
       this.fMemo.set('');
     }
     this.showForm.set(true);
+  }
+
+  /** Daum 우편번호 팝업으로 주소 검색 */
+  openPostcode(): void {
+    const daum = (window as unknown as Record<string, unknown>)['daum'] as
+      | { Postcode: new (opts: { oncomplete: (data: Record<string, string>) => void }) => { open(): void } }
+      | undefined;
+    if (!daum) { alert('주소 검색 서비스를 불러오지 못했습니다.'); return; }
+    new daum.Postcode({
+      oncomplete: (data) => {
+        this.fAddress.set(data['address'] ?? '');
+        this.fAddressDetail.set('');
+      },
+    }).open();
+  }
+
+  /** 사업자등록증 파일 업로드 */
+  onBizFileChange(event: Event): void {
+    const file = this.upload.extractFile(event);
+    if (!file) return;
+    this.upload.upload(file, 'cody/biz').subscribe({
+      next: (res) => {
+        this.fBizFileUrl.set(res.url);
+        this.toast.success('파일이 업로드되었습니다.');
+      },
+      error: () => this.toast.error('파일 업로드에 실패했습니다.'),
+    });
   }
 
   closeForm(): void { this.showForm.set(false); }

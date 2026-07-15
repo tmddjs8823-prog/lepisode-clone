@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   ServiceApiService,
   ServiceItem,
@@ -20,6 +21,7 @@ import { ColumnDef } from '../../shared/types/api.types';
 })
 export class ServicesPage implements OnInit {
   private api = inject(ServiceApiService);
+  private router = inject(Router);
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
   private upload = inject(UploadService);
@@ -30,9 +32,9 @@ export class ServicesPage implements OnInit {
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
     { key: 'sortOrder', label: '순서',    align: 'center', width: '4.5rem', type: 'number' },
-    { key: 'title',     label: '서비스명', align: 'left' },
-    { key: 'titleEn',   label: '영문 제목', align: 'left' },
-    { key: 'slug',      label: 'Slug',     align: 'left' },
+    { key: 'title',     label: '서비스명', align: 'center' },
+    { key: 'titleEn',   label: '영문 제목', align: 'center' },
+    { key: 'slug',      label: 'Slug',     align: 'center' },
     {
       key: 'isPublished', label: '노출여부', align: 'center', width: '6rem', type: 'badge',
       badgeMap: {
@@ -77,6 +79,10 @@ export class ServicesPage implements OnInit {
   }
 
   onSearch(term?: string): void { this.searchTerm.set(term || ''); }
+
+  navigateToDetail(item: ServiceItem): void {
+    this.router.navigate(['/homepage/services', item.id]);
+  }
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [

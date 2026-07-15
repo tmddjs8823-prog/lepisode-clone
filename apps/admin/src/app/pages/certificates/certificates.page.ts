@@ -25,10 +25,10 @@ export class CertificatesPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'title',    label: '인증서명', align: 'left', width: '10%' },
+    { key: 'title',    label: '인증서명', align: 'center', width: '10%' },
     { key: 'imageUrl', label: '이미지', align: 'center', width: '15%', type: 'image' },
-    { key: 'titleEn',  label: '영문명', align: 'left', width: '22%' },
-    { key: 'issuer',   label: '발급기관', align: 'left', width: '22%' },
+    { key: 'titleEn',  label: '영문명', align: 'center', width: '22%' },
+    { key: 'issuer',   label: '발급기관', align: 'center', width: '22%' },
     { key: 'sortOrder', label: '순서', align: 'center', width: '5rem', type: 'number' },
     { key: 'createdAt', label: '등록일', align: 'center', width: '8rem', type: 'date' },
   ];

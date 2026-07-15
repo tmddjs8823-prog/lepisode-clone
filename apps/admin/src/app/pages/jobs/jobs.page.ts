@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   JobApiService,
   JobItem,
@@ -34,20 +35,21 @@ const DEFAULT_CATEGORIES: JobCategory[] = [
 })
 export class JobsPage implements OnInit {
   private api = inject(JobApiService);
+  private router = inject(Router);
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
 
-  /* \u2500\u2500 \uBAA9\uB85D \u2500\u2500 */
+  /* ── 목록 ── */
   data = signal<JobItem[]>([]);
   searchTerm = signal('');
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'id', label: 'ID', align: 'center', width: '4rem' },
-    { key: 'category', label: '카테고리', align: 'center', width: '6rem' },
-    { key: 'title', label: '채용 공고명', align: 'left' },
+    { key: 'id', label: 'ID', align: 'center', width: '6%' },
+    { key: 'category', label: '카테고리', align: 'center', width: '10%' },
+    { key: 'title', label: '채용 공고명', align: 'center', width: '28%' },
     {
-      key: 'titleEn', label: '영문/일어', align: 'left',
+      key: 'titleEn', label: '영문/일어', align: 'center', width: '28%',
       transform: (row) => {
         const r = row as unknown as JobItem;
         const parts: string[] = [];
@@ -57,14 +59,14 @@ export class JobsPage implements OnInit {
       },
     },
     {
-      key: 'published', label: '상태', align: 'center', width: '5rem', type: 'badge',
+      key: 'published', label: '상태', align: 'center', width: '8%', type: 'badge',
       badgeMap: {
         true:  { label: '모집중', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
         false: { label: '마감', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
       },
     },
     {
-      key: 'startDate', label: '모집기간', align: 'center', width: '10rem',
+      key: 'startDate', label: '모집기간', align: 'center', width: '20%',
       transform: (row) => {
         const r = row as unknown as JobItem;
         const s = r.startDate ? r.startDate.slice(0, 10) : '—';
@@ -74,7 +76,7 @@ export class JobsPage implements OnInit {
     },
   ];
 
-  /* \u2500\u2500 \uCE74\uD14C\uACE0\uB9AC \u2500\u2500 */
+  /* ── 카테고리 ── */
   categories = signal<JobCategory[]>(DEFAULT_CATEGORIES);
   showCatManager = signal(false);
   showCatForm = signal(false);
@@ -85,14 +87,14 @@ export class JobsPage implements OnInit {
   catLabelJa = signal('');
   catSortOrder = signal(0);
   catSaving = signal(false);
-  catFormTitle = computed(() => this.editingCatIndex() !== null ? '\uCE74\uD14C\uACE0\uB9AC \uC218\uC815' : '\uCE74\uD14C\uACE0\uB9AC \uCD94\uAC00');
+  catFormTitle = computed(() => this.editingCatIndex() !== null ? '카테고리 수정' : '카테고리 추가');
 
-  /* \u2500\u2500 \uCC44\uC6A9 \uD3FC \u2500\u2500 */
+  /* ── 채용 폼 ── */
   showForm = signal(false);
   editingItem = signal<JobItem | null>(null);
   saving = signal(false);
   fLoading = signal(false);
-  formTitle = computed(() => this.editingItem() ? '\uCC44\uC6A9 \uACF5\uACE0 \uC218\uC815' : '\uCC44\uC6A9 \uACF5\uACE0 \uB4F1\uB85D');
+  formTitle = computed(() => this.editingItem() ? '채용 공고 수정' : '채용 공고 등록');
 
   fTitle = signal('');
   fTitleEn = signal('');
@@ -102,6 +104,8 @@ export class JobsPage implements OnInit {
   fStartDate = signal('');
   fDeadline = signal('');
   fPublished = signal(true);
+  fSeoTitle = signal('');
+  fMetaDesc = signal('');
 
   deleteTarget = signal<JobItem | null>(null);
   deleting = signal(false);
@@ -117,27 +121,31 @@ export class JobsPage implements OnInit {
 
   onSearch(term?: string): void { this.searchTerm.set(typeof term === 'string' ? term : ''); }
 
+  navigateToDetail(item: JobItem): void {
+    this.router.navigate(['/homepage/jobs', item.id]);
+  }
+
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [
       { key: 'id', header: 'ID' },
-      { key: 'title', header: '\uCC44\uC6A9 \uACF5\uACE0\uBA85' },
-      { key: 'category', header: '\uC9C1\uAD70' },
-      { key: 'published', header: '\uBAA8\uC9D1\uC0C1\uD0DC' },
-      { key: 'startDate', header: '\uC2DC\uC791\uC77C' },
-      { key: 'deadline', header: '\uB9C8\uAC10\uC77C' },
-      { key: 'createdAt', header: '\uB4F1\uB85D\uC77C' },
-    ], '\uCC44\uC6A9\uAD00\uB9AC');
+      { key: 'title', header: '채용 공고명' },
+      { key: 'category', header: '직군' },
+      { key: 'published', header: '모집상태' },
+      { key: 'startDate', header: '시작일' },
+      { key: 'deadline', header: '마감일' },
+      { key: 'createdAt', header: '등록일' },
+    ], '채용관리');
   }
 
   loadData(): void {
     this.loading.set(true);
     this.api.getList(1, 100).subscribe({
       next: (res) => { this.data.set(res.data); this.loading.set(false); },
-      error: () => { this.toast.error('\uBAA9\uB85D\uC744 \uBD88\uB7EC\uC624\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.'); this.loading.set(false); },
+      error: () => { this.toast.error('목록을 불러오지 못했습니다.'); this.loading.set(false); },
     });
   }
 
-  /* \u2500\u2500 \uCE74\uD14C\uACE0\uB9AC \uAD00\uB9AC \u2500\u2500 */
+  /* ── 카테고리 관리 ── */
   openCatManager(): void { this.showCatManager.set(true); this.showCatForm.set(false); }
   closeCatManager(): void { this.showCatManager.set(false); this.showCatForm.set(false); }
 
@@ -165,7 +173,7 @@ export class JobsPage implements OnInit {
 
   saveCat(): void {
     if (!this.catKey().trim() || !this.catLabelKo().trim()) {
-      this.toast.warning('key\uC640 \uD55C\uAD6D\uC5B4 \uB77C\uBCA8\uC740 \uD544\uC218\uC785\uB2C8\uB2E4.');
+      this.toast.warning('key와 한국어 라벨은 필수입니다.');
       return;
     }
     const cat: JobCategory = {
@@ -184,7 +192,7 @@ export class JobsPage implements OnInit {
     }
     list.sort((a, b) => a.sortOrder - b.sortOrder);
     this.categories.set(list);
-    this.toast.success(idx !== null ? '\uCE74\uD14C\uACE0\uB9AC\uAC00 \uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4.' : '\uCE74\uD14C\uACE0\uB9AC\uAC00 \uCD94\uAC00\uB418\uC5C8\uC2B5\uB2C8\uB2E4.');
+    this.toast.success(idx !== null ? '카테고리가 수정되었습니다.' : '카테고리가 추가되었습니다.');
     this.closeCatForm();
   }
 
@@ -192,14 +200,14 @@ export class JobsPage implements OnInit {
     const list = [...this.categories()];
     list.splice(index, 1);
     this.categories.set(list);
-    this.toast.success('\uCE74\uD14C\uACE0\uB9AC\uAC00 \uC0AD\uC81C\uB418\uC5C8\uC2B5\uB2C8\uB2E4.');
+    this.toast.success('카테고리가 삭제되었습니다.');
   }
 
   getCategoryLabel(key: string): string {
     return this.categories().find(c => c.key === key)?.labelKo ?? key;
   }
 
-  /* \u2500\u2500 \uCC44\uC6A9 \uD3FC \u2500\u2500 */
+  /* ── 채용 폼 ── */
   openForm(item?: JobItem): void {
     if (item) {
       this.editingItem.set(item);
@@ -216,7 +224,7 @@ export class JobsPage implements OnInit {
           this.fPublished.set(detail.published);
           this.fLoading.set(false);
         },
-        error: () => { this.toast.error('\uC0C1\uC138 \uC815\uBCF4\uB97C \uBD88\uB7EC\uC624\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.'); this.fLoading.set(false); },
+        error: () => { this.toast.error('상세 정보를 불러오지 못했습니다.'); this.fLoading.set(false); },
       });
     } else {
       this.editingItem.set(null);
@@ -235,7 +243,7 @@ export class JobsPage implements OnInit {
   closeForm(): void { this.showForm.set(false); this.editingItem.set(null); }
 
   save(): void {
-    if (!this.fTitle().trim()) { this.toast.warning('\uACF5\uACE0\uBA85\uC744 \uC785\uB825\uD558\uC138\uC694.'); return; }
+    if (!this.fTitle().trim()) { this.toast.warning('공고명을 입력하세요.'); return; }
     const payload: CreateJobPayload = {
       title: this.fTitle().trim(),
       titleEn: this.fTitleEn().trim() || undefined,
@@ -255,10 +263,10 @@ export class JobsPage implements OnInit {
 
     req.subscribe({
       next: () => {
-        this.toast.success(this.editingItem() ? '\uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4.' : '\uB4F1\uB85D\uB418\uC5C8\uC2B5\uB2C8\uB2E4.');
+        this.toast.success(this.editingItem() ? '수정되었습니다.' : '등록되었습니다.');
         this.closeForm(); this.loadData(); this.saving.set(false);
       },
-      error: () => { this.toast.error('\uC800\uC7A5\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.'); this.saving.set(false); },
+      error: () => { this.toast.error('저장에 실패했습니다.'); this.saving.set(false); },
     });
   }
 
@@ -267,8 +275,8 @@ export class JobsPage implements OnInit {
     const t = this.deleteTarget(); if (!t) return;
     this.deleting.set(true);
     this.api.remove(t.id).subscribe({
-      next: () => { this.toast.success('\uC0AD\uC81C\uB418\uC5C8\uC2B5\uB2C8\uB2E4.'); this.deleteTarget.set(null); this.deleting.set(false); this.loadData(); },
-      error: () => { this.toast.error('\uC0AD\uC81C\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.'); this.deleting.set(false); },
+      next: () => { this.toast.success('삭제되었습니다.'); this.deleteTarget.set(null); this.deleting.set(false); this.loadData(); },
+      error: () => { this.toast.error('삭제에 실패했습니다.'); this.deleting.set(false); },
     });
   }
   cancelDelete(): void { this.deleteTarget.set(null); }

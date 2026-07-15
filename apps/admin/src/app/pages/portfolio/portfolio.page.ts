@@ -1,5 +1,6 @@
-﻿import { Component, OnInit, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   PortfolioApiService,
   PortfolioItem,
@@ -12,6 +13,7 @@ import { RichEditorComponent } from '../../shared/components/rich-editor/rich-ed
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
+import { UploadService } from '../../shared/services/upload.service';
 
 export const SERVICE_TYPES = ['플랫폼', '홈페이지', 'DX(디지털전환)', 'AX(AI전환)', '카탈로그/브랜딩'];
 
@@ -22,8 +24,10 @@ export const SERVICE_TYPES = ['플랫폼', '홈페이지', 'DX(디지털전환)'
 })
 export class PortfolioPage implements OnInit {
   private api = inject(PortfolioApiService);
+  private router = inject(Router);
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
+  private upload = inject(UploadService);
 
   readonly serviceTypeOptions = SERVICE_TYPES;
 
@@ -44,9 +48,9 @@ export class PortfolioPage implements OnInit {
         return types?.join(', ') || '—';
       },
     },
-    { key: 'title',   label: '프로젝트', align: 'left' },
-    { key: 'titleEn', label: '영문 제목', align: 'left' },
-    { key: 'titleJa', label: '일본어 제목', align: 'left' },
+    { key: 'title',   label: '프로젝트', align: 'center' },
+    { key: 'titleEn', label: '영문 제목', align: 'center' },
+    { key: 'titleJa', label: '일본어 제목', align: 'center' },
     {
       key: 'published', label: '게시', align: 'center', width: '5.5rem', type: 'badge',
       badgeMap: {
@@ -131,6 +135,10 @@ export class PortfolioPage implements OnInit {
     this.fKeywordInput.set('');
   }
 
+  navigateToDetail(item: PortfolioItem): void {
+    this.router.navigate(['/homepage/portfolio', item.id]);
+  }
+
   onKeywordKeydown(event: KeyboardEvent): void {
     if (event.key === 'Enter') { event.preventDefault(); this.addKeyword(); }
   }
@@ -151,6 +159,19 @@ export class PortfolioPage implements OnInit {
 
   isServiceTypeSelected(type: string): boolean {
     return this.fServiceTypes().includes(type);
+  }
+
+  /** 썸네일 파일 업로드 */
+  onThumbnailChange(event: Event): void {
+    const file = this.upload.extractFile(event);
+    if (!file) return;
+    this.upload.upload(file, 'portfolio').subscribe({
+      next: (res) => {
+        this.fThumbnailUrl.set(res.url);
+        this.toast.success('썸네일이 업로드되었습니다.');
+      },
+      error: () => this.toast.error('썸네일 업로드에 실패했습니다.'),
+    });
   }
 
   filteredData = computed(() => {

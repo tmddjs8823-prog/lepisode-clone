@@ -5,6 +5,7 @@ import { ContentApiService, TermsItem, UpsertTermsPayload } from '../../shared/s
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { RichEditorComponent } from '../../shared/components/rich-editor/rich-editor.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
 interface TabDef {
   id: string;
@@ -14,7 +15,7 @@ interface TabDef {
 @Component({
   selector: 'admin-terms-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RichEditorComponent],
+  imports: [CommonModule, FormsModule, RichEditorComponent, PageHeaderComponent],
   templateUrl: './terms.page.html',
 })
 export class TermsPage implements OnInit {

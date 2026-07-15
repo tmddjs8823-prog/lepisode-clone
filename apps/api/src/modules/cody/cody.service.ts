@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import {
@@ -48,6 +48,8 @@ export class CodyService {
   }
 
   async createCompany(dto: CreateCodyCompanyDto) {
+    const existing = await this.prisma.codyCompany.findFirst({ where: { name: dto.name } });
+    if (existing) throw new ConflictException(`이미 등록된 기업명입니다: ${dto.name}`);
     return this.prisma.codyCompany.create({ data: dto });
   }
 
@@ -146,6 +148,10 @@ export class CodyService {
       },
       include: { company: { select: { id: true, name: true } }, project: { select: { id: true, name: true } } },
     });
+  }
+
+  async removeCredit(id: number) {
+    return this.prisma.codyCredit.delete({ where: { id } });
   }
 
   // ── Notification ──────────────────────────────────────

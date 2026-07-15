@@ -93,7 +93,7 @@
 
   <!-- Table wrapper -->
   <div class="overflow-x-auto rounded-xl border border-slate-700/50">
-    <table class="w-full text-sm">
+    <table class="w-full text-sm" style="table-layout: fixed;">
       <thead>
         <tr class="bg-slate-800/80 border-b border-slate-700/50">
           @for (col of columns(); track col.key) {
@@ -147,7 +147,7 @@
           </tr>
         } @else {
           @for (row of sortedData(); track $index) {
-            <tr class="border-b border-slate-800/80 hover:bg-slate-800/40 transition-colors cursor-pointer" (click)="edit.emit(row)" (contextmenu)="showActions() ? openContextMenu($event, row) : null">
+            <tr class="border-b border-slate-800/80 hover:bg-slate-800/40 transition-colors cursor-pointer" (click)="rowClick.emit(row)" (contextmenu)="showActions() ? openContextMenu($event, row) : null">
                @for (col of columns(); track col.key) {
                 <td
                   [class]="col.type === 'image' ? 'px-2 text-slate-300' : 'px-4 text-slate-300'"

@@ -25,7 +25,7 @@ export class PopupsPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'title', label: '팝업명', align: 'left', width: '25%' },
+    { key: 'title', label: '팝업명', align: 'center', width: '25%' },
     { key: 'imageUrl', label: '이미지', align: 'center', width: '15rem', type: 'image' },
     { key: 'startDate', label: '시작일', align: 'center', width: '15%', type: 'date' },
     { key: 'endDate', label: '종료일', align: 'center', width: '15%', type: 'date' },

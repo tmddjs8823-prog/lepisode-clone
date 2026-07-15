@@ -46,7 +46,7 @@ export class CodyProjectsPage implements OnInit {
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
     {
-      key: 'status', label: '상태', align: 'center', width: '5.5rem', type: 'badge',
+      key: 'status', label: '상태', align: 'center', width: '8%', type: 'badge',
       badgeMap: {
         '대기': { label: '대기', class: 'bg-amber-500/10 text-amber-400 border border-amber-500/20' },
         '진행': { label: '진행', class: 'bg-blue-500/10 text-blue-400 border border-blue-500/20' },
@@ -54,10 +54,10 @@ export class CodyProjectsPage implements OnInit {
         '보류': { label: '보류', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
       },
     },
-    { key: 'projectName', label: '프로젝트명', align: 'left' },
-    { key: 'companyName', label: '기업', align: 'left', width: '10rem' },
+    { key: 'projectName', label: '프로젝트명',    align: 'center', width: '30%' },
+    { key: 'companyName', label: '기업',         align: 'center', width: '18%' },
     {
-      key: '_period', label: '프로젝트 기간', align: 'center', width: '12rem',
+      key: '_period', label: '프로젝트 기간', align: 'center', width: '30%',
       transform: (row) => {
         const s = row['startDate'] as string || '';
         const e = row['endDate'] as string || '';
@@ -65,7 +65,7 @@ export class CodyProjectsPage implements OnInit {
         return `${s.substring(0, 10)} ~ ${e.substring(0, 10)}`;
       },
     },
-    { key: 'createdAt', label: '등록일자', align: 'center', width: '7.5rem', type: 'date' },
+    { key: 'createdAt', label: '등록일자', align: 'center', width: '14%', type: 'date' },
   ];
 
   /* ── 폼 ── */
@@ -177,13 +177,14 @@ export class CodyProjectsPage implements OnInit {
 
   save(): void {
     if (!this.fProjectName().trim()) { this.toast.warning('프로젝트명을 입력하세요.'); return; }
-    if (!this.fCompanyId()) { this.toast.warning('기업을 선택하세요.'); return; }
+    const companyId = this.fCompanyId();
+    if (!companyId) { this.toast.warning('기업을 선택하세요.'); return; }
 
     this.saving.set(true);
     const payload = {
       name: this.fProjectName().trim(),
       status: this.fStatus(),
-      companyId: this.fCompanyId()!,
+      companyId,
       startDate: this.fStartDate() || undefined,
       endDate: this.fEndDate() || undefined,
       description: this.fDescription().trim() || undefined,

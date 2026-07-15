@@ -37,9 +37,9 @@ export class CodyReportsPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'companyName', label: '기업', align: 'left', width: '9rem' },
-    { key: 'projectName', label: '프로젝트', align: 'left', width: '9rem' },
-    { key: 'title', label: '제목', align: 'left' },
+    { key: 'companyName', label: '기업', align: 'center', width: '9rem' },
+    { key: 'projectName', label: '프로젝트', align: 'center', width: '9rem' },
+    { key: 'title', label: '제목', align: 'center' },
     { key: 'period', label: '기간', align: 'center', width: '14rem' },
     { key: 'createdAt', label: '등록일시', align: 'center', width: '7.5rem', type: 'date' },
   ];

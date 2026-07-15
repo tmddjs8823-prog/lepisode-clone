@@ -19,7 +19,8 @@
     [data]="$any(filteredData())"
     [loading]="loading()"
     [total]="data().length"
-    (edit)="openForm($any($event))"
+    (rowClick)="navigateToDetail($any($event))"
+    (edit)="navigateToDetail($any($event))"
     (delete)="onDelete($any($event))">
 
     <!-- 검색 바를 데이터 테이블 내부의 슬롯으로 주입 (순서: 검색창 -> 라벨 -> 데이터 그리드) -->
@@ -49,7 +50,7 @@
 @if (showForm()) {
   <div class="fixed inset-0 z-50 flex justify-end">
     <!-- 백그라운드 오버레이 -->
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-backdrop" role="presentation" (click)="closeForm()" (keydown.escape)="closeForm()"></div>
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-backdrop" role="button" tabindex="-1" (click)="closeForm()" (keydown.escape)="closeForm()"></div>
     
     <!-- 서랍 컨테이너 -->
     <div class="relative w-full max-w-2xl h-full bg-slate-900 shadow-2xl flex flex-col animate-drawer">
@@ -154,10 +155,10 @@
       <!-- 서랍 푸터 -->
       <div class="px-8 py-5 border-t border-slate-800 flex items-center justify-between bg-slate-900 shrink-0">
         <label class="flex items-center gap-3 cursor-pointer group">
-          <div class="relative w-11 h-6 bg-slate-700 rounded-full peer-checked:bg-indigo-600 transition-colors" [class.bg-indigo-600]="fPublished()">
-            <div class="absolute top-[2px] left-[2px] bg-white border border-slate-600 rounded-full h-5 w-5 transition-transform shadow-sm group-hover:scale-105" [class.translate-x-5]="fPublished()"></div>
+          <div class="relative w-11 h-6 rounded-full transition-colors" [class]="fPublished() ? 'bg-emerald-500' : 'bg-red-500/70'">
+            <div class="absolute top-[2px] left-[2px] bg-white rounded-full h-5 w-5 transition-transform shadow-sm group-hover:scale-105" [class.translate-x-5]="fPublished()"></div>
           </div>
-          <span class="text-sm font-bold text-slate-200">공개 여부</span>
+          <span class="text-sm font-bold" [class]="fPublished() ? 'text-emerald-400' : 'text-red-400'">{{ fPublished() ? '공개' : '비공개' }}</span>
           <input id="svc-published" type="checkbox" class="sr-only" [ngModel]="fPublished()" (ngModelChange)="fPublished.set($event)">
         </label>
 
