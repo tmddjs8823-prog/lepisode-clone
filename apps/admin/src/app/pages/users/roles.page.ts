@@ -164,11 +164,22 @@ export class RolesPage implements OnInit {
     const target = this.editRoleTarget();
     if (!target) return;
     this.editRoleSaving.set(true);
-    // 백엔드에 역할 수정 API가 없으므로 삭제 후 재생성 대신 메모리에서만 반영하고 리로드
-    // NOTE: 향후 PUT /roles/:id API 추가 시 교체 필요
-    this.toast.warning('역할 수정 API가 아직 구현되지 않았습니다.');
-    this.editRoleSaving.set(false);
-    this.closeEditRole();
+    const payload = {
+      name: this.editRoleName().trim(),
+      description: this.editRoleDesc().trim() || undefined,
+    };
+    this.http.put(`${API}/roles/${target.id}`, payload).subscribe({
+      next: () => {
+        this.toast.success('역할이 수정되었습니다.');
+        this.editRoleSaving.set(false);
+        this.closeEditRole();
+        this.loadData();
+      },
+      error: () => {
+        this.toast.error('역할 수정에 실패했습니다.');
+        this.editRoleSaving.set(false);
+      },
+    });
   }
 
   /* ── 권한 등록 ── */
@@ -226,14 +237,14 @@ export class RolesPage implements OnInit {
   editPermTarget = signal<RolePermissionItem | null>(null);
   editPermRoleId = signal(0);
   editPermSaving = signal(false);
-  epLevel = signal<string>('');
+  epLevel = signal<number>(0);
   epName = signal('');
   epDescription = signal('');
 
   openEditPerm(roleId: number, perm: RolePermissionItem): void {
     this.editPermRoleId.set(roleId);
     this.editPermTarget.set(perm);
-    this.epLevel.set(String(perm.level));
+    this.epLevel.set(perm.level);
     this.epName.set(perm.name);
     this.epDescription.set(perm.description ?? '');
     this.showEditPerm.set(true);
@@ -245,7 +256,7 @@ export class RolesPage implements OnInit {
     if (!target) return;
     this.editPermSaving.set(true);
     const payload = {
-      level: Number(this.epLevel()) || 0,
+      level: this.epLevel(),
       name: this.epName().trim(),
       description: this.epDescription().trim() || undefined,
     };
@@ -254,6 +265,9 @@ export class RolesPage implements OnInit {
         this.toast.success('권한이 수정되었습니다.');
         this.editPermSaving.set(false);
         this.closeEditPerm();
+        // 아코디언 자동 펼치기 유지
+        const roleId = this.editPermRoleId();
+        this.expandedIds.update(set => { const n = new Set(set); n.add(roleId); return n; });
         this.loadData();
       },
       error: () => {

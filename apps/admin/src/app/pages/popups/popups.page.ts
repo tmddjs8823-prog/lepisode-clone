@@ -25,18 +25,26 @@ export class PopupsPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'title', label: '팝업명', align: 'center', width: '25%' },
-    { key: 'imageUrl', label: '이미지', align: 'center', width: '15rem', type: 'image' },
-    { key: 'startDate', label: '시작일', align: 'center', width: '15%', type: 'date' },
-    { key: 'endDate', label: '종료일', align: 'center', width: '15%', type: 'date' },
+    { key: 'sortOrder', label: '순서', align: 'center', width: '8%' },
+    { key: 'title', label: '팝업명', align: 'center', width: '20%' },
+    { key: 'linkUrl', label: '링크', align: 'center', width: '22%', transform: (row) => {
+      const url = row['linkUrl'] as string | null;
+      return url || '';
+    }},
+    { key: 'startDate', label: '노출기간', align: 'center', width: '22%', transform: (row) => {
+      const s = row['startDate'] as string | null;
+      const e = row['endDate'] as string | null;
+      if (!s && !e) return '';
+      return `${s ? s.slice(0, 10) : '?'} ~ ${e ? e.slice(0, 10) : '?'}`;
+    }},
+    { key: 'imageUrl', label: '이미지', align: 'center', width: '12%', type: 'image' },
     {
-      key: 'published', label: '공개', align: 'center', width: '12%', type: 'badge',
+      key: 'published', label: '노출상태', align: 'center', width: '12%', type: 'badge',
       badgeMap: {
-        true:  { label: '공개', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
+        true:  { label: '노출', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
         false: { label: '숨김', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
       },
     },
-    { key: 'createdAt', label: '등록일', align: 'center', width: '15%', type: 'date' },
   ];
 
   showForm = signal(false);
@@ -120,6 +128,7 @@ export class PopupsPage implements OnInit {
     this.fStartDate.set(item?.startDate ? item.startDate.slice(0, 10) : '');
     this.fEndDate.set(item?.endDate ? item.endDate.slice(0, 10) : '');
     this.fSortOrder.set(item?.sortOrder ?? 0);
+    this.fLinkUrl.set(item?.linkUrl ?? '');
     this.fPublished.set(item?.published ?? true);
     this.showForm.set(true);
   }
@@ -145,6 +154,7 @@ export class PopupsPage implements OnInit {
         endDate: this.fEndDate() || undefined,
         sortOrder: this.fSortOrder(),
         published: this.fPublished(),
+        linkUrl: this.fLinkUrl().trim() || undefined,
       };
       const editing = this.editingItem();
       const req = editing

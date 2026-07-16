@@ -15,7 +15,7 @@ import { InquiriesPage } from './pages/inquiries/inquiries.page';
 import { SupportProjectsPage } from './pages/support/support-projects.page';
 import { ProjectStatusesPage } from './pages/support/project-statuses.page';
 import { ProjectStatusDetailPage } from './pages/support/project-status-detail.page';
-import { WeeklyReportFormPage } from './pages/support/weekly-report-form.page';
+import { CodyReportFormPage } from './pages/cody/cody-report-form.page';
 import { PortfolioPage } from './pages/portfolio/portfolio.page';
 import { PortfolioDetailPage } from './pages/portfolio/portfolio-detail.page';
 import { MarketingConsentsPage } from './pages/marketing/marketing-consents.page';
@@ -39,6 +39,7 @@ import { AdminsPage } from './pages/users/admins.page';
 import { CodyNotificationsPage } from './pages/cody/cody-notifications.page';
 import { CodyReportsPage } from './pages/cody/cody-reports.page';
 import { CodyReportDetailPage } from './pages/cody/cody-report-detail.page';
+import { CodyProjectDetailPage } from './pages/cody/cody-project-detail.page';
 
 export const appRoutes: Route[] = [
   // Login
@@ -102,11 +103,12 @@ export const appRoutes: Route[] = [
       // Cody
       { path: 'cody/companies',     component: CodyCompaniesPage },
       { path: 'cody/projects',      component: CodyProjectsPage },
+      { path: 'cody/projects/:id',  component: CodyProjectDetailPage },
       { path: 'cody/credits',       component: CodyCreditsPage },
       { path: 'cody/notifications', component: CodyNotificationsPage },
       { path: 'cody/reports',       component: CodyReportsPage },
-      { path: 'cody/reports/:id',    component: CodyReportDetailPage },
-      { path: 'cody/weekly-report/new', component: WeeklyReportFormPage },
+      { path: 'cody/reports/new',   component: CodyReportFormPage },
+      { path: 'cody/reports/:id',   component: CodyReportDetailPage },
 
       // Users
       { path: 'users/admins', component: AdminsPage },

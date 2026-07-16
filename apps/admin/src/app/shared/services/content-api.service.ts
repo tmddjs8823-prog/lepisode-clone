@@ -139,6 +139,7 @@ export interface EventItem {
   titleEn: string | null;
   titleJa: string | null;
   description: string | null;
+  content: string | null;
   imageUrl: string | null;
   linkUrl: string | null;
   attachmentUrl: string | null;
@@ -146,6 +147,8 @@ export interface EventItem {
   endDate: string | null;
   selectedDate: string | null;
   published: boolean;
+  seoTitle: string | null;
+  metaDesc: string | null;
   createdAt: string;
   updatedAt: string;
 }

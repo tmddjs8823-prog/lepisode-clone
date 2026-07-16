@@ -8,6 +8,7 @@ model AdminUser {
   password    String
   name        String
   role        String    @default("ADMIN") // SUPER_ADMIN, ADMIN, EDITOR
+  permission  String?   // 선택된 권한명
   roleRef     Role?     @relation(fields: [roleId], references: [id], onDelete: SetNull)
   roleId      Int?
   isActive    Boolean   @default(true)

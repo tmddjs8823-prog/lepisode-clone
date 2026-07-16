@@ -14,7 +14,6 @@
     [data]="$any(filteredData())"
     [loading]="loading()"
     [total]="data().length"
-    (rowClick)="openForm($any($event))"
     (edit)="openForm($any($event))"
     (delete)="onDelete($any($event))"
   >
@@ -74,17 +73,18 @@
           <span class="text-sm font-semibold text-slate-200">배너 이미지 <span class="text-red-400">*</span></span>
           @if (fImagePreview()) {
             <div class="relative rounded-lg overflow-hidden border border-slate-700">
-              <img [src]="fImagePreview()" class="w-full object-cover max-h-40" alt="배너 미리보기" />
+              <img [src]="fImagePreview()" class="w-full object-contain max-h-52 bg-slate-800" alt="배너 미리보기" />
               <button class="absolute top-2 right-2 p-1 bg-slate-900/80 text-slate-400 hover:text-red-400 rounded-full transition-colors" (click)="removeImage()">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
           } @else {
             <label
-              class="flex flex-col items-center justify-center gap-2 p-6 border-2 border-dashed border-slate-600 rounded-xl cursor-pointer hover:border-indigo-500 transition-colors"
+              class="flex flex-col items-center justify-center gap-2 p-8 border-2 border-dashed border-slate-600 rounded-xl cursor-pointer hover:border-indigo-500 transition-colors"
               (dragover)="onDragOver($event)" (drop)="onDropFile($event)">
-              <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M13.5 3.75h6m-6 0v6m0-6L6 11.25"/></svg>
-              <span class="text-slate-400 text-xs">이미지를 드래그하거나 클릭해서 업로드</span>
+              <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3v11.25"/></svg>
+              <span class="text-slate-400 text-xs">파일을 드래그하여 올려놓으세요</span>
+              <span class="text-slate-500 text-[11px]">또는 클릭해서 선택이 가능합니다</span>
               <input type="file" accept="image/*" class="hidden" (change)="onFileSelect($event)" />
             </label>
           }

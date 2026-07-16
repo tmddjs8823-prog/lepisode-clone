@@ -9,10 +9,11 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
 import { ColumnDef } from '../../shared/types/api.types';
+import { RichEditorComponent } from '../../shared/components/rich-editor/rich-editor.component';
 
 @Component({
   selector: 'admin-notices-page',
-  imports: [FormsModule, PageHeaderComponent, ConfirmDialogComponent, DataTableComponent],
+  imports: [FormsModule, PageHeaderComponent, ConfirmDialogComponent, DataTableComponent, RichEditorComponent],
   templateUrl: './notices.page.html',
 })
 export class NoticesPage implements OnInit {
@@ -79,6 +80,7 @@ export class NoticesPage implements OnInit {
   fIsPinned = signal(false);
   fSeoTitle = signal('');
   fMetaDesc = signal('');
+  fCreatedAt = signal('');
 
   filteredData = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -134,6 +136,7 @@ export class NoticesPage implements OnInit {
           this.fThumbnailFile.set(null);
           this.fPublished.set(detail.published);
           this.fIsPinned.set(detail.isPinned);
+          this.fCreatedAt.set(detail.createdAt ? detail.createdAt.slice(0, 10) : '');
         },
         error: () => this.toast.error('상세 정보를 불러오지 못했습니다.')
       });
@@ -150,6 +153,7 @@ export class NoticesPage implements OnInit {
       this.fThumbnailFile.set(null);
       this.fPublished.set(true);
       this.fIsPinned.set(false);
+      this.fCreatedAt.set('');
     }
     this.showForm.set(true);
   }
@@ -192,6 +196,7 @@ export class NoticesPage implements OnInit {
         thumbnailUrl: thumbnailUrl || this.fThumbnailUrl() || undefined,
         published: this.fPublished(),
         isPinned: this.fIsPinned(),
+        createdAt: this.fCreatedAt() || undefined,
       };
 
       const editing = this.editingItem();

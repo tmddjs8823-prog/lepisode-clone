@@ -7,7 +7,6 @@
     [data]="$any(filteredData())"
     [loading]="loading()"
     [total]="total()"
-    (rowClick)="openForm($any($event))"
     (edit)="openForm($any($event))"
     (delete)="onDelete($any($event))"
   >

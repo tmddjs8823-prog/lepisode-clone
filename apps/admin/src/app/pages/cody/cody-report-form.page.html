@@ -77,8 +77,8 @@
             <label for="wr-project" class="text-sm font-semibold text-slate-200">프로젝트</label>
             <select id="wr-project" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="project()" (ngModelChange)="project.set($event)">
               <option value="">프로젝트를 선택해주세요</option>
-              @for (p of projectOptions(); track p) {
-                <option [ngValue]="p">{{ p }}</option>
+              @for (p of projectOptions(); track p.id) {
+                <option [ngValue]="p.name">{{ p.name }}</option>
               }
             </select>
           </div>

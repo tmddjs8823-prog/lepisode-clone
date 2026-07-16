@@ -61,7 +61,7 @@ export class CompanyPage implements OnInit {
   fBio = signal('');
   fBioEn = signal('');
   fBioJa = signal('');
-  fSortOrder = signal(0);
+  fSortOrder = signal<number | null>(null);
   fProfileImageUrl = signal('');
   fImageFile = signal<File | null>(null);
   fImagePreview = signal('');
@@ -120,7 +120,7 @@ export class CompanyPage implements OnInit {
       this.fName.set(''); this.fNameEn.set(''); this.fNameJa.set('');
       this.fPosition.set(''); this.fPositionEn.set(''); this.fPositionJa.set('');
       this.fBio.set(''); this.fBioEn.set(''); this.fBioJa.set('');
-      this.fSortOrder.set(0);
+      this.fSortOrder.set(null);
       this.fProfileImageUrl.set(''); this.fImagePreview.set(''); this.fImageFile.set(null);
     }
   }

@@ -30,24 +30,27 @@ export class UploadController {
    * POST /api/v1/upload?folder=blog
    * multipart/form-data 로 file 필드에 이미지 전송
    */
-  @ApiOperation({ summary: '이미지 업로드' })
+  @ApiOperation({ summary: '파일 업로드 (이미지·문서)' })
   @ApiConsumes('multipart/form-data')
   @ApiQuery({ name: 'folder', required: false, example: 'blog' })
   @Post()
   @UseInterceptors(
     FileInterceptor('file', {
-      limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+      limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
       fileFilter: (_req, file, cb) => {
-        const allowed = /^image\/(jpeg|png|gif|webp|svg\+xml|avif)$/;
-        if (!allowed.test(file.mimetype)) {
-          return cb(
+        const allowedMime =
+          /^(image\/(jpeg|png|gif|webp|svg\+xml|avif)|application\/(pdf|vnd\.ms-powerpoint|vnd\.openxmlformats-officedocument\.presentationml\.presentation|haansofthwp|x-hwp|vnd\.hancom\.hwp|msword|vnd\.openxmlformats-officedocument\.wordprocessingml\.document|vnd\.ms-excel|vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet|octet-stream))$/;
+        const allowedExt = /\.(jpe?g|png|gif|webp|svg|avif|pdf|pptx?|hwp|docx?|xlsx?)$/i;
+        if (allowedMime.test(file.mimetype) || allowedExt.test(file.originalname)) {
+          cb(null, true);
+        } else {
+          cb(
             new BadRequestException(
-              '지원하지 않는 파일 형식입니다. (jpeg, png, gif, webp, svg, avif)',
+              '지원하지 않는 파일 형식입니다. (이미지: jpeg, png, gif, webp, svg, avif / 문서: pdf, ppt, pptx, hwp, doc, docx, xls, xlsx)',
             ),
             false,
           );
         }
-        cb(null, true);
       },
     }),
   )

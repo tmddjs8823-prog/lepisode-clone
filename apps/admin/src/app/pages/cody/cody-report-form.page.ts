@@ -1,17 +1,19 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
 import { RichEditorComponent } from '../../shared/components/rich-editor/rich-editor.component';
+import { CodyApiService } from '../../shared/services/cody-api.service';
 
 @Component({
-  selector: 'admin-weekly-report-form-page',
+  selector: 'admin-cody-report-form-page',
   imports: [FormsModule, RichEditorComponent],
-  templateUrl: './weekly-report-form.page.html',
+  templateUrl: './cody-report-form.page.html',
 })
-export class WeeklyReportFormPage {
+export class CodyReportFormPage implements OnInit {
   private router = inject(Router);
   private toast = inject(ToastService);
+  private codyApi = inject(CodyApiService);
 
   // 아코디언 상태
   previewOpen = signal(true);
@@ -27,8 +29,15 @@ export class WeeklyReportFormPage {
 
   saving = signal(false);
 
-  // 프로젝트 목록 (API 연동 시 교체)
-  projectOptions = signal<string[]>(['프로젝트 A', '프로젝트 B', '프로젝트 C']);
+  // 프로젝트 목록
+  projectOptions = signal<{ id: number; name: string }[]>([]);
+
+  ngOnInit(): void {
+    this.codyApi.getProjectNames().subscribe({
+      next: (list) => this.projectOptions.set(list),
+      error: () => this.toast.error('프로젝트 목록을 불러오지 못했습니다.'),
+    });
+  }
 
   togglePreview(): void {
     this.previewOpen.update(v => !v);

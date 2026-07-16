@@ -1,5 +1,6 @@
 import { Component, signal, inject, computed, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -31,6 +32,7 @@ export class CodyProjectsPage implements OnInit {
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
   private codyApi = inject(CodyApiService);
+  private router = inject(Router);
 
   data = signal<CodyProjectItem[]>([]);
   searchTerm = signal('');
@@ -97,6 +99,10 @@ export class CodyProjectsPage implements OnInit {
   }
 
   onSearch(term?: string): void { this.searchTerm.set(term || ''); }
+
+  goDetail(item: CodyProjectItem): void {
+    this.router.navigate(['/cody/projects', item.id]);
+  }
 
   onExportExcel(): void {
     this.excel.export(this.data() as unknown as Record<string, unknown>[], [

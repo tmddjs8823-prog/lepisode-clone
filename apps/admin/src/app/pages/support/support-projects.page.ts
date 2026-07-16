@@ -7,7 +7,7 @@ import {
 } from '../../shared/services/support-api.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
-import { UploadService } from '../../shared/services/upload.service';
+import { UploadService, DOCUMENT_ACCEPT, getFileExtLabel } from '../../shared/services/upload.service';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
@@ -156,6 +156,12 @@ export class SupportProjectsPage implements OnInit {
   fMappings = signal<MappingItem[]>([]);
   fRoadmaps = signal<RoadmapItem[]>([]);
   fFaqs = signal<FaqItem[]>([]);
+
+  /* ── 첨부파일 ── */
+  fAttachmentUrl = signal('');
+  fAttachName = signal('');
+  readonly docAccept = DOCUMENT_ACCEPT;
+  getExtLabel = getFileExtLabel;
   pinnedCount = computed(() => this.fFaqs().filter(f => f.pinned).length);
 
   readonly illustOptions = ILLUST_OPTIONS;
@@ -206,30 +212,33 @@ export class SupportProjectsPage implements OnInit {
   }
 
   private resetFormFields(item?: SupportProjectItem): void {
+    const themes = item?.themes ?? [];
     this.fTitle.set(item?.title ?? '');
     this.fSlug.set(item?.slug ?? '');
-    this.fBadge.set('');
+    this.fBadge.set(item?.badge ?? '');
     this.fPublished.set(item?.published ?? true);
-    this.fDescription.set('');
-    this.fMaxGrant.set('');
-    this.fThemeStartup.set(false);
-    this.fThemeSmallBiz.set(false);
-    this.fThemeSME.set(false);
-    this.fThemeMidCap.set(false);
-    this.fThemeGlobal.set(false);
+    this.fDescription.set(item?.description ?? '');
+    this.fMaxGrant.set(item?.maxGrant ?? '');
+    this.fThemeStartup.set(themes.includes('startup'));
+    this.fThemeSmallBiz.set(themes.includes('small-biz'));
+    this.fThemeSME.set(themes.includes('sme'));
+    this.fThemeMidCap.set(themes.includes('mid-cap'));
+    this.fThemeGlobal.set(themes.includes('global'));
     this.fBannerFile.set(null);
     this.fBannerPreview.set(item?.bannerUrl ?? '');
-    this.fHeroColor.set('#DCE7FF');
+    this.fHeroColor.set(item?.heroColor ?? '#DCE7FF');
     this.fOgFile.set(null);
     this.fOgPreview.set(item?.ogImageUrl ?? '');
-    this.fSeoTitle.set('');
-    this.fSeoDesc.set('');
-    this.fSeoKeywords.set('');
-    this.fSteps.set([]);
-    this.fPoints.set([]);
-    this.fMappings.set([]);
-    this.fRoadmaps.set([]);
-    this.fFaqs.set([]);
+    this.fSeoTitle.set(item?.seoTitle ?? '');
+    this.fSeoDesc.set(item?.seoDesc ?? '');
+    this.fSeoKeywords.set(item?.seoKeywords ?? '');
+    this.fSteps.set((item?.steps as StepItem[]) ?? [{ iconKey: '', title: '', target: '', amount: '', rate: '' }]);
+    this.fPoints.set((item?.points as PointItem[]) ?? [{ illustKey: '', title: '', description: '' }]);
+    this.fMappings.set((item?.mappings as MappingItem[]) ?? [{ type: 'portfolio', selectedId: null }]);
+    this.fRoadmaps.set((item?.roadmaps as RoadmapItem[]) ?? [{ title: '', description: '' }]);
+    this.fFaqs.set((item?.faqs as FaqItem[]) ?? [{ question: '', answer: '', pinned: false }]);
+    this.fAttachmentUrl.set((item as Record<string, unknown>)?.['attachmentUrl'] as string ?? '');
+    this.fAttachName.set('');
   }
 
   openForm(item?: SupportProjectItem): void {
@@ -237,12 +246,11 @@ export class SupportProjectsPage implements OnInit {
       // 수정 모드 — 해당 아이템 데이터로 세팅
       this.editingItem.set(item);
       this.resetFormFields(item);
-    } else if (!this.hasDraft()) {
-      // 새 등록 — 임시 데이터 없으면 초기화
+    } else {
+      // 새 등록 — 항상 초기화
       this.editingItem.set(null);
       this.resetFormFields();
     }
-    // else: 임시 데이터가 있으면 그대로 유지하며 폼 재오픈
     this.showForm.set(true);
   }
 
@@ -299,6 +307,18 @@ export class SupportProjectsPage implements OnInit {
   removeOg(): void { this.fOgFile.set(null); this.fOgPreview.set(''); }
 
   onDragOver(ev: DragEvent): void { ev.preventDefault(); }
+
+  /* ── 문서 첨부 ── */
+  onDocSelect(ev: Event): void {
+    const file = (ev.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.fAttachName.set(file.name);
+    this.upload.upload(file, 'support-docs').subscribe({
+      next: (res) => { this.fAttachmentUrl.set(res.url); this.toast.success('문서가 업로드되었습니다.'); },
+      error: () => this.toast.error('문서 업로드에 실패했습니다.'),
+    });
+  }
+  removeDoc(): void { this.fAttachmentUrl.set(''); this.fAttachName.set(''); }
 
   resetHeroColor(): void { this.fHeroColor.set('#DCE7FF'); }
 
@@ -426,12 +446,32 @@ export class SupportProjectsPage implements OnInit {
     }
 
     Promise.all(uploads).then(([bannerUrl, ogImageUrl]) => {
+      const themes: string[] = [];
+      if (this.fThemeStartup()) themes.push('startup');
+      if (this.fThemeSmallBiz()) themes.push('small-biz');
+      if (this.fThemeSME()) themes.push('sme');
+      if (this.fThemeMidCap()) themes.push('mid-cap');
+      if (this.fThemeGlobal()) themes.push('global');
+
       const payload: CreateSupportProjectPayload = {
         title: this.fTitle().trim(),
         slug: this.fSlug().trim(),
+        description: this.fDescription().trim() || undefined,
+        badge: this.fBadge().trim() || undefined,
+        maxGrant: this.fMaxGrant().trim() || undefined,
+        heroColor: this.fHeroColor(),
+        themes,
         bannerUrl: bannerUrl || undefined,
         ogImageUrl: ogImageUrl || undefined,
         published: this.fPublished(),
+        seoTitle: this.fSeoTitle().trim() || undefined,
+        seoDesc: this.fSeoDesc().trim() || undefined,
+        seoKeywords: this.fSeoKeywords().trim() || undefined,
+        steps: this.fSteps(),
+        points: this.fPoints(),
+        mappings: this.fMappings(),
+        roadmaps: this.fRoadmaps(),
+        faqs: this.fFaqs(),
       };
 
       const editing = this.editingItem();

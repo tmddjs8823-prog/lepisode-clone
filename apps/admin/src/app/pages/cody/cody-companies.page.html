@@ -9,7 +9,6 @@
     [total]="total()"
     [page]="page()"
     [limit]="limit()"
-    (rowClick)="openForm($any($event))"
     (edit)="openForm($any($event))"
     (delete)="onDelete($any($event))"
     (pageChange)="onPageChange($event)"
@@ -125,7 +124,7 @@
         </div>
         <!-- 사업자 등록증 업로드 -->
         <div class="flex flex-col gap-1.5">
-          <label class="text-sm font-semibold text-slate-200">사업자 등록증</label>
+          <span class="text-sm font-semibold text-slate-200">사업자 등록증</span>
           <div class="flex flex-col gap-2">
             @if (fBizFileUrl()) {
               <div class="flex items-center gap-2 px-4 py-3 bg-slate-800/60 border border-slate-700/50 rounded-lg">

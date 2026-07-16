@@ -15,9 +15,10 @@
     [data]="$any(filteredData())"
     [loading]="loading()"
     [total]="data().length"
-    (rowClick)="openForm($any($event))"
+    [customContextMenuItems]="qrContextMenuItems"
     (edit)="openForm($any($event))"
-    (delete)="onDelete($any($event))">
+    (delete)="onDelete($any($event))"
+    (customAction)="onCustomAction($event)">
 
     <!-- 검색 바를 데이터 테이블 내부의 슬롯으로 주입 (순서: 검색창 -> 라벨 -> 데이터 그리드) -->
     <div search-bar class="relative max-w-sm">

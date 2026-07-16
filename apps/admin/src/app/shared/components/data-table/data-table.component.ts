@@ -28,12 +28,14 @@ export class DataTableComponent<T extends Record<string, unknown>> {
   loading = input<boolean>(false);
   showActions = input<boolean>(true);
   showToolbar = input<boolean>(true);
+  customContextMenuItems = input<{ action: string; label: string; icon: string }[]>([]);
 
   pageChange = output<number>();
   pageSizeChange = output<number>();
   edit = output<T>();
   delete = output<T>();
   rowClick = output<T>();
+  customAction = output<{ action: string; row: T }>();
 
   /* ── 정렬 ── */
   sortKey = signal<string>('');
@@ -141,7 +143,10 @@ export class DataTableComponent<T extends Record<string, unknown>> {
     return Math.ceil(this.total() / this.limit());
   }
 
-  getCellValue(row: T, key: string): unknown {
+  getCellValue(row: T, key: string, col?: ColumnDef<T>): unknown {
+    if (col?.transform) {
+      return col.transform(row);
+    }
     return (row as Record<string, unknown>)[key];
   }
 
@@ -187,6 +192,14 @@ export class DataTableComponent<T extends Record<string, unknown>> {
     const row = this.contextMenuRow();
     if (row) {
       this.delete.emit(row);
+      this.closeContextMenu();
+    }
+  }
+
+  onContextCustom(action: string): void {
+    const row = this.contextMenuRow();
+    if (row) {
+      this.customAction.emit({ action, row });
       this.closeContextMenu();
     }
   }

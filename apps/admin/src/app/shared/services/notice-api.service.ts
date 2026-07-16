@@ -49,6 +49,7 @@ export interface CreateNoticePayload {
   thumbnailUrl?: string;
   published?: boolean;
   isPinned?: boolean;
+  createdAt?: string;
 }
 
 export type UpdateNoticePayload = Partial<CreateNoticePayload>;

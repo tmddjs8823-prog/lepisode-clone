@@ -8,10 +8,12 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ColumnDef } from '../../shared/types/api.types';
+import { UploadService, DOCUMENT_ACCEPT } from '../../shared/services/upload.service';
+import { RichEditorComponent } from '../../shared/components/rich-editor/rich-editor.component';
 
 @Component({
   selector: 'admin-events-page',
-  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent, PageHeaderComponent],
+  imports: [FormsModule, ConfirmDialogComponent, DataTableComponent, PageHeaderComponent, RichEditorComponent],
   templateUrl: './events.page.html',
 })
 export class EventsPage implements OnInit {
@@ -19,6 +21,9 @@ export class EventsPage implements OnInit {
   private router = inject(Router);
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
+  private upload = inject(UploadService);
+
+  readonly docAccept = DOCUMENT_ACCEPT;
 
   data = signal<EventItem[]>([]);
   searchTerm = signal('');
@@ -50,6 +55,8 @@ export class EventsPage implements OnInit {
   fTitle = signal('');
   fTitleEn = signal('');
   fTitleJa = signal('');
+  fSeoTitle = signal('');
+  fMetaDesc = signal('');
   fDescription = signal('');
   fImageUrl = signal('');
   fAttachmentUrl = signal('');
@@ -65,10 +72,12 @@ export class EventsPage implements OnInit {
 
   onFileSelect(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      this.fAttachName.set(file.name);
-      this.toast.info('파일 업로드는 서버 연동이 필요합니다.');
-    }
+    if (!file) return;
+    this.fAttachName.set(file.name);
+    this.upload.upload(file, 'event-docs').subscribe({
+      next: (res) => { this.fAttachmentUrl.set(res.url); this.toast.success('파일이 업로드되었습니다.'); },
+      error: () => this.toast.error('파일 업로드에 실패했습니다.'),
+    });
   }
 
   removeFile(): void {
@@ -115,12 +124,17 @@ export class EventsPage implements OnInit {
     this.fTitle.set(item?.title ?? '');
     this.fTitleEn.set(item?.titleEn ?? '');
     this.fTitleJa.set(item?.titleJa ?? '');
+    this.fSeoTitle.set(item?.seoTitle ?? '');
+    this.fMetaDesc.set(item?.metaDesc ?? item?.description ?? '');
     this.fDescription.set(item?.description ?? '');
     this.fImageUrl.set(item?.imageUrl ?? '');
     this.fAttachmentUrl.set(item?.attachmentUrl ?? '');
     this.fStartDate.set(item?.startDate ? item.startDate.slice(0, 10) : '');
     this.fEndDate.set(item?.endDate ? item.endDate.slice(0, 10) : '');
     this.fPublished.set(item?.published ?? true);
+    this.fSelectedDate.set(item?.selectedDate ? item.selectedDate.slice(0, 10) : '');
+    this.fContent.set(item?.content ?? '');
+    this.fAttachName.set(item?.attachmentUrl ? '첨부파일' : '');
     this.showForm.set(true);
   }
 

@@ -29,6 +29,10 @@ export class UserController {
   @Post('roles')
   createRole(@Body() dto: CreateRoleDto) { return this.service.createRole(dto); }
 
+  @ApiOperation({ summary: '역할 수정' })
+  @Put('roles/:id')
+  updateRole(@Param('id', ParseIntPipe) id: number, @Body() dto: CreateRoleDto) { return this.service.updateRole(id, dto); }
+
   @ApiOperation({ summary: '역할 삭제' })
   @Delete('roles/:id')
   removeRole(@Param('id', ParseIntPipe) id: number) { return this.service.removeRole(id); }

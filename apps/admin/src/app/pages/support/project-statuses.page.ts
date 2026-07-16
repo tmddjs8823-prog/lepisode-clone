@@ -13,6 +13,7 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
 import { ColumnDef } from '../../shared/types/api.types';
+import { UploadService, DOCUMENT_ACCEPT, getFileExtLabel } from '../../shared/services/upload.service';
 
 const STATUS_META: Record<ProjectStatusType, { label: string; class: string }> = {
   ESTIMATING:  { label: '견적 중',   class: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
@@ -30,6 +31,10 @@ export class ProjectStatusesPage implements OnInit {
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
   private router = inject(Router);
+  private upload = inject(UploadService);
+
+  readonly docAccept = DOCUMENT_ACCEPT;
+  getExtLabel = getFileExtLabel;
 
   readonly statusMeta = STATUS_META;
   readonly statusOptions: ProjectStatusType[] = ['ESTIMATING', 'IN_PROGRESS', 'COMPLETE'];
@@ -82,6 +87,7 @@ export class ProjectStatusesPage implements OnInit {
   fContent = signal('');
   fPublished = signal(true);
   fSortOrder = signal(0);
+  fAttachName = signal('');
 
   filteredData = computed(() => {
     let result = this.data();
@@ -134,10 +140,14 @@ export class ProjectStatusesPage implements OnInit {
 
   onFileChange(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      this.toast.info('파일 업로드는 서버 연동이 필요합니다.');
-    }
+    if (!file) return;
+    this.fAttachName.set(file.name);
+    this.upload.upload(file, 'status-docs').subscribe({
+      next: (res) => { this.fAttachmentUrl.set(res.url); this.toast.success('파일이 업로드되었습니다.'); },
+      error: () => this.toast.error('파일 업로드에 실패했습니다.'),
+    });
   }
+  removeDoc(): void { this.fAttachmentUrl.set(''); this.fAttachName.set(''); }
 
   openForm(item?: ProjectStatusItem): void {
     this.editingItem.set(item ?? null);
@@ -152,6 +162,7 @@ export class ProjectStatusesPage implements OnInit {
     this.fEmail.set(item?.email ?? '');
     this.fPhone.set(item?.phone ?? '');
     this.fAttachmentUrl.set(item?.attachmentUrl ?? '');
+    this.fAttachName.set('');
     this.fMemo.set(item?.memo ?? '');
     this.fContent.set(item?.content ?? '');
     this.fPublished.set(item?.published ?? true);

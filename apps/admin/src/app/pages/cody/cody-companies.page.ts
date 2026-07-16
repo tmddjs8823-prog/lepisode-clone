@@ -7,7 +7,7 @@ import { DataTableComponent } from '../../shared/components/data-table/data-tabl
 import { ColumnDef } from '../../shared/types/api.types';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { CodyApiService, CodyCompanyApiItem } from '../../shared/services/cody-api.service';
-import { UploadService } from '../../shared/services/upload.service';
+import { UploadService, IMAGE_AND_DOCUMENT_ACCEPT, isImageFile } from '../../shared/services/upload.service';
 
 export interface CodyCompanyItem {
   id: number;
@@ -31,6 +31,9 @@ export class CodyCompaniesPage implements OnInit {
   private excel = inject(ExcelExportService);
   private codyApi = inject(CodyApiService);
   private upload = inject(UploadService);
+
+  readonly fileAccept = IMAGE_AND_DOCUMENT_ACCEPT;
+  isImage = isImageFile;
 
   data = signal<CodyCompanyItem[]>([]);
   searchTerm = signal('');
@@ -64,6 +67,7 @@ export class CodyCompaniesPage implements OnInit {
   fAddressDetail = signal('');
   fHomepage     = signal('');
   fBizFileUrl   = signal('');
+  fBizFileName  = signal('');
   fEmail        = signal('');
   fMemo         = signal('');
 
@@ -133,26 +137,40 @@ export class CodyCompaniesPage implements OnInit {
 
   /* ── 등록/수정 ── */
   openForm(item?: CodyCompanyItem): void {
-    if (item) {
-      this.editingItem.set(item);
-      this.fCompanyName.set(item.companyName);
-      this.fBizNumber.set(item.bizNumber);
-      this.fCeoName.set(item.ceoName);
-      this.fCeoPhone.set(item.ceoPhone);
-      this.fAddress.set(item.address);
-      this.fEmail.set(item.email);
-      this.fMemo.set(item.memo);
-    } else {
-      this.editingItem.set(null);
-      this.fCompanyName.set('');
-      this.fBizNumber.set('');
-      this.fCeoName.set('');
-      this.fCeoPhone.set('');
-      this.fAddress.set('');
-      this.fEmail.set('');
-      this.fMemo.set('');
-    }
+    this.editingItem.set(item ?? null);
+    const r = (item as unknown as Record<string, string>) ?? {};
+    this.fCompanyName.set(item?.companyName ?? '');
+    this.fBizNumber.set(item?.bizNumber ?? '');
+    this.fCeoName.set(item?.ceoName ?? '');
+    this.fCeoPhone.set(item?.ceoPhone ?? '');
+    this.fCompanyPhone.set(r['companyPhone'] ?? '');
+    this.fCompanyEmail.set(r['companyEmail'] ?? '');
+    this.fAddress.set(item?.address ?? '');
+    this.fAddressDetail.set(r['addressDetail'] ?? '');
+    this.fHomepage.set(r['homepage'] ?? '');
+    this.fBizFileUrl.set(r['bizFileUrl'] ?? '');
+    this.fBizFileName.set('');
+    this.fEmail.set(item?.email ?? '');
+    this.fMemo.set(item?.memo ?? '');
     this.showForm.set(true);
+  }
+
+  closeForm(): void {
+    this.showForm.set(false);
+    this.editingItem.set(null);
+    this.fCompanyName.set('');
+    this.fBizNumber.set('');
+    this.fCeoName.set('');
+    this.fCeoPhone.set('');
+    this.fCompanyPhone.set('');
+    this.fCompanyEmail.set('');
+    this.fAddress.set('');
+    this.fAddressDetail.set('');
+    this.fHomepage.set('');
+    this.fBizFileUrl.set('');
+    this.fBizFileName.set('');
+    this.fEmail.set('');
+    this.fMemo.set('');
   }
 
   /** Daum 우편번호 팝업으로 주소 검색 */
@@ -173,16 +191,19 @@ export class CodyCompaniesPage implements OnInit {
   onBizFileChange(event: Event): void {
     const file = this.upload.extractFile(event);
     if (!file) return;
+    this.fBizFileName.set(file.name);
     this.upload.upload(file, 'cody/biz').subscribe({
       next: (res) => {
         this.fBizFileUrl.set(res.url);
         this.toast.success('파일이 업로드되었습니다.');
       },
-      error: () => this.toast.error('파일 업로드에 실패했습니다.'),
+      error: (err) => {
+        const msg = err?.error?.message || err?.message || '알 수 없는 오류';
+        console.error('파일 업로드 오류:', err);
+        this.toast.error(`파일 업로드 실패: ${msg}`);
+      },
     });
   }
-
-  closeForm(): void { this.showForm.set(false); }
 
   save(): void {
     if (!this.fCompanyName().trim()) { this.toast.warning('기업명을 입력하세요.'); return; }

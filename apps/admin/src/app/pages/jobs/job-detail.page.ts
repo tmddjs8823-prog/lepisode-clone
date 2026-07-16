@@ -2,7 +2,7 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JobApiService, JobItem } from '../../shared/services/job-api.service';
+import { JobApiService, JobItem, CreateJobPayload } from '../../shared/services/job-api.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -55,6 +55,22 @@ export class JobDetailPage implements OnInit {
   deleteTarget = signal<JobItem | null>(null);
   deleting = signal(false);
 
+  /* ── 수정 사이드 드로어 ── */
+  showEditForm = signal(false);
+  saving = signal(false);
+  fTitle = signal('');
+  fTitleEn = signal('');
+  fTitleJa = signal('');
+  fCategory = signal('');
+  fJobUrl = signal('');
+  fSeoTitle = signal('');
+  fMetaDesc = signal('');
+  fStartDate = signal('');
+  fDeadline = signal('');
+  fPublished = signal(true);
+
+  readonly categoryOptions = ['개발', '디자인', '기획', '마케팅'];
+
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) { this.router.navigate(['/homepage/jobs']); return; }
@@ -71,9 +87,53 @@ export class JobDetailPage implements OnInit {
 
   goBack(): void { this.router.navigate(['/homepage/jobs']); }
 
-  /* ── 수정 (목록으로 이동 후 수정 모달) ── */
+  /* ── 수정 드로어 ── */
   onEdit(): void {
-    this.router.navigate(['/homepage/jobs']);
+    const ev = this.item();
+    if (!ev) return;
+    this.fTitle.set(ev.title);
+    this.fTitleEn.set(ev.titleEn ?? '');
+    this.fTitleJa.set(ev.titleJa ?? '');
+    this.fCategory.set(ev.category ?? '');
+    this.fJobUrl.set(ev.jobUrl ?? '');
+    this.fSeoTitle.set(ev.seoTitle ?? '');
+    this.fMetaDesc.set(ev.metaDesc ?? '');
+    this.fStartDate.set(ev.startDate ? ev.startDate.slice(0, 10) : '');
+    this.fDeadline.set(ev.deadline ? ev.deadline.slice(0, 10) : '');
+    this.fPublished.set(ev.published);
+    this.showEditForm.set(true);
+  }
+
+  closeEditForm(): void { this.showEditForm.set(false); }
+
+  saveEdit(): void {
+    const ev = this.item();
+    if (!ev) return;
+    if (!this.fTitle().trim()) { this.toast.warning('공고명을 입력하세요.'); return; }
+
+    this.saving.set(true);
+    const payload: CreateJobPayload = {
+      title: this.fTitle().trim(),
+      titleEn: this.fTitleEn().trim() || undefined,
+      titleJa: this.fTitleJa().trim() || undefined,
+      category: this.fCategory() || undefined,
+      jobUrl: this.fJobUrl().trim() || undefined,
+      seoTitle: this.fSeoTitle().trim() || undefined,
+      metaDesc: this.fMetaDesc().trim() || undefined,
+      startDate: this.fStartDate() || undefined,
+      deadline: this.fDeadline() || undefined,
+      published: this.fPublished(),
+    };
+
+    this.api.update(ev.id, payload).subscribe({
+      next: () => {
+        this.toast.success('수정되었습니다.');
+        this.saving.set(false);
+        this.closeEditForm();
+        this.loadItem(ev.id);
+      },
+      error: () => { this.toast.error('저장에 실패했습니다.'); this.saving.set(false); },
+    });
   }
 
   /* ── 삭제 처리 ── */

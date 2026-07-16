@@ -4,6 +4,25 @@ import { Observable } from 'rxjs';
 
 const API = 'http://localhost:3000/api/v1/upload';
 
+/** accept 속성에 사용할 문서 확장자 */
+export const DOCUMENT_ACCEPT = '.pdf,.ppt,.pptx,.hwp,.doc,.docx,.xls,.xlsx';
+/** accept 속성에 사용할 이미지+문서 확장자 */
+export const IMAGE_AND_DOCUMENT_ACCEPT = 'image/*,.pdf,.ppt,.pptx,.hwp,.doc,.docx,.xls,.xlsx';
+
+/** 파일이 이미지인지 여부 */
+export function isImageFile(file: File | string): boolean {
+  if (typeof file === 'string') {
+    return /\.(jpe?g|png|gif|webp|svg|avif)$/i.test(file);
+  }
+  return file.type.startsWith('image/');
+}
+
+/** 파일명에서 확장자 추출 (예: '.pdf') */
+export function getFileExtLabel(nameOrUrl: string): string {
+  const ext = nameOrUrl.split('.').pop()?.toUpperCase() ?? '';
+  return ext;
+}
+
 export interface UploadResult {
   url: string;
   path: string;

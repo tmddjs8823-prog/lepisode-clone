@@ -4,7 +4,7 @@
   <div>
     <h1 class="text-xl font-bold text-white">현황 관리</h1>
     <div class="flex items-center gap-1 text-xs text-indigo-400 mt-1">
-      <a class="hover:underline cursor-pointer" (click)="goBack()">레피소드</a>
+      <a class="hover:underline cursor-pointer" tabindex="0" role="link" (click)="goBack()" (keydown.enter)="goBack()">레피소드</a>
       <span class="text-slate-600">›</span>
       <span class="text-slate-400">현황 관리</span>
     </div>

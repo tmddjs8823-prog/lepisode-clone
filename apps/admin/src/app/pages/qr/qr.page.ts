@@ -53,6 +53,28 @@ export class QrPage implements OnInit {
   deleteTarget = signal<QrCodeItem | null>(null);
   deleting = signal(false);
 
+  readonly qrContextMenuItems = [
+    { action: 'download-qr', label: 'QR코드 다운로드', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4' },
+  ];
+
+  onCustomAction(event: { action: string; row: Record<string, unknown> }): void {
+    if (event.action === 'download-qr') {
+      const item = event.row as unknown as QrCodeItem;
+      if (!item.qrCodeUrl) {
+        this.toast.warning('QR코드 이미지가 없습니다.');
+        return;
+      }
+      const link = document.createElement('a');
+      link.href = item.qrCodeUrl;
+      link.download = `${item.name || 'qrcode'}.png`;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      this.toast.success('QR코드 다운로드를 시작합니다.');
+    }
+  }
+
   filteredData = computed(() => {
     const term = this.searchTerm().toLowerCase();
     if (!term) return this.data();

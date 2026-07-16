@@ -52,10 +52,11 @@ export class PortfolioPage implements OnInit {
     { key: 'titleEn', label: '영문 제목', align: 'center' },
     { key: 'titleJa', label: '일본어 제목', align: 'center' },
     {
-      key: 'published', label: '게시', align: 'center', width: '5.5rem', type: 'badge',
-      badgeMap: {
-        true:  { label: '공개', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
-        false: { label: '숨김', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
+      key: 'keywords', label: '키워드', align: 'center', width: '8rem',
+      transform: (row) => {
+        const kw = row['keywords'] as string | null;
+        if (!kw) return '0개';
+        return `${kw.split(',').filter(s => s.trim()).length}개`;
       },
     },
     { key: 'createdAt', label: '등록일자', align: 'center', width: '7.5rem', type: 'date' },
@@ -205,7 +206,7 @@ export class PortfolioPage implements OnInit {
     this.fSeoTitle.set(''); this.fMetaDesc.set('');
     this.fAeoGeo.set(''); this.fServiceDetail.set(''); this.fContent.set('');
     this.fThumbnailUrl.set('');
-    this.fKeywordList.set([]); this.fKeywordInput.set('');
+    this.fKeywordInput.set('');
     this.fPublished.set(false); this.fSortOrder.set(0);
   }
 

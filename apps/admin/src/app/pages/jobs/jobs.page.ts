@@ -45,35 +45,18 @@ export class JobsPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'id', label: 'ID', align: 'center', width: '6%' },
-    { key: 'category', label: '카테고리', align: 'center', width: '10%' },
-    { key: 'title', label: '채용 공고명', align: 'center', width: '28%' },
-    {
-      key: 'titleEn', label: '영문/일어', align: 'center', width: '28%',
-      transform: (row) => {
-        const r = row as unknown as JobItem;
-        const parts: string[] = [];
-        if (r.titleEn) parts.push('EN: ' + r.titleEn);
-        if (r.titleJa) parts.push('JA: ' + r.titleJa);
-        return parts.join(' | ') || '—';
-      },
-    },
-    {
-      key: 'published', label: '상태', align: 'center', width: '8%', type: 'badge',
-      badgeMap: {
-        true:  { label: '모집중', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
-        false: { label: '마감', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
-      },
-    },
-    {
-      key: 'startDate', label: '모집기간', align: 'center', width: '20%',
-      transform: (row) => {
-        const r = row as unknown as JobItem;
-        const s = r.startDate ? r.startDate.slice(0, 10) : '—';
-        const d = r.deadline ? r.deadline.slice(0, 10) : '상시모집';
-        return `${s} ~ ${d}`;
-      },
-    },
+    { key: 'id', label: 'ID', align: 'center', width: '5%' },
+    { key: 'category', label: '카테고리', align: 'center', width: '8%' },
+    { key: 'title', label: '제목', align: 'center', width: '18%' },
+    { key: 'titleEn', label: '영문 제목', align: 'center', width: '15%' },
+    { key: 'titleJa', label: '일본어 제목', align: 'center', width: '15%' },
+    { key: 'jobUrl', label: '공고 URL', align: 'center', width: '12%', transform: (row) => {
+      const url = row['jobUrl'] as string | null;
+      return url || '-';
+    }},
+    { key: 'startDate', label: '모집 시작일', align: 'center', width: '10%', type: 'date' },
+    { key: 'deadline', label: '공고 마감일', align: 'center', width: '10%', type: 'date' },
+    { key: 'createdAt', label: '생성일', align: 'center', width: '10%', type: 'date' },
   ];
 
   /* ── 카테고리 ── */

@@ -156,6 +156,7 @@ export class AuthService {
         email: true,
         name: true,
         role: true,
+        permission: true,
         roleId: true,
         isActive: true,
         lastLoginAt: true,

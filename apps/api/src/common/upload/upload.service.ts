@@ -44,7 +44,7 @@ export class UploadService {
 
     if (error) {
       this.logger.error(`Supabase upload failed: ${error.message}`, error);
-      throw new BadRequestException(`이미지 업로드 실패: ${error.message}`);
+      throw new BadRequestException(`파일 업로드 실패: ${error.message}`);
     }
 
     const { data } = this.supabase.storage

@@ -14,6 +14,8 @@ export class CreateAdminUserDto {
   @IsOptional() @IsString() role?: string;
   @ApiPropertyOptional({ description: '권한 역할 ID' })
   @IsOptional() @IsInt() @Type(() => Number) roleId?: number;
+  @ApiPropertyOptional({ description: '선택 권한명' })
+  @IsOptional() @IsString() permission?: string;
 }
 
 export class UpdateAdminUserDto {
@@ -23,6 +25,8 @@ export class UpdateAdminUserDto {
   @IsOptional() @IsString() role?: string;
   @ApiPropertyOptional({ description: '권한 역할 ID' })
   @IsOptional() @IsInt() @Type(() => Number) roleId?: number;
+  @ApiPropertyOptional({ description: '선택 권한명' })
+  @IsOptional() @IsString() permission?: string;
   @ApiPropertyOptional({ description: '활성 여부' })
   @IsOptional() @IsBoolean() isActive?: boolean;
 }

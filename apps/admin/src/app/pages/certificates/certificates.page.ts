@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ContentApiService, CertificateItem, CertificatePayload } from '../../shared/services/content-api.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { ExcelExportService } from '../../shared/services/excel-export.service';
-import { UploadService } from '../../shared/services/upload.service';
+import { UploadService, IMAGE_AND_DOCUMENT_ACCEPT } from '../../shared/services/upload.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataTableComponent } from '../../shared/components/data-table/data-table.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
@@ -19,6 +19,8 @@ export class CertificatesPage implements OnInit {
   private toast = inject(ToastService);
   private excel = inject(ExcelExportService);
   private upload = inject(UploadService);
+
+  readonly fileAccept = IMAGE_AND_DOCUMENT_ACCEPT;
 
   data = signal<CertificateItem[]>([]);
   searchTerm = signal('');

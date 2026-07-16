@@ -218,7 +218,7 @@ export class FaqPage implements OnInit {
       this.faqSortOrder.set(faq.sortOrder);
     } else {
       this.editingFaq.set(null);
-      this.faqCategoryId.set(this.categories()[0]?.id ?? 0);
+      this.faqCategoryId.set(0);
       this.faqQuestion.set('');
       this.faqQuestionEn.set('');
       this.faqQuestionJa.set('');
