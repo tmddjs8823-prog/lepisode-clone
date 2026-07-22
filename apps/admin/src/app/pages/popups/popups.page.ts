@@ -190,4 +190,26 @@ export class PopupsPage implements OnInit {
     });
   }
   cancelDelete(): void { this.deleteTarget.set(null); }
+
+  /* ── 우클릭 컨텍스트 메뉴: 노출/숨김 토글 ── */
+  readonly contextMenuItems = [
+    { action: 'togglePublished', label: '노출/숨김 토글', icon: 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z' },
+  ];
+
+  onCustomAction(event: { action: string; row: Record<string, unknown> }): void {
+    if (event.action === 'togglePublished') {
+      this.togglePublished(event.row as unknown as PopupItem);
+    }
+  }
+
+  togglePublished(item: PopupItem): void {
+    const newPublished = !item.published;
+    this.api.updatePopup(item.id, { published: newPublished } as PopupPayload).subscribe({
+      next: () => {
+        this.toast.success(newPublished ? '노출 상태로 변경되었습니다.' : '숨김 상태로 변경되었습니다.');
+        this.loadData();
+      },
+      error: () => { this.toast.error('상태 변경에 실패했습니다.'); },
+    });
+  }
 }

@@ -1,3 +1,32 @@
-import { Component } from '@angular/core';
-@Component({ selector: 'app-services-page', standalone: true, template: `<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24"><div class="text-center"><h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">서비스</h1><p class="text-gray-500">페이지 준비 중입니다.</p></div></div>` })
-export class ServicesPage {}
+import { Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import { isPlatformBrowser, DatePipe } from '@angular/common';
+import { ClientApiService, ServiceItem } from '../../shared/services/client-api.service';
+
+@Component({
+  selector: 'app-services-page',
+  standalone: true,
+  imports: [DatePipe],
+  templateUrl: './services.page.html',
+  styleUrl: './services.page.css',
+})
+export class ServicesPage implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+  private api = inject(ClientApiService);
+
+  services = signal<ServiceItem[]>([]);
+
+  ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.api.getServices().subscribe({
+      next: (list) => this.services.set(Array.isArray(list) ? list : []),
+      error: () => this.services.set([]),
+    });
+  }
+
+  toggleDetail(item: ServiceItem): void {
+    const el = document.getElementById('detail-' + item.id);
+    if (el) {
+      el.classList.toggle('open');
+    }
+  }
+}

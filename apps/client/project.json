@@ -60,7 +60,8 @@
       "defaultConfiguration": "development",
       "options": {
         "port": 4300,
-        "proxyConfig": "apps/client/proxy.conf.json"
+        "proxyConfig": "apps/client/proxy.conf.json",
+        "allowedHosts": [".ngrok-free.dev", ".ngrok.io", ".loca.lt"]
       },
       "configurations": {
         "production": {

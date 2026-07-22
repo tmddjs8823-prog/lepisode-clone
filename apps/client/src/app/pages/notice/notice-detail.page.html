@@ -1,0 +1,39 @@
+<section class="py-20 pb-24" id="notice-detail">
+  <div class="max-w-[700px] mx-auto px-6">
+
+    @if (notice(); as n) {
+      <!-- 헤더 -->
+      <div class="mb-10">
+        <span class="text-sm font-semibold text-[#41539b] block mb-2">공지사항</span>
+        <h1 class="text-[1.8rem] font-extrabold text-[#1a1a2e] mb-2">{{ n.title }}</h1>
+        <span class="text-sm text-gray-400">{{ n.createdAt | date:'yyyy.MM.dd' }}</span>
+      </div>
+
+      <!-- 썸네일 -->
+      @if (n.thumbnailUrl) {
+        <div class="mb-8">
+          <img [src]="n.thumbnailUrl" [alt]="n.title"
+               class="w-full rounded-lg object-cover" />
+        </div>
+      }
+
+      <!-- 본문 -->
+      <div class="text-[0.92rem] text-gray-600 leading-relaxed whitespace-pre-line">
+        {{ n.content }}
+      </div>
+
+      <!-- 목록으로 -->
+      <div class="mt-12 pt-6 border-t border-gray-100">
+        <button class="flex items-center gap-1 text-sm text-gray-400 bg-transparent border-none cursor-pointer hover:text-gray-600 transition-colors"
+                (click)="goBack()">
+          ← 목록으로
+        </button>
+      </div>
+    } @else {
+      <div class="py-16 text-center">
+        <p class="text-gray-400">공지사항을 불러오는 중...</p>
+      </div>
+    }
+
+  </div>
+</section>

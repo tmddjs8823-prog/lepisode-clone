@@ -1,0 +1,74 @@
+<!-- ═══════════ 서비스 소개 헤더 ═══════════ -->
+<section class="pt-20 pb-10 px-6" id="services-header">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="flex items-center gap-2 mb-3">
+      <span class="text-indigo-600 text-lg">◇</span>
+      <span class="text-sm font-semibold text-indigo-600">서비스 소개</span>
+    </div>
+    <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 mb-3">
+      레피소드 <span class="text-indigo-600">서비스 소개</span>
+    </h1>
+    <p class="text-sm text-gray-400 leading-relaxed">
+      비즈니스의 성장을 위한 레피소드의 다양한 서비스를 만나보세요.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════ 서비스 카드 그리드 ═══════════ -->
+<section class="pb-24 px-6" id="services-grid">
+  <div class="max-w-[1200px] mx-auto">
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      @for (svc of services(); track svc.id) {
+        <div class="service-card">
+          <!-- 상단: 썸네일 -->
+          <div class="service-thumb">
+            @if (svc.thumbnailUrl) {
+              <img [src]="svc.thumbnailUrl" [alt]="svc.title" class="w-full h-full object-cover" />
+            } @else if (svc.iconUrl) {
+              <img [src]="svc.iconUrl" [alt]="svc.title" class="w-full h-full object-cover" />
+            } @else {
+              <div class="w-full h-full bg-gradient-to-br from-indigo-50 to-slate-100 flex items-center justify-center">
+                @if (svc.icon) {
+                  <span class="text-5xl">{{ svc.icon }}</span>
+                } @else {
+                  <span class="text-5xl opacity-20">🔧</span>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- 하단: 글 영역 -->
+          <div class="service-info">
+            <h3 class="service-title">{{ svc.title }}</h3>
+            <div class="service-meta">
+              <span class="service-date">{{ svc.createdAt | date:'yyyy-MM-dd' }}</span>
+              <button class="service-toggle" (click)="toggleDetail(svc)">
+                자세히 보기
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- 상세 설명 (토글) -->
+          <div class="service-detail" [id]="'detail-' + svc.id">
+            @if (svc.description) {
+              <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{{ svc.description }}</p>
+            }
+            @if (svc.content) {
+              <div class="text-sm text-gray-500 leading-relaxed mt-3 whitespace-pre-line">{{ svc.content }}</div>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="py-20 text-center">
+          <span class="text-5xl mb-4 block">🔧</span>
+          <p class="text-gray-400">등록된 서비스가 없습니다.</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,84 @@
+<!-- ═══════════ 히어로 배너 ═══════════ -->
+<section class="bg-gradient-to-br from-[#41539b] via-[#7c8fd4] to-[#c4b5e3] py-[60px]" id="status-hero">
+  <div class="max-w-[1200px] mx-auto px-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
+
+    <!-- 왼쪽: 타이틀 -->
+    <div>
+      <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-white leading-tight mb-3">작업현황</h1>
+      <p class="text-sm text-white/60">현재 진행 중인 프로젝트 상태를 한눈에 확인해보세요.</p>
+    </div>
+
+    <!-- 오른쪽: 상태 플로우 -->
+    <div class="flex items-center gap-4">
+      <!-- 견적중 -->
+      <div class="flex flex-col items-center gap-2.5">
+        <div class="text-[1.6rem]">📋</div>
+        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-[#41539b]">견적 중</div>
+      </div>
+      <div class="text-white/40 text-base tracking-[-2px] -mt-4 max-md:hidden">▸▸</div>
+      <!-- 진행중 -->
+      <div class="flex flex-col items-center gap-2.5">
+        <div class="text-[1.6rem]">⚙️</div>
+        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-gray-500">진행 중</div>
+      </div>
+      <div class="text-white/40 text-base tracking-[-2px] -mt-4 max-md:hidden">▸▸</div>
+      <!-- 납품완료 -->
+      <div class="flex flex-col items-center gap-2.5">
+        <div class="text-[1.6rem]">☑️</div>
+        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-[#5a6a30]">납품완료</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ 필터 탭 + 리스트 ═══════════ -->
+<section class="py-16 px-6" id="status-list">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="max-w-[500px]">
+
+    <!-- 탭 -->
+    <div class="flex items-center gap-2 mb-10">
+      @for (tab of tabs; track tab) {
+        <button class="px-6 py-2.5 rounded-xl text-[0.9rem] font-medium transition-all cursor-pointer"
+                [class]="activeTab() === tab ? 'bg-[#f0f0ff] border border-[#d0d4e8] text-[#1a1a2e] font-bold' : 'border border-transparent text-gray-400 hover:text-gray-700'"
+                (click)="selectTab(tab)">
+          {{ tab }}
+        </button>
+      }
+    </div>
+
+    <!-- 카드 리스트 -->
+    <div class="flex flex-col gap-3">
+      @for (item of filtered(); track item.id) {
+        <div class="border border-gray-200 rounded-2xl px-7 py-5 bg-white transition-shadow hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
+          <!-- 상단: 플랫폼 + 뱃지 -->
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex gap-1.5">
+              @if (item.platforms && item.platforms.length > 0) {
+                @for (p of item.platforms; track p) {
+                  <span class="text-[0.82rem] font-medium text-[#41539b]">{{ p }}</span>
+                }
+              }
+            </div>
+            <span class="inline-block px-4 py-1 rounded-full text-[0.78rem] font-semibold border-[1.5px] bg-transparent"
+                  [class]="getStatusBadgeClass(item.status)">
+              {{ getStatusLabel(item.status) }}
+            </span>
+          </div>
+          <!-- 하단: 제목 + 기간 -->
+          <div class="flex items-center justify-between max-md:flex-col max-md:items-start max-md:gap-1">
+            <span class="text-[0.95rem] font-bold text-[#1a1a2e]">{{ item.title }}</span>
+            <span class="text-[0.82rem] text-gray-400">{{ formatPeriod(item.startDate, item.endDate) }}</span>
+          </div>
+        </div>
+      } @empty {
+        <div class="py-16 text-center">
+          <p class="text-gray-400">등록된 프로젝트 현황이 없습니다.</p>
+        </div>
+      }
+    </div>
+
+    </div>
+  </div>
+</section>

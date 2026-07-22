@@ -1,0 +1,517 @@
+<!-- ═══════════ Hero Banner (70vh) + 섹션 네비게이션 ═══════════ -->
+<section class="careers-hero" id="hero">
+  <!-- 배경 오버레이 -->
+  <div class="hero-overlay"></div>
+
+  <!-- 히어로 콘텐츠 -->
+  <div class="hero-content">
+    <span class="hero-badge">We're Hiring</span>
+    <h1 class="hero-title">
+      함께 만들어갈<br>
+      <span class="hero-accent">다음 이야기</span>의 주인공
+    </h1>
+    <p class="hero-subtitle">
+      레피소드와 함께 디지털 혁신의 미래를 설계하세요
+    </p>
+  </div>
+
+  <!-- 섹션 네비게이션 바 (배너 70% 경계선 위치) -->
+  <nav class="section-nav">
+    <div class="section-nav-inner">
+      <button class="nav-pill" (click)="scrollTo('culture')">레피소드 엔진들</button>
+      <button class="nav-pill" (click)="scrollTo('positions')">우리들의 약속</button>
+      <button class="nav-pill" (click)="scrollTo('benefits')">팀 문화 소개</button>
+      <button class="nav-pill" (click)="scrollTo('process')">회사 복지</button>
+      <button class="nav-pill" (click)="scrollTo('faq')">채용공고</button>
+    </div>
+  </nav>
+</section>
+
+<!-- ═══════════ 홍보 문구 영역 (나머지 30vh) ═══════════ -->
+<section class="promo-section">
+  <div class="promo-inner">
+    <h2 class="promo-title">
+      기술로 세상을 바꾸는 사람들,<br>
+      <span class="promo-highlight">레피소드</span>에서 시작됩니다.
+    </h2>
+    <p class="promo-desc">
+      우리는 단순한 개발을 넘어, 비즈니스의 본질을 이해하고 디지털 전환을 이끄는 파트너입니다.<br>
+      당신의 아이디어가 현실이 되는 곳, 지금 합류하세요.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════ 업무 소개 (좌: 설명 / 우: 사진) ═══════════ -->
+<section class="bg-white px-6 pb-20">
+  <div class="max-w-[80%] mx-auto flex flex-col gap-4">
+
+    <!-- 01. 웹개발 -->
+    <div class="grid grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-[300px]">
+      <div class="flex flex-col justify-center py-5 px-10">
+        <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">01</span>
+        <h3 class="text-xl font-extrabold text-gray-900 mb-2">웹개발</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">
+          반응형 웹사이트부터 대규모 플랫폼까지,<br>
+          최신 기술 스택으로 빠르고 안정적인 웹 서비스를 구축합니다.
+        </p>
+      </div>
+      <div class="overflow-hidden">
+        <img src="/assets/images/careers/workspace.png" alt="웹개발" loading="lazy"
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+      </div>
+    </div>
+
+    <!-- 02. AI기반 비즈니스 자동화 -->
+    <div class="grid grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-[300px]">
+      <div class="flex flex-col justify-center py-5 px-10">
+        <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">02</span>
+        <h3 class="text-xl font-extrabold text-gray-900 mb-2">AI기반 비즈니스 자동화</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">
+          데이터 분석, 자연어 처리, 이미지 인식 등<br>
+          AI 기술을 활용하여 업무 프로세스를 자동화하고 효율을 극대화합니다.
+        </p>
+      </div>
+      <div class="overflow-hidden">
+        <img src="/assets/images/careers/teamwork.png" alt="AI 자동화" loading="lazy"
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+      </div>
+    </div>
+
+    <!-- 03. 맞춤형 비즈니스 시스템 구축 -->
+    <div class="grid grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-[300px]">
+      <div class="flex flex-col justify-center py-5 px-10">
+        <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">03</span>
+        <h3 class="text-xl font-extrabold text-gray-900 mb-2">맞춤형 비즈니스 시스템 구축</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">
+          ERP, CRM, POS 등 기업 맞춤형 시스템을<br>
+          설계부터 운영까지 원스톱으로 제공합니다.
+        </p>
+      </div>
+      <div class="overflow-hidden">
+        <img src="/assets/images/careers/creative.png" alt="시스템 구축" loading="lazy"
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ 레피소드 엔진들 Section ═══════════ -->
+<section class="py-20 px-6" id="culture" style="background:#f8f9fb">
+  <div class="max-w-[1100px] mx-auto">
+
+    <!-- 섹션 헤더 -->
+    <div class="text-center mb-14">
+      <div class="flex items-center justify-center gap-2 mb-3">
+        <span class="text-indigo-600 text-lg">◇</span>
+        <span class="text-sm font-semibold text-gray-500">레피소드 엔진들</span>
+      </div>
+      <h2 class="text-2xl md:text-[2.2rem] font-extrabold text-gray-900 mb-4">
+        각자의 자리에서 <span class="text-[#41539b]">최고의 엔진</span>이 되다
+      </h2>
+      <p class="text-sm text-gray-400">
+        레피소드를 움직이는 세 개의 팀을 소개합니다
+      </p>
+    </div>
+
+    <!-- 팀 카드 3개 (이미지 위 텍스트 오버레이) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- 개발팀 -->
+      <div class="relative rounded-2xl overflow-hidden group" style="aspect-ratio:9/16">
+        <img src="/assets/images/careers/team-dev.png" alt="개발팀" loading="lazy"
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-7">
+          <h3 class="text-xl font-extrabold text-white mb-2">개발팀</h3>
+          <p class="text-sm text-white/70 leading-relaxed mb-4">
+            프론트엔드, 백엔드, 모바일, AI까지<br>
+            기술의 최전선에서 제품을 만들어갑니다.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">Angular</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">NestJS</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">Flutter</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">Python</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">AI/ML</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 기획/디자인팀 -->
+      <div class="relative rounded-2xl overflow-hidden group mt-10" style="aspect-ratio:9/16">
+        <img src="/assets/images/careers/team-design.png" alt="기획/디자인팀" loading="lazy"
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-7">
+          <h3 class="text-xl font-extrabold text-white mb-2">기획/디자인팀</h3>
+          <p class="text-sm text-white/70 leading-relaxed mb-4">
+            사용자 경험을 설계하고,<br>
+            브랜드의 가치를 시각적으로 표현합니다.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">UX/UI 설계</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">Figma</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">서비스 기획</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">BI/CI</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 사업/영업팀 -->
+      <div class="relative rounded-2xl overflow-hidden group" style="aspect-ratio:9/16">
+        <img src="/assets/images/careers/team-business.png" alt="사업/영업팀" loading="lazy"
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-7">
+          <h3 class="text-xl font-extrabold text-white mb-2">사업/영업팀</h3>
+          <p class="text-sm text-white/70 leading-relaxed mb-4">
+            고객의 비즈니스를 이해하고,<br>
+            최적의 솔루션을 연결합니다.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">고객 상담</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">제안서</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">파트너십</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">시장 분석</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 우리들의 약속 Section ═══════════ -->
+<section class="py-24 px-6 bg-white" id="positions">
+  <div class="max-w-[1000px] mx-auto">
+
+    <!-- 큰 교훈 문구 -->
+    <div class="text-center mb-20">
+      <span class="text-sm font-semibold text-[#41539b] tracking-widest uppercase mb-4 block">Our Promise</span>
+      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-6">
+        "좋은 사람이 좋은 결과를 만든다"
+      </h2>
+      <p class="text-base text-gray-400 leading-relaxed max-w-[600px] mx-auto">
+        레피소드는 함께 일하는 사람들이 행복해야<br>
+        더 좋은 서비스가 탄생한다고 믿습니다.
+      </p>
+    </div>
+
+    <!-- 장점 리스트 -->
+    <div style="margin-left: calc(40% - 120px);" class="flex flex-col gap-10 max-w-[500px]">
+
+      <!-- 01. 10시 출근 -->
+      <div class="flex gap-5 items-start group">
+        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-[#41539b] flex items-center justify-center text-xl font-bold flex-shrink-0">
+          🕐
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">오전 10시 출근, 여유로운 아침</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">충분한 아침 시간으로 하루를 여유롭게 시작하고, 집중력 있는 오후를 보냅니다.</p>
+        </div>
+      </div>
+
+      <!-- 02. 성장 지원 -->
+      <div class="flex gap-5 items-start group">
+        <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center text-xl font-bold flex-shrink-0">
+          📚
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">끊임없는 성장 지원</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">도서 구입, 온라인 강의, 컨퍼런스 참가 등 자기계발에 필요한 비용을 지원합니다.</p>
+        </div>
+      </div>
+
+      <!-- 03. 자유로운 소통 -->
+      <div class="flex gap-5 items-start group">
+        <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl font-bold flex-shrink-0">
+          💬
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">수평적 소통 문화</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">직급에 관계없이 누구나 의견을 제시할 수 있는 열린 소통 환경을 지향합니다.</p>
+        </div>
+      </div>
+
+      <!-- 04. 최신 장비 -->
+      <div class="flex gap-5 items-start group">
+        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold flex-shrink-0">
+          💻
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">최고의 장비와 환경</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">최신 맥북·모니터·의자 등 업무에 몰입할 수 있는 최고의 장비를 제공합니다.</p>
+        </div>
+      </div>
+
+      <!-- 05. 워라밸 -->
+      <div class="flex gap-5 items-start group">
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold flex-shrink-0">
+          ⚖️
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">진짜 워라밸을 실천합니다</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">정시 퇴근을 기본으로, 개인의 삶과 업무의 균형을 존중하는 문화입니다.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 우리가 추구하는 방식 Section ═══════════ -->
+<section class="py-24 px-6" id="benefits" style="background:#f8f9fb">
+  <div class="max-w-[1100px] mx-auto">
+    <div style="display: flex; flex-direction: row; gap: 48px; align-items: stretch;">
+
+      <!-- 왼쪽: 큰 제목 -->
+      <div style="text-align: center; width: 320px; flex-shrink: 0;">
+        <span class="text-sm font-semibold text-[#41539b] tracking-widest uppercase mb-4 block">Tech Blog</span>
+        <h2 class="text-4xl md:text-[3rem] font-black text-gray-900 leading-tight mb-4">
+          우리가<br>추구하는 방식
+        </h2>
+        <p class="text-base text-gray-400 leading-relaxed">
+          레피소드 팀이 문제를 풀어가는<br>
+          기술적 고민과 인사이트를 공유합니다.
+        </p>
+      </div>
+
+      <!-- 오른쪽: 블로그 카드 리스트 -->
+      <div class="relative flex-1 pb-8">
+        <div class="flex flex-col gap-4">
+          @for (post of blogPosts(); track post.id) {
+            <div class="flex gap-6 bg-white rounded-2xl overflow-hidden border border-gray-100 hover:-translate-y-0.5 hover:shadow-lg transition-all group cursor-pointer p-5 items-center">
+              @if (post.thumbnailUrl) {
+                <div class="overflow-hidden rounded-xl w-60 h-44 flex-shrink-0">
+                  <img [src]="post.thumbnailUrl" [alt]="post.title" loading="lazy"
+                       class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                </div>
+              }
+              <div class="flex-1 min-w-0">
+                <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#41539b] transition-colors">{{ post.title }}</h3>
+                <p class="text-base text-gray-400">작성일: {{ post.createdAt | date:'yyyy.MM.dd' }}</p>
+              </div>
+            </div>
+          }
+
+          @if (blogPosts().length === 0) {
+            <div class="text-center py-16">
+              <p class="text-sm text-gray-400">아직 등록된 글이 없습니다.</p>
+            </div>
+          }
+        </div>
+
+        <!-- 더보기 원형 버튼 (밑변 중앙 오버레이) -->
+        <a (click)="goToDevBlog()" (keyup.enter)="goToDevBlog()" tabindex="0" class="more-btn" style="cursor: pointer;">
+          더보기
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 팀 문화소개 Section ═══════════ -->
+<section class="py-24 px-6 bg-white" id="team-culture">
+  <div class="max-w-[1100px] mx-auto">
+
+    <!-- 섹션 헤더 -->
+    <div class="text-center mb-16">
+      <span class="text-sm font-semibold text-[#41539b] tracking-widest uppercase mb-4 block">Team Culture</span>
+      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-4">
+        함께이기에 <span class="text-[#41539b]">더 빛나는</span> 순간들
+      </h2>
+      <p class="text-base text-gray-400 leading-relaxed max-w-[600px] mx-auto">
+        레피소드는 일만 하는 곳이 아닙니다.<br>
+        함께 웃고, 함께 성장하는 문화를 만들어갑니다.
+      </p>
+    </div>
+
+    <!-- 벤토 그리드 카드 -->
+    <div class="culture-grid">
+
+      <!-- 워크샵 1박2일 (큰 카드) -->
+      <div class="culture-card culture-card--large group">
+        <img src="/assets/images/careers/culture-workshop.png" alt="워크샵 1박2일" loading="lazy"
+             class="culture-card__img" />
+        <div class="culture-card__overlay"></div>
+        <div class="culture-card__content">
+          <span class="culture-card__tag">🏕️ Workshop</span>
+          <h3 class="culture-card__title">1박2일 워크샵</h3>
+          <p class="culture-card__desc">분기마다 떠나는 팀 워크샵.<br>바베큐와 함께 깊어지는 우리의 이야기.</p>
+        </div>
+      </div>
+
+      <!-- 일본 여행 -->
+      <div class="culture-card group">
+        <img src="/assets/images/careers/culture-japan.png" alt="일본 여행" loading="lazy"
+             class="culture-card__img" />
+        <div class="culture-card__overlay"></div>
+        <div class="culture-card__content">
+          <span class="culture-card__tag">✈️ Travel</span>
+          <h3 class="culture-card__title">해외 워크샵</h3>
+          <p class="culture-card__desc">연 1회 해외 여행으로<br>리프레시 & 팀 빌딩</p>
+        </div>
+      </div>
+
+      <!-- 스포츠 관람 -->
+      <div class="culture-card group">
+        <img src="/assets/images/careers/culture-sports.png" alt="스포츠 관람" loading="lazy"
+             class="culture-card__img" />
+        <div class="culture-card__overlay"></div>
+        <div class="culture-card__content">
+          <span class="culture-card__tag">⚾ Sports</span>
+          <h3 class="culture-card__title">스포츠 관람</h3>
+          <p class="culture-card__desc">야구·축구·농구 등<br>함께 응원하는 짜릿한 순간</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 복지 & 지원 Section ═══════════ -->
+<section class="py-24 px-6" id="benefits-grid" style="background: #f8f9fb;">
+  <div class="max-w-[1100px] mx-auto">
+
+    <!-- 섹션 헤더 -->
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-2">
+        아낌없는 지원으로 완성하는
+      </h2>
+      <h2 class="text-3xl md:text-[2.8rem] font-black leading-tight mb-6">
+        <span class="text-[#41539b]">최상의 퍼포먼스</span>
+      </h2>
+    </div>
+
+    <!-- 3x3 카드 그리드 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+      <!-- 01 -->
+      <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
+        <div class="text-4xl mb-4">😊</div>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">무한 제공 스낵바</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">업무 중 출출하면 언제나<br>간단하게 즐길 수 있습니다.</p>
+      </div>
+
+      <!-- 02 -->
+      <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
+        <div class="text-4xl mb-4">🍽️</div>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">점심 식사 지원</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">메뉴 고민 끝! 건강한 샐러드와<br>든든한 도시락을 무료로 제공합니다.</p>
+      </div>
+
+      <!-- 03 -->
+      <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
+        <div class="text-4xl mb-4">🎧</div>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">자유로운 복장</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">후드티, 크록스, 헤드폰 장착 환영!<br>가장 몰입하기 좋은 모습으로 일하세요.</p>
+      </div>
+
+      <!-- 04 -->
+      <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
+        <div class="text-4xl mb-4">🕐</div>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">10 to 7</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">러시아워를 피해 여유로운<br>출근길을 보장합니다.</p>
+      </div>
+
+      <!-- 05 -->
+      <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
+        <div class="text-4xl mb-4">🙌</div>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">술 강요 없는 문화</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">회식은 신입 환영회 때만 가볍게!<br>개인의 저녁 있는 삶을 존중합니다.</p>
+      </div>
+
+      <!-- 06 -->
+      <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
+        <div class="text-4xl mb-4">💻</div>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">체계적인 온보딩</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">신입 사원이 헤매지 않고<br>부드럽게 적응할 수 있도록 돕습니다.</p>
+      </div>
+
+      <!-- 07 -->
+      <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
+        <div class="text-4xl mb-4">🎯</div>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">다양한 프로젝트 경험</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">정체되지 않고 폭넓은 프로젝트에<br>참여하며 실무 역량을 키울 수 있습니다.</p>
+      </div>
+
+      <!-- 08 -->
+      <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
+        <div class="text-4xl mb-4">📖</div>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">성장 세미나</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">동아리처럼 편안한 분위기에서<br>지식을 나누는 자체 세미나로 성장합니다.</p>
+      </div>
+
+      <!-- 09 -->
+      <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
+        <div class="text-4xl mb-4">✈️</div>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">눈치 ZERO 자율 연차</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">눈치 볼 필요 없습니다. 휴식이<br>필요한 순간, 내 일정은 내가 결정합니다.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 채용공고 Section ═══════════ -->
+<section class="py-24 px-6" id="job-openings" style="background: linear-gradient(180deg, #e8faf4 0%, #f0fdf9 100%);">
+  <div class="max-w-[700px] mx-auto">
+
+    <!-- 섹션 헤더 -->
+    <div class="text-center mb-14">
+      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-2">
+        함께 성장할
+      </h2>
+      <h2 class="text-3xl md:text-[2.8rem] font-black leading-tight">
+        <span class="text-[#2ec4b6]">동료를 찾고 있어요</span>
+      </h2>
+    </div>
+
+    <!-- 필터 + 전체 공고 보기 -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex gap-2">
+        <span class="px-4 py-1.5 rounded-full bg-[#2ec4b6] text-white text-sm font-semibold">전체</span>
+      </div>
+      <a (click)="scrollTo('job-openings')" (keyup.enter)="scrollTo('job-openings')" tabindex="0"
+         class="text-sm font-semibold text-[#2ec4b6] hover:underline cursor-pointer flex items-center gap-1">
+        전체 공고 보기
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <!-- 공고 리스트 -->
+    <div class="flex flex-col gap-3">
+      @for (job of jobPosts(); track job.id) {
+        <div class="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-md transition-all">
+          <!-- 상태 뱃지 -->
+          @if (getJobStatus(job) === '모집중') {
+            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-3 bg-emerald-50 text-emerald-500">모집중</span>
+          } @else {
+            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-3 bg-gray-100 text-gray-400">마감</span>
+          }
+          <!-- 제목 -->
+          <h3 class="text-lg font-bold text-gray-900 mb-2">{{ job.title }}</h3>
+          <!-- 날짜 + 공고보기 -->
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-400">
+              {{ job.startDate | date:'yyyy.MM.dd' }} ~ {{ job.deadline | date:'yyyy.MM.dd' }}
+            </span>
+            @if (job.jobUrl) {
+              <a [href]="job.jobUrl" target="_blank" rel="noopener"
+                 class="text-sm font-semibold text-emerald-500 hover:underline">
+                공고 보기
+              </a>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="bg-white rounded-2xl border border-gray-100 p-8 text-center">
+          <p class="text-sm text-gray-400">현재 진행 중인 채용 공고가 없습니다.</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>

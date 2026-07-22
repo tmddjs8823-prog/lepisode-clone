@@ -1,10 +1,12 @@
 import { Component, HostListener, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 interface SubItem {
   label: string;
   path: string;
+  external?: boolean;
 }
 
 interface NavItem {
@@ -22,10 +24,22 @@ interface NavItem {
 })
 export class HeaderComponent {
   private platformId = inject(PLATFORM_ID);
+  private router = inject(Router);
 
   mobileMenuOpen = false;
   activeDropdown: string | null = null;
   scrolled = false;
+  isHome = true;
+  isHeroPage = false;
+
+  constructor() {
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd)
+    ).subscribe(e => {
+      this.isHome = e.urlAfterRedirects === '/' || e.urlAfterRedirects === '';
+      this.isHeroPage = e.urlAfterRedirects.startsWith('/careers');
+    });
+  }
 
   @HostListener('window:scroll')
   onWindowScroll() {
@@ -41,7 +55,7 @@ export class HeaderComponent {
         { label: '회사소개', path: '/about' },
         { label: '채용', path: '/careers' },
         { label: '블로그', path: '/blog' },
-        { label: '개발 블로그', path: '/dev-blog' },
+        { label: '개발 블로그', path: 'https://techblog.lepisode.kr/', external: true },
       ],
     },
     {
@@ -64,7 +78,7 @@ export class HeaderComponent {
       children: [
         { label: 'FAQ', path: '/faq' },
         { label: '공지사항', path: '/notice' },
-        { label: '블로그', path: '/blog' },
+        { label: '이벤트', path: '/event' },
       ],
     },
   ];

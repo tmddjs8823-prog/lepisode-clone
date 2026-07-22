@@ -1,0 +1,67 @@
+<section class="py-20 pb-24" id="faq">
+  <div class="max-w-[700px] mx-auto px-6">
+
+    <!-- 타이틀 -->
+    <div class="mb-10">
+      <span class="text-sm font-semibold text-[#41539b] block mb-2">💬 자주 묻는 질문</span>
+      <h1 class="text-[1.8rem] font-extrabold text-[#1a1a2e] mb-2">레피소드 자주 묻는 질문</h1>
+      <p class="text-sm text-gray-400">레피소드에 자주 문의하시는 질문들을 모았습니다.</p>
+    </div>
+
+    <!-- 검색 -->
+    <div class="relative mb-5">
+      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input type="text"
+             class="w-full py-3.5 pl-11 pr-4 border border-gray-200 rounded-xl text-sm text-gray-700 outline-none transition-colors focus:border-[#41539b] placeholder:text-gray-300"
+             placeholder="궁금한 내용을 검색해 보세요..."
+             (input)="onSearch($event)" />
+    </div>
+
+    <!-- 카테고리 탭 -->
+    <div class="flex gap-2 mb-8 flex-wrap">
+      <button class="px-[18px] py-2 rounded-[10px] text-[0.85rem] font-medium transition-all"
+              [class]="activeCategory() === '전체' ? 'bg-[#f0f0ff] border border-[#d0d4e8] text-[#1a1a2e] font-bold' : 'border border-transparent text-gray-400 hover:text-gray-600'"
+              (click)="selectCategory('전체')">전체</button>
+      @for (cat of categories(); track cat.id) {
+        <button class="px-[18px] py-2 rounded-[10px] text-[0.85rem] font-medium transition-all"
+                [class]="activeCategory() === cat.name ? 'bg-[#f0f0ff] border border-[#d0d4e8] text-[#1a1a2e] font-bold' : 'border border-transparent text-gray-400 hover:text-gray-600'"
+                (click)="selectCategory(cat.name)">
+          {{ cat.name }}
+        </button>
+      }
+    </div>
+
+    <!-- 아코디언 리스트 -->
+    <div class="flex flex-col">
+      @for (item of filtered(); track item.id) {
+        <div class="border-b border-gray-100">
+          <!-- 질문 -->
+          <button class="w-full flex items-center gap-3 py-5 bg-transparent border-none cursor-pointer text-left"
+                  (click)="toggle(item.id)">
+            <span class="shrink-0 w-7 h-7 rounded-md bg-[#41539b] text-white text-xs font-bold flex items-center justify-center">Q</span>
+            <span class="flex-1 text-[0.92rem] font-semibold text-[#1a1a2e]">{{ item.question }}</span>
+            <svg class="shrink-0 w-5 h-5 text-[#41539b] transition-transform duration-200"
+                 [class.rotate-180]="openId() === item.id"
+                 fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <!-- 답변 -->
+          @if (openId() === item.id) {
+            <div class="flex gap-3 pb-5 animate-fadeIn">
+              <span class="shrink-0 w-7 h-7 rounded-md bg-green-50 text-green-700 text-xs font-bold flex items-center justify-center">A</span>
+              <span class="flex-1 text-sm text-gray-500 leading-relaxed pt-1">{{ item.answer }}</span>
+            </div>
+          }
+        </div>
+      } @empty {
+        <div class="py-16 text-center">
+          <p class="text-gray-400">등록된 FAQ가 없습니다.</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>

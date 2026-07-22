@@ -1,0 +1,42 @@
+[
+  {
+    "title": "스마트 농업의 핵심, 가축 통합 관리 시스템 제작 사례",
+    "category": "포트폴리오",
+    "icon": "📝",
+    "gradient": "from-indigo-50 to-blue-100",
+    "url": "https://blog.naver.com/lepisode/223813129407",
+    "thumbnail": "https://blogthumb.pstatic.net/MjAyNTAzMjhfNjYg/MDAxNzQzMTQ1NjgxNjUx.1WfvYR8R7b4FCSfbMSejJAvpZ8UhKwKduWB0is50KyQg.WuZu2v2lg2oA7Z0XM2CYrxK5ekU7n7DGkNEvXeM7bKog.PNG/Frame_48096034.png?type=w2"
+  },
+  {
+    "title": "2025 UI/UX 트렌드 분석",
+    "category": "디자인",
+    "icon": "🎨",
+    "gradient": "from-purple-50 to-pink-100",
+    "url": "https://blog.naver.com/lepisode/223813086477?",
+    "thumbnail": ""
+  },
+  {
+    "title": "AI 챗봇 도입 사례와 효과 분석",
+    "category": "AI",
+    "icon": "🤖",
+    "gradient": "from-emerald-50 to-teal-100",
+    "url": "https://blog.naver.com/lepisode/223813086477?",
+    "thumbnail": ""
+  },
+  {
+    "title": "데이터 기반 마케팅 전략 가이드",
+    "category": "마케팅",
+    "icon": "📊",
+    "gradient": "from-amber-50 to-orange-100",
+    "url": "https://blog.naver.com/lepisode",
+    "thumbnail": ""
+  },
+  {
+    "title": "스타트업을 위한 MVP 개발 전략",
+    "category": "개발",
+    "icon": "🚀",
+    "gradient": "from-blue-50 to-indigo-100",
+    "url": "https://blog.naver.com/lepisode",
+    "thumbnail": ""
+  }
+]

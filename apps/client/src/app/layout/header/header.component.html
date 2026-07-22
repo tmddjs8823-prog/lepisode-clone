@@ -1,63 +1,73 @@
-<header class="header" [class.scrolled]="scrolled">
+<header class="header" [class.scrolled]="scrolled" [class.hero-mode]="isHeroPage && !scrolled">
+  <!-- 1행: 수상 실적 벨트 (홈 + 스크롤 전에만) -->
+  @if (isHome && !scrolled) {
+    <div class="awards-belt">
+      <div class="award-hl">
+        <span class="trophy-icon">🏆</span>
+        <div>
+          <div class="aw-year">2024~2025년</div>
+          <div class="aw-count">7<span>개</span></div>
+          <div class="aw-sub">수상 실적</div>
+        </div>
+      </div>
+      <div class="belt-area">
+        <div class="belt-track">
+          <div class="award-badge"><span class="ab-y bg-primary">2024</span><span class="ab-t">과학기술정보통신부 · 정보통신 우수기업 인증</span></div>
+          <div class="award-badge"><span class="ab-y bg-red">2024</span><span class="ab-t">국가기술혁신분야 · 경기중앙지식재산센터 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-green">2024</span><span class="ab-t">한국인터넷진흥원(KISA) · 정보보호 관리체계 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-blue">2025</span><span class="ab-t">경기도지사 · SW기업 우수기업 인증</span></div>
+          <div class="award-badge"><span class="ab-y bg-violet">2025</span><span class="ab-t">한국정보통신산업협회 · 한국정보공시대상 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-primary">2025</span><span class="ab-t">벤처기업협회 · 벤처기업 메인보드 등록</span></div>
+          <div class="award-badge"><span class="ab-y bg-green">2025</span><span class="ab-t">중소벤처기업부 · Pre 성장 강소기업 인증</span></div>
+          <!-- 복제 -->
+          <div class="award-badge"><span class="ab-y bg-primary">2024</span><span class="ab-t">과학기술정보통신부 · 정보통신 우수기업 인증</span></div>
+          <div class="award-badge"><span class="ab-y bg-red">2024</span><span class="ab-t">국가기술혁신분야 · 경기중앙지식재산센터 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-green">2024</span><span class="ab-t">한국인터넷진흥원(KISA) · 정보보호 관리체계 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-blue">2025</span><span class="ab-t">경기도지사 · SW기업 우수기업 인증</span></div>
+          <div class="award-badge"><span class="ab-y bg-violet">2025</span><span class="ab-t">한국정보통신산업협회 · 한국정보공시대상 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-primary">2025</span><span class="ab-t">벤처기업협회 · 벤처기업 메인보드 등록</span></div>
+          <div class="award-badge"><span class="ab-y bg-green">2025</span><span class="ab-t">중소벤처기업부 · Pre 성장 강소기업 인증</span></div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- 2행: 로고(왼쪽) + 네비(오른쪽 끝) -->
   <div class="header-inner">
-    <!-- 로고 -->
     <a routerLink="/" class="logo" (click)="closeMenu()">
       <div class="logo-icon">L</div>
       <span class="logo-text">LEPISODE</span>
     </a>
 
-    <!-- 데스크톱 네비게이션 -->
-    <nav class="nav-desktop">
-      @for (item of navItems; track item.label) {
-        @if (item.children) {
-          <!-- 드롭다운 있는 메뉴 -->
-          <div class="nav-group">
-            <button
-              class="nav-item"
-              [class.active]="activeDropdown === item.label"
-              (click)="toggleDesktopDropdown(item.label, $event)"
-            >
-              {{ item.label }}
-              <svg
-                class="dropdown-arrow"
-                [class.rotated]="activeDropdown === item.label"
-                width="10" height="6" viewBox="0 0 10 6" fill="none"
-              >
-                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-
-            <!-- 드롭다운 패널 -->
-            @if (activeDropdown === item.label) {
-              <div class="dropdown-panel" role="menu" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
-                @for (sub of item.children; track sub.path) {
-                  <a
-                    [routerLink]="sub.path"
-                    class="dropdown-item"
-                    (click)="closeDropdown()"
-                  >
-                    {{ sub.label }}
-                  </a>
-                }
-              </div>
-            }
-          </div>
-        } @else {
-          <!-- 드롭다운 없는 메뉴 -->
-          <a
-            [routerLink]="item.path"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: false }"
-            class="nav-item"
-          >
-            {{ item.label }}
-          </a>
+    <div class="nav-right">
+      <nav class="nav-desktop">
+        @for (item of navItems; track item.label) {
+          @if (item.children) {
+            <div class="nav-group">
+              <button class="nav-item" [class.active]="activeDropdown === item.label" (click)="toggleDesktopDropdown(item.label, $event)">
+                {{ item.label }}
+                <svg class="dropdown-arrow" [class.rotated]="activeDropdown === item.label" width="10" height="6" viewBox="0 0 10 6" fill="none">
+                  <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              @if (activeDropdown === item.label) {
+                <div class="dropdown-panel" role="menu" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+                  @for (sub of item.children; track sub.path) {
+                    @if (sub.external) {
+                      <a [href]="sub.path" target="_blank" rel="noopener" class="dropdown-item" (click)="closeDropdown()">{{ sub.label }}</a>
+                    } @else {
+                      <a [routerLink]="sub.path" class="dropdown-item" (click)="closeDropdown()">{{ sub.label }}</a>
+                    }
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <a [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }" class="nav-item">{{ item.label }}</a>
+          }
         }
-      }
-    </nav>
+      </nav>
 
-    <!-- 언어 선택 -->
-    <div class="header-right">
       <button class="lang-btn">
         <span class="lang-flag">🇰🇷</span>
         <span class="lang-label">한국어</span>
@@ -66,7 +76,6 @@
         </svg>
       </button>
 
-      <!-- 모바일 햄버거 -->
       <button class="mobile-toggle" (click)="toggleMenu()" aria-label="메뉴 열기">
         @if (mobileMenuOpen) {
           <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -78,7 +87,9 @@
   </div>
 
   <!-- 하단 그라데이션 라인 -->
-  <div class="header-line"></div>
+  @if (!isHeroPage) {
+    <div class="header-line"></div>
+  }
 
   <!-- 모바일 메뉴 -->
   @if (mobileMenuOpen) {
@@ -89,33 +100,24 @@
             <div class="mobile-group">
               <button class="mobile-nav-item has-children" (click)="toggleMobileDropdown(item.label)">
                 <span>{{ item.label }}</span>
-                <svg
-                  class="mobile-arrow"
-                  [class.rotated]="activeDropdown === item.label"
-                  width="10" height="6" viewBox="0 0 10 6" fill="none"
-                >
+                <svg class="mobile-arrow" [class.rotated]="activeDropdown === item.label" width="10" height="6" viewBox="0 0 10 6" fill="none">
                   <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
               @if (activeDropdown === item.label) {
                 <div class="mobile-sub">
                   @for (sub of item.children; track sub.path) {
-                    <a [routerLink]="sub.path" class="mobile-sub-item" (click)="closeMenu()">
-                      {{ sub.label }}
-                    </a>
+                    @if (sub.external) {
+                      <a [href]="sub.path" target="_blank" rel="noopener" class="mobile-sub-item" (click)="closeMenu()">{{ sub.label }}</a>
+                    } @else {
+                      <a [routerLink]="sub.path" class="mobile-sub-item" (click)="closeMenu()">{{ sub.label }}</a>
+                    }
                   }
                 </div>
               }
             </div>
           } @else {
-            <a
-              [routerLink]="item.path"
-              routerLinkActive="active"
-              class="mobile-nav-item"
-              (click)="closeMenu()"
-            >
-              {{ item.label }}
-            </a>
+            <a [routerLink]="item.path" routerLinkActive="active" class="mobile-nav-item" (click)="closeMenu()">{{ item.label }}</a>
           }
         }
       </nav>

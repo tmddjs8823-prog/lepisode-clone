@@ -14,7 +14,7 @@
     [loading]="loading()"
     [total]="data().length"
     (rowClick)="navigateToDetail($any($event))"
-    (edit)="navigateToDetail($any($event))"
+    (edit)="openForm($any($event))"
     (delete)="onDelete($any($event))"
   >
     <div search-bar class="relative max-w-sm">

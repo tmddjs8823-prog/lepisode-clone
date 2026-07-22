@@ -16,7 +16,7 @@
     [page]="page()"
     [limit]="limit()"
     (rowClick)="navigateToDetail($any($event))"
-    (edit)="navigateToDetail($any($event))"
+    (edit)="openForm($any($event))"
     (delete)="onDelete($any($event))"
     (pageChange)="onPageChange($event)"
     (pageSizeChange)="limit.set($event); page.set(1); loadData()">

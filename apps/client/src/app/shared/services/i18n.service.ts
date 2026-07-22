@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 export interface TranslationMap {
@@ -9,8 +9,9 @@ export interface TranslationMap {
 export class I18nService {
   private translations = signal<TranslationMap>({});
   private currentLang = signal<'ko' | 'en' | 'ja'>('ko');
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.loadTranslations();
   }
 

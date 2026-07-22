@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, computed } from '@angular/core';
+﻿import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ContentApiService, QrCodeItem, QrCodePayload } from '../../shared/services/content-api.service';
 import { ToastService } from '../../shared/services/toast.service';

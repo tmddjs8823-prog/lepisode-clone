@@ -1,3 +1,18 @@
-import { Component } from '@angular/core';
-@Component({ selector: 'app-about-page', standalone: true, template: `<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24"><div class="text-center"><h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">회사 소개</h1><p class="text-gray-500">페이지 준비 중입니다.</p></div></div>` })
-export class AboutPage {}
+import { Component, inject } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
+@Component({
+  selector: 'app-about-page',
+  standalone: true,
+  templateUrl: './about.page.html',
+})
+export class AboutPage {
+  private sanitizer = inject(DomSanitizer);
+
+  /** 유튜브 영상 ID — 여기만 바꾸면 됩니다 */
+  private readonly youtubeVideoId = 'otnzfiIn_U8';
+
+  youtubeEmbedUrl: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+    `https://www.youtube.com/embed/${this.youtubeVideoId}?rel=0&modestbranding=1&amp;enablejsapi=1&amp;origin=https://homepage-dev.lepisode.team`
+  );
+}
