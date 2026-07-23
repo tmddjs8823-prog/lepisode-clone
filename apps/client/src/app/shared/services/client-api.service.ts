@@ -216,4 +216,22 @@ export class ClientApiService {
       params: { published: 'true' },
     }).pipe(map(res => res.data));
   }
+
+  /* 팀원 목록 */
+  getTeamMembers(): Observable<TeamMember[]> {
+    return this.http.get<TeamMember[]>(`${API}/company/team`);
+  }
+}
+
+/* ── 팀원 ── */
+export interface TeamMember {
+  id: number;
+  name: string;
+  nameEn?: string;
+  position: string;
+  positionEn?: string;
+  profileImageUrl?: string;
+  bio?: string;
+  bioEn?: string;
+  sortOrder?: number;
 }

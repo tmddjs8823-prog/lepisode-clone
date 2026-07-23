@@ -31,6 +31,7 @@ export class HeaderComponent {
   scrolled = false;
   isHome = true;
   isHeroPage = false;
+  isTransparentPage = false;
 
   constructor() {
     this.router.events.pipe(
@@ -38,6 +39,7 @@ export class HeaderComponent {
     ).subscribe(e => {
       this.isHome = e.urlAfterRedirects === '/' || e.urlAfterRedirects === '';
       this.isHeroPage = e.urlAfterRedirects.startsWith('/careers');
+      this.isTransparentPage = e.urlAfterRedirects.startsWith('/support-projects') || e.urlAfterRedirects.startsWith('/marketing');
     });
   }
 

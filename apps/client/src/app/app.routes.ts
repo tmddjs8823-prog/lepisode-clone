@@ -12,6 +12,8 @@ import { NoticePage } from './pages/notice/notice.page';
 import { NoticeDetailPage } from './pages/notice/notice-detail.page';
 import { CareersPage } from './pages/careers/careers.page';
 import { ConsultPage } from './pages/consult/consult.page';
+import { SupportProjectsPage } from './pages/support-projects/support-projects.page';
+import { MarketingPage } from './pages/marketing/marketing.page';
 
 export const appRoutes: Route[] = [
   {
@@ -30,6 +32,8 @@ export const appRoutes: Route[] = [
       { path: 'notice/:id', component: NoticeDetailPage },
       { path: 'careers',   component: CareersPage },
       { path: 'consult',   component: ConsultPage },
+      { path: 'support-projects', component: SupportProjectsPage },
+      { path: 'marketing', component: MarketingPage },
     ],
   },
   { path: '**', redirectTo: '' },

@@ -1,0 +1,48 @@
+/* ═══════════ 지원사업 찾기 – CSS에서만 가능한 스타일 ═══════════ */
+
+/* ── Hero 배경 (4색 linear-gradient + 복합 radial-gradient) ── */
+.hero-section {
+  background: linear-gradient(180deg, #e8edff 0%, #d4dcff 30%, #c7d2fe 60%, #eef1ff 100%);
+}
+
+.hero-bg {
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 80%, rgba(165, 180, 252, 0.3), transparent),
+    radial-gradient(ellipse 500px 300px at 80% 20%, rgba(129, 140, 248, 0.2), transparent),
+    radial-gradient(ellipse 800px 600px at 50% 60%, rgba(199, 210, 254, 0.4), transparent);
+}
+
+/* ── 카테고리 카드 선택 상태 (그라데이션) ── */
+.category-card--active {
+  background: linear-gradient(145deg, #5b7bd5 0%, #4a63b8 40%, #41539b 100%);
+}
+
+/* ── 일러스트 플로팅 애니메이션 (delay 각각 다름) ── */
+.illust-gov   { animation: float 3s ease-in-out infinite; }
+.illust-money { animation: float 3s ease-in-out infinite 0.5s; }
+.illust-check { animation: float 3s ease-in-out infinite 1s; }
+.illust-chat  { animation: float 3s ease-in-out infinite 1.5s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ── 조회 패널 등장 애니메이션 ── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeSlideUp 0.3s ease-out;
+}
+
+/* ── 반응형 ── */
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 120vh;
+    margin-top: -80px;
+    padding-top: 80px;
+  }
+}

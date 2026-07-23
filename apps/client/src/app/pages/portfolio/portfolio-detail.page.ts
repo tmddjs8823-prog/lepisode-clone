@@ -29,13 +29,13 @@ export class PortfolioDetailPage implements OnInit {
       next: (data) => {
         this.item.set(data);
         this.loading.set(false);
-        this.loadRecommended(id, data.category);
+        this.loadRecommended(id);
       },
       error: () => this.loading.set(false),
     });
   }
 
-  private loadRecommended(currentId: number, category?: string): void {
+  private loadRecommended(currentId: number): void {
     this.api.getPortfolios(10).subscribe({
       next: (list) => {
         const filtered = list

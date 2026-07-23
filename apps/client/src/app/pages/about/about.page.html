@@ -101,3 +101,58 @@
 
   </div>
 </section>
+
+<!-- ═══════════ 팀원 소개 ═══════════ -->
+<section class="py-16 px-6">
+  <div class="max-w-[1100px] mx-auto">
+
+    <div class="text-center mb-12">
+      <span class="inline-block text-sm font-semibold text-indigo-600 mb-2">Our Team</span>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">팀원소개</h2>
+      <p class="text-sm text-gray-400">레피소드를 이끌어가는 사람들</p>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+      @for (member of teamMembers(); track member.id) {
+        <div class="bg-white rounded-2xl border border-gray-100 p-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all group">
+          <!-- 프로필 이미지 / 이니셜 -->
+          <div class="w-24 h-24 rounded-full mx-auto mb-5 overflow-hidden bg-gray-100 flex items-center justify-center">
+            @if (member.profileImageUrl) {
+              <img [src]="member.profileImageUrl" [alt]="member.name"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            } @else {
+              <span class="text-indigo-500 font-bold text-lg">{{ getInitials(member.name) }}</span>
+            }
+          </div>
+          <!-- 이름 -->
+          <h3 class="text-base font-bold text-gray-900 mb-1">{{ member.name }}</h3>
+          <!-- 직책 -->
+          <p class="text-sm text-indigo-600 font-medium mb-2">{{ member.position }}</p>
+          <!-- 부서 태그 (bio 필드 활용) -->
+          @if (member.bio) {
+            <span class="inline-block text-xs font-medium text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full">{{ member.bio }}</span>
+          }
+        </div>
+      } @empty {
+        <!-- 데모 데이터 (API 데이터 없을 때) -->
+        @for (demo of [
+          { name: '김철수', position: '인턴', dept: '개발' },
+          { name: '이영희', position: '디자이너', dept: '디자인' },
+          { name: '박지훈', position: '팀장', dept: '개발' },
+          { name: '최수진', position: '매니저', dept: '기획' },
+          { name: '정민호', position: '대표이사', dept: '경영' }
+        ]; track demo.name) {
+          <div class="bg-white rounded-2xl border border-gray-100 p-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all group">
+            <div class="w-24 h-24 rounded-full mx-auto mb-5 overflow-hidden bg-gray-100 flex items-center justify-center">
+              <span class="text-indigo-500 font-bold text-lg">{{ demo.name.slice(0, 2) }}</span>
+            </div>
+            <h3 class="text-base font-bold text-gray-900 mb-1">{{ demo.name }}</h3>
+            <p class="text-sm text-indigo-600 font-medium mb-2">{{ demo.position }}</p>
+            <span class="inline-block text-xs font-medium text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full">{{ demo.dept }}</span>
+          </div>
+        }
+      }
+    </div>
+
+  </div>
+</section>

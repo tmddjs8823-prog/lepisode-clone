@@ -1,86 +1,98 @@
-<header class="header" [class.scrolled]="scrolled" [class.hero-mode]="isHeroPage && !scrolled">
+<header class="header fixed top-0 left-0 right-0 z-50 bg-white/[0.97] transition-all duration-300"
+        [class.scrolled]="scrolled"
+        [class.hero-mode]="isHeroPage && !scrolled"
+        [class.transparent-mode]="isTransparentPage && !scrolled">
   <!-- 1행: 수상 실적 벨트 (홈 + 스크롤 전에만) -->
   @if (isHome && !scrolled) {
-    <div class="awards-belt">
-      <div class="award-hl">
-        <span class="trophy-icon">🏆</span>
+    <div class="awards-belt flex items-center bg-white border-b border-gray-200 px-6 gap-0">
+      <div class="flex items-center gap-3 bg-[#fffbeb] rounded-xl px-5 py-3.5 flex-shrink-0">
+        <span class="text-4xl">🏆</span>
         <div>
-          <div class="aw-year">2024~2025년</div>
-          <div class="aw-count">7<span>개</span></div>
-          <div class="aw-sub">수상 실적</div>
+          <div class="text-xs text-gray-400 leading-tight">2024~2025년</div>
+          <div class="text-[28px] font-extrabold text-gray-900 leading-none">7<span class="text-sm font-medium">개</span></div>
+          <div class="text-xs text-gray-400">수상 실적</div>
         </div>
       </div>
       <div class="belt-area">
         <div class="belt-track">
-          <div class="award-badge"><span class="ab-y bg-primary">2024</span><span class="ab-t">과학기술정보통신부 · 정보통신 우수기업 인증</span></div>
-          <div class="award-badge"><span class="ab-y bg-red">2024</span><span class="ab-t">국가기술혁신분야 · 경기중앙지식재산센터 수상</span></div>
-          <div class="award-badge"><span class="ab-y bg-green">2024</span><span class="ab-t">한국인터넷진흥원(KISA) · 정보보호 관리체계 수상</span></div>
-          <div class="award-badge"><span class="ab-y bg-blue">2025</span><span class="ab-t">경기도지사 · SW기업 우수기업 인증</span></div>
-          <div class="award-badge"><span class="ab-y bg-violet">2025</span><span class="ab-t">한국정보통신산업협회 · 한국정보공시대상 수상</span></div>
-          <div class="award-badge"><span class="ab-y bg-primary">2025</span><span class="ab-t">벤처기업협회 · 벤처기업 메인보드 등록</span></div>
-          <div class="award-badge"><span class="ab-y bg-green">2025</span><span class="ab-t">중소벤처기업부 · Pre 성장 강소기업 인증</span></div>
+          <div class="award-badge"><span class="ab-y bg-[#41539b]">2024</span><span class="ab-t">과학기술정보통신부 · 정보통신 우수기업 인증</span></div>
+          <div class="award-badge"><span class="ab-y bg-red-500">2024</span><span class="ab-t">국가기술혁신분야 · 경기중앙지식재산센터 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-emerald-500">2024</span><span class="ab-t">한국인터넷진흥원(KISA) · 정보보호 관리체계 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-blue-500">2025</span><span class="ab-t">경기도지사 · SW기업 우수기업 인증</span></div>
+          <div class="award-badge"><span class="ab-y bg-violet-500">2025</span><span class="ab-t">한국정보통신산업협회 · 한국정보공시대상 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-[#41539b]">2025</span><span class="ab-t">벤처기업협회 · 벤처기업 메인보드 등록</span></div>
+          <div class="award-badge"><span class="ab-y bg-emerald-500">2025</span><span class="ab-t">중소벤처기업부 · Pre 성장 강소기업 인증</span></div>
           <!-- 복제 -->
-          <div class="award-badge"><span class="ab-y bg-primary">2024</span><span class="ab-t">과학기술정보통신부 · 정보통신 우수기업 인증</span></div>
-          <div class="award-badge"><span class="ab-y bg-red">2024</span><span class="ab-t">국가기술혁신분야 · 경기중앙지식재산센터 수상</span></div>
-          <div class="award-badge"><span class="ab-y bg-green">2024</span><span class="ab-t">한국인터넷진흥원(KISA) · 정보보호 관리체계 수상</span></div>
-          <div class="award-badge"><span class="ab-y bg-blue">2025</span><span class="ab-t">경기도지사 · SW기업 우수기업 인증</span></div>
-          <div class="award-badge"><span class="ab-y bg-violet">2025</span><span class="ab-t">한국정보통신산업협회 · 한국정보공시대상 수상</span></div>
-          <div class="award-badge"><span class="ab-y bg-primary">2025</span><span class="ab-t">벤처기업협회 · 벤처기업 메인보드 등록</span></div>
-          <div class="award-badge"><span class="ab-y bg-green">2025</span><span class="ab-t">중소벤처기업부 · Pre 성장 강소기업 인증</span></div>
+          <div class="award-badge"><span class="ab-y bg-[#41539b]">2024</span><span class="ab-t">과학기술정보통신부 · 정보통신 우수기업 인증</span></div>
+          <div class="award-badge"><span class="ab-y bg-red-500">2024</span><span class="ab-t">국가기술혁신분야 · 경기중앙지식재산센터 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-emerald-500">2024</span><span class="ab-t">한국인터넷진흥원(KISA) · 정보보호 관리체계 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-blue-500">2025</span><span class="ab-t">경기도지사 · SW기업 우수기업 인증</span></div>
+          <div class="award-badge"><span class="ab-y bg-violet-500">2025</span><span class="ab-t">한국정보통신산업협회 · 한국정보공시대상 수상</span></div>
+          <div class="award-badge"><span class="ab-y bg-[#41539b]">2025</span><span class="ab-t">벤처기업협회 · 벤처기업 메인보드 등록</span></div>
+          <div class="award-badge"><span class="ab-y bg-emerald-500">2025</span><span class="ab-t">중소벤처기업부 · Pre 성장 강소기업 인증</span></div>
         </div>
       </div>
     </div>
   }
 
   <!-- 2행: 로고(왼쪽) + 네비(오른쪽 끝) -->
-  <div class="header-inner">
-    <a routerLink="/" class="logo" (click)="closeMenu()">
-      <div class="logo-icon">L</div>
-      <span class="logo-text">LEPISODE</span>
+  <div class="header-inner w-full px-6 flex items-center justify-between h-16 lg:h-[72px]">
+    <a routerLink="/" class="flex items-center gap-2.5 no-underline flex-shrink-0" (click)="closeMenu()">
+      <div class="logo-icon w-8 h-8 bg-[#41539b] rounded-md flex items-center justify-center text-white font-bold text-base">L</div>
+      <span class="logo-text text-lg font-bold text-[#1a1a1a] tracking-[0.02em]">LEPISODE</span>
     </a>
 
-    <div class="nav-right">
-      <nav class="nav-desktop">
+    <div class="flex items-center gap-2 ml-auto">
+      <nav class="nav-desktop hidden lg:flex items-center gap-0.5">
         @for (item of navItems; track item.label) {
           @if (item.children) {
-            <div class="nav-group">
-              <button class="nav-item" [class.active]="activeDropdown === item.label" (click)="toggleDesktopDropdown(item.label, $event)">
+            <div class="nav-group relative">
+              <button class="nav-item flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#4a4a4a] no-underline rounded-md border-none bg-transparent transition-colors cursor-pointer font-[inherit] whitespace-nowrap hover:text-[#41539b] hover:bg-gray-100"
+                      [class.active]="activeDropdown === item.label"
+                      (click)="toggleDesktopDropdown(item.label, $event)">
                 {{ item.label }}
-                <svg class="dropdown-arrow" [class.rotated]="activeDropdown === item.label" width="10" height="6" viewBox="0 0 10 6" fill="none">
+                <svg class="dropdown-arrow ml-0.5 opacity-40 transition-transform duration-200" [class.rotated]="activeDropdown === item.label" width="10" height="6" viewBox="0 0 10 6" fill="none">
                   <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
               @if (activeDropdown === item.label) {
-                <div class="dropdown-panel" role="menu" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+                <div class="dropdown-panel absolute top-full left-1/2 -translate-x-1/2 mt-1 min-w-[140px] bg-white border border-gray-200 rounded-[10px] shadow-[0_8px_24px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04)] p-1.5 z-[100] animate-dropdown"
+                     role="menu" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
                   @for (sub of item.children; track sub.path) {
                     @if (sub.external) {
-                      <a [href]="sub.path" target="_blank" rel="noopener" class="dropdown-item" (click)="closeDropdown()">{{ sub.label }}</a>
+                      <a [href]="sub.path" target="_blank" rel="noopener"
+                         class="block px-4 py-2.5 text-sm font-normal text-gray-500 no-underline rounded-md transition-all whitespace-nowrap hover:bg-[#f5f5ff] hover:text-[#41539b] hover:font-medium"
+                         (click)="closeDropdown()">{{ sub.label }}</a>
                     } @else {
-                      <a [routerLink]="sub.path" class="dropdown-item" (click)="closeDropdown()">{{ sub.label }}</a>
+                      <a [routerLink]="sub.path"
+                         class="block px-4 py-2.5 text-sm font-normal text-gray-500 no-underline rounded-md transition-all whitespace-nowrap hover:bg-[#f5f5ff] hover:text-[#41539b] hover:font-medium"
+                         (click)="closeDropdown()">{{ sub.label }}</a>
                     }
                   }
                 </div>
               }
             </div>
           } @else {
-            <a [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }" class="nav-item">{{ item.label }}</a>
+            <a [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
+               class="nav-item flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#4a4a4a] no-underline rounded-md border-none bg-transparent transition-colors cursor-pointer whitespace-nowrap hover:text-[#41539b] hover:bg-gray-100">{{ item.label }}</a>
           }
         }
       </nav>
 
-      <button class="lang-btn">
-        <span class="lang-flag">🇰🇷</span>
-        <span class="lang-label">한국어</span>
-        <svg class="dropdown-arrow small" width="10" height="6" viewBox="0 0 10 6" fill="none">
+      <button class="lang-btn hidden lg:flex items-center gap-1.5 px-3.5 py-1.5 border border-gray-200 rounded-full bg-white text-[13px] font-medium text-[#4a4a4a] cursor-pointer transition-colors hover:border-[#41539b]">
+        <span class="text-base leading-none">🇰🇷</span>
+        <span class="tracking-[-0.02em]">한국어</span>
+        <svg class="dropdown-arrow ml-1 opacity-40" width="10" height="6" viewBox="0 0 10 6" fill="none">
           <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
 
-      <button class="mobile-toggle" (click)="toggleMenu()" aria-label="메뉴 열기">
+      <button class="flex p-2 text-gray-500 bg-transparent border-none rounded-lg cursor-pointer transition-colors hover:bg-gray-100 lg:hidden"
+              (click)="toggleMenu()" aria-label="메뉴 열기">
         @if (mobileMenuOpen) {
-          <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         } @else {
-          <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
         }
       </button>
     </div>
@@ -88,36 +100,43 @@
 
   <!-- 하단 그라데이션 라인 -->
   @if (!isHeroPage) {
-    <div class="header-line"></div>
+    <div class="header-line h-[3px] bg-gradient-to-r from-[#41539b] via-[#7c6bc4] to-[#b794d6] opacity-0 transition-opacity duration-300"></div>
   }
 
   <!-- 모바일 메뉴 -->
   @if (mobileMenuOpen) {
-    <div class="mobile-menu">
-      <nav class="mobile-nav">
+    <div class="bg-white border-t border-gray-200 shadow-[0_8px_24px_rgba(0,0,0,0.1)] max-h-[calc(100vh-67px)] overflow-y-auto">
+      <nav class="flex flex-col p-2 px-3 gap-0.5">
         @for (item of navItems; track item.label) {
           @if (item.children) {
-            <div class="mobile-group">
-              <button class="mobile-nav-item has-children" (click)="toggleMobileDropdown(item.label)">
+            <div class="flex flex-col">
+              <button class="mobile-nav-item flex items-center justify-between px-4 py-3 text-[15px] font-medium text-[#4a4a4a] no-underline rounded-lg transition-colors border-none bg-transparent cursor-pointer w-full text-left hover:text-[#41539b] hover:bg-[#f5f5ff]"
+                      (click)="toggleMobileDropdown(item.label)">
                 <span>{{ item.label }}</span>
-                <svg class="mobile-arrow" [class.rotated]="activeDropdown === item.label" width="10" height="6" viewBox="0 0 10 6" fill="none">
+                <svg class="opacity-40 transition-transform duration-200" [class.rotate-180]="activeDropdown === item.label" width="10" height="6" viewBox="0 0 10 6" fill="none">
                   <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
               @if (activeDropdown === item.label) {
-                <div class="mobile-sub">
+                <div class="flex flex-col pl-4 mb-1 animate-dropdown">
                   @for (sub of item.children; track sub.path) {
                     @if (sub.external) {
-                      <a [href]="sub.path" target="_blank" rel="noopener" class="mobile-sub-item" (click)="closeMenu()">{{ sub.label }}</a>
+                      <a [href]="sub.path" target="_blank" rel="noopener"
+                         class="px-4 py-2.5 text-sm font-normal text-gray-500 no-underline rounded-md transition-all hover:text-[#41539b] hover:bg-[#f0f0ff]"
+                         (click)="closeMenu()">{{ sub.label }}</a>
                     } @else {
-                      <a [routerLink]="sub.path" class="mobile-sub-item" (click)="closeMenu()">{{ sub.label }}</a>
+                      <a [routerLink]="sub.path"
+                         class="px-4 py-2.5 text-sm font-normal text-gray-500 no-underline rounded-md transition-all hover:text-[#41539b] hover:bg-[#f0f0ff]"
+                         (click)="closeMenu()">{{ sub.label }}</a>
                     }
                   }
                 </div>
               }
             </div>
           } @else {
-            <a [routerLink]="item.path" routerLinkActive="active" class="mobile-nav-item" (click)="closeMenu()">{{ item.label }}</a>
+            <a [routerLink]="item.path" routerLinkActive="active"
+               class="mobile-nav-item flex items-center justify-between px-4 py-3 text-[15px] font-medium text-[#4a4a4a] no-underline rounded-lg transition-colors hover:text-[#41539b] hover:bg-[#f5f5ff]"
+               (click)="closeMenu()">{{ item.label }}</a>
           }
         }
       </nav>

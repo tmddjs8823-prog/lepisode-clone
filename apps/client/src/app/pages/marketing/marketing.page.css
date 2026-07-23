@@ -1,0 +1,50 @@
+/* ═══════════ 마케팅·호스팅 페이지 ═══════════ */
+
+/* ── Hero (support-projects와 동일 패턴) ── */
+.hero-section {
+  background: linear-gradient(180deg, #e8edff 0%, #d4dcff 30%, #c7d2fe 60%, #eef1ff 100%);
+}
+
+.hero-bg {
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 80%, rgba(165, 180, 252, 0.3), transparent),
+    radial-gradient(ellipse 500px 300px at 80% 20%, rgba(129, 140, 248, 0.2), transparent),
+    radial-gradient(ellipse 800px 600px at 50% 60%, rgba(199, 210, 254, 0.4), transparent);
+}
+
+/* ── 호스팅 섹션 (밝은 블루 그라데이션) ── */
+.hosting-section {
+  background: linear-gradient(145deg, #3b82f6 0%, #4f8ff7 50%, #60a5fa 100%);
+}
+/* ── 벨트 부드러운 이동 ── */
+.hosting-belt-smooth {
+  transition: transform 700ms ease-in-out;
+}
+
+/* ── 카드 라이트 효과 ── */
+.hosting-card--lit {
+  background: white;
+  box-shadow:
+    0 0 20px rgba(255, 255, 255, 0.6),
+    0 8px 32px rgba(59, 130, 246, 0.3);
+  transform: scale(1.04);
+}
+
+.hosting-card--dim {
+  background: white;
+  opacity: 0.35;
+  transform: scale(0.96);
+}
+
+/* ── 프로세스 섹션 (어두운 배경) ── */
+.process-section {
+  background: linear-gradient(180deg, #111827 0%, #1f2937 100%);
+}
+
+/* ── 반응형 ── */
+@media (max-width: 768px) {
+  .hero-section {
+    margin-top: -80px;
+    padding-top: 80px;
+  }
+}
