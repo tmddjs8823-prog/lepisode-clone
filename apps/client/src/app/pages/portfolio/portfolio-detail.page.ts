@@ -8,7 +8,6 @@ import { ClientApiService, PortfolioItem } from '../../shared/services/client-ap
   standalone: true,
   imports: [RouterLink],
   templateUrl: './portfolio-detail.page.html',
-  styleUrl: './portfolio-detail.page.css',
 })
 export class PortfolioDetailPage implements OnInit {
   private platformId = inject(PLATFORM_ID);

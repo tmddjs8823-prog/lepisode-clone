@@ -13,7 +13,6 @@ interface CategoryTab {
   standalone: true,
   imports: [RouterLink],
   templateUrl: './portfolio.page.html',
-  styleUrl: './portfolio.page.css',
 })
 export class PortfolioPage implements OnInit {
   private platformId = inject(PLATFORM_ID);

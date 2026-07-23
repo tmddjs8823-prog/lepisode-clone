@@ -1,0 +1,74 @@
+<!-- ═══════════ Hero Banner ═══════════ -->
+<section class="relative h-[380px] pt-[70px] flex items-center justify-center overflow-hidden"
+         style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+  <!-- overlay -->
+  <div class="absolute inset-0 pointer-events-none"
+       style="background: radial-gradient(circle at 30% 70%, rgba(65,83,155,0.2) 0%, transparent 50%), radial-gradient(circle at 70% 30%, rgba(124,107,196,0.15) 0%, transparent 50%);"></div>
+  <div class="relative z-[2] text-center">
+    <span class="inline-block px-4 py-1.5 rounded-full bg-white/[0.08] border border-white/[0.12] text-[0.7rem] font-bold text-white/70 tracking-[0.15em] mb-4">EVENT</span>
+    <h1 class="text-[2.2rem] font-black text-white m-0 mb-2.5">이벤트</h1>
+    <p class="text-[0.9rem] text-white/50 m-0">레피소드의 다양한 이벤트와 프로모션을 확인해보세요</p>
+  </div>
+</section>
+
+<!-- ═══════════ 이벤트 목록 ═══════════ -->
+<section class="py-16 px-6">
+  <div class="max-w-[1100px] mx-auto">
+
+    @if (loading()) {
+      <div class="flex justify-center py-20">
+        <div class="w-8 h-8 border-[3px] border-gray-200 border-t-[#41539b] rounded-full animate-spin"></div>
+      </div>
+    } @else if (events().length === 0) {
+      <div class="text-center py-20">
+        <div class="text-5xl mb-4">🎉</div>
+        <p class="text-lg font-semibold text-gray-400">현재 진행 중인 이벤트가 없습니다</p>
+        <p class="text-sm text-gray-300 mt-2">새로운 이벤트를 기대해주세요!</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (event of events(); track event.id) {
+          <a [routerLink]="['/events', event.id]"
+             class="flex flex-col rounded-2xl overflow-hidden border border-gray-100 bg-white transition-all duration-250 no-underline text-inherit hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] hover:border-[#41539b] group">
+            <!-- 이미지 -->
+            <div class="relative h-[200px] overflow-hidden">
+              @if (event.imageUrl) {
+                <img [src]="event.imageUrl" [alt]="event.title" loading="lazy"
+                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              } @else {
+                <div class="w-full h-full bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center">
+                  <span class="text-5xl">🎉</span>
+                </div>
+              }
+              <!-- 상태 뱃지 -->
+              <span class="absolute top-3 left-3 px-3 py-1 rounded-lg text-[0.7rem] font-bold backdrop-blur-sm"
+                [class]="getStatus(event) === 'ongoing'
+                  ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30'
+                  : getStatus(event) === 'upcoming'
+                    ? 'bg-[#41539b]/15 text-[#41539b] border border-[#41539b]/30'
+                    : 'bg-slate-400/15 text-slate-400 border border-slate-400/30'">
+                {{ getStatusLabel(event) }}
+              </span>
+            </div>
+            <!-- 정보 -->
+            <div class="p-5 flex flex-col gap-2 flex-1">
+              <h3 class="text-base font-bold text-[#1a1a2e] m-0 line-clamp-2 group-hover:text-[#41539b] transition-colors">{{ event.title }}</h3>
+              @if (event.description) {
+                <p class="text-[0.82rem] text-gray-400 leading-relaxed m-0 line-clamp-2">{{ event.description }}</p>
+              }
+              <div class="flex items-center gap-1.5 text-xs text-gray-400 mt-auto">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                @if (event.startDate) {
+                  <span>{{ event.startDate | date:'yyyy.MM.dd' }}</span>
+                }
+                @if (event.endDate) {
+                  <span> ~ {{ event.endDate | date:'yyyy.MM.dd' }}</span>
+                }
+              </div>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </div>
+</section>

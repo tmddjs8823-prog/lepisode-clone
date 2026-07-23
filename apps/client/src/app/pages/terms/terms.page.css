@@ -1,0 +1,47 @@
+/* innerHTML로 렌더링되는 약관 본문 스타일 (Tailwind 불가 영역) */
+.terms-content {
+  text-align: left;
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: #444;
+  word-break: keep-all;
+}
+.terms-content h1,
+.terms-content h2,
+.terms-content h3,
+.terms-content h4 {
+  color: #1a1a2e;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  font-weight: 700;
+}
+.terms-content h2 { font-size: 1.3rem; }
+.terms-content h3 { font-size: 1.1rem; }
+.terms-content p { margin: 0 0 1em; }
+.terms-content ul,
+.terms-content ol {
+  padding-left: 1.5em;
+  margin: 0 0 1em;
+}
+.terms-content li { margin-bottom: 0.4em; }
+.terms-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.9rem;
+}
+.terms-content th,
+.terms-content td {
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  text-align: left;
+}
+.terms-content th {
+  background: #f8f9fb;
+  font-weight: 600;
+  color: #333;
+}
+.terms-content a {
+  color: #41539b;
+  text-decoration: underline;
+}

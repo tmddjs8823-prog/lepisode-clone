@@ -1,14 +1,12 @@
+@if (i18n.currentLang() === 'ja') {
+  <app-home-ja />
+} @else {
 <!-- ═══════════ Hero (보라색 – 아래로 넓게) ═══════════ -->
 <section class="pt-32 pb-40 px-6" style="background: linear-gradient(180deg, #f0edff 0%, #e8e4ff 40%, #f0edff 100%);">
 
   <div class="max-w-[800px] mx-auto text-center">
-    <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 leading-snug mb-5">
-      기획부터 AI까지, 디지털 전환의<br>모든 것을 한 곳에서.
-    </h1>
-    <p class="text-sm text-gray-500 leading-relaxed">
-      앱·웹 개발, 키오스크, AI 솔루션, SNS 마케팅까지<br>
-      레피소드가 AX·DX 전환의 모든 단계를 함께 설계합니다.
-    </p>
+    <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 leading-snug mb-5" [innerHTML]="i18n.t('home.hero.title', '기획부터 AI까지, 디지털 전환의<br>모든 것을 한 곳에서.')"></h1>
+    <p class="text-sm text-gray-500 leading-relaxed" [innerHTML]="i18n.t('home.hero.desc', '앱·웹 개발, 키오스크, AI 솔루션, SNS 마케팅까지<br>레피소드가 AX·DX 전환의 모든 단계를 함께 설계합니다.')"></p>
   </div>
 </section>
 
@@ -18,7 +16,7 @@
     <div class="flex items-center justify-center gap-4 mb-6">
       <span class="text-3xl">📋</span>
       <h2 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900">
-        아이디어부터 운영까지, <span class="underline decoration-[#41539b] decoration-2 underline-offset-4">원스톱 서비스</span>
+        {{ i18n.t('home.onestop.prefix', '아이디어부터 운영까지,') }} <span class="underline decoration-[#41539b] decoration-2 underline-offset-4">{{ i18n.t('home.onestop.highlight', '원스톱 서비스') }}</span>
       </h2>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -35,7 +33,7 @@
                }">
             {{ serviceIcons[($index) % serviceIcons.length] }}
           </div>
-          <h3 class="text-sm font-bold text-gray-900">{{ s.title }}</h3>
+          <h3 class="text-sm font-bold text-gray-900">{{ i18n.t('home.service.' + $index, s.title) }}</h3>
           <div class="flex flex-wrap gap-1.5 mt-auto">
             @for (tag of getServiceTags($index); track tag) {
               <span class="text-[10px] font-medium px-2 py-0.5 rounded-md"
@@ -649,7 +647,8 @@
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade">
       </iframe>
-    </div>
+  </div>
 
   </div>
 </section>
+}

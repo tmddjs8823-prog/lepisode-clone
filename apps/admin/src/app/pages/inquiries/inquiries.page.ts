@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { InquiryApiService, InquiryItem, InquiryStatus } from '../../shared/services/inquiry-api.service';
@@ -80,6 +80,7 @@ export class InquiriesPage implements OnInit {
   selectedItem = signal<InquiryItem | null>(null);
   editStatus = signal<InquiryStatus>('PENDING');
   editMemo = signal('');
+  editingMemo = signal(false);
   updating = signal(false);
 
   // 삭제
@@ -141,7 +142,7 @@ export class InquiriesPage implements OnInit {
     this.editMemo.set(item.adminMemo ?? '');
   }
 
-  closeDetail(): void { this.selectedItem.set(null); }
+  closeDetail(): void { this.selectedItem.set(null); this.editingMemo.set(false); }
 
   saveStatus(): void {
     const item = this.selectedItem();
@@ -158,6 +159,23 @@ export class InquiriesPage implements OnInit {
         this.loadData();
       },
       error: () => { this.toast.error('업데이트에 실패했습니다.'); this.updating.set(false); },
+    });
+  }
+
+  saveMemo(): void {
+    const item = this.selectedItem();
+    if (!item) return;
+    this.inquiryApi.updateStatus(item.id, {
+      status: item.status,
+      adminMemo: this.editMemo().trim() || undefined,
+    }).subscribe({
+      next: (updated) => {
+        this.toast.success('메모가 저장되었습니다.');
+        this.selectedItem.set(updated);
+        this.editingMemo.set(false);
+        this.loadData();
+      },
+      error: () => { this.toast.error('메모 저장에 실패했습니다.'); },
     });
   }
 

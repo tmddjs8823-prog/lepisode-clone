@@ -1,9 +1,9 @@
 <header class="header fixed top-0 left-0 right-0 z-50 bg-white/[0.97] transition-all duration-300"
         [class.scrolled]="scrolled"
-        [class.hero-mode]="isHeroPage && !scrolled"
+        [class.hero-mode]="(isHeroPage || (isHome && i18n.currentLang() === 'ja')) && !scrolled"
         [class.transparent-mode]="isTransparentPage && !scrolled">
   <!-- 1행: 수상 실적 벨트 (홈 + 스크롤 전에만) -->
-  @if (isHome && !scrolled) {
+  @if (isHome && !scrolled && i18n.currentLang() !== 'ja') {
     <div class="awards-belt flex items-center bg-white border-b border-gray-200 px-6 gap-0">
       <div class="flex items-center gap-3 bg-[#fffbeb] rounded-xl px-5 py-3.5 flex-shrink-0">
         <span class="text-4xl">🏆</span>
@@ -50,7 +50,7 @@
               <button class="nav-item flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#4a4a4a] no-underline rounded-md border-none bg-transparent transition-colors cursor-pointer font-[inherit] whitespace-nowrap hover:text-[#41539b] hover:bg-gray-100"
                       [class.active]="activeDropdown === item.label"
                       (click)="toggleDesktopDropdown(item.label, $event)">
-                {{ item.label }}
+                {{ i18n.t(item.i18nKey ?? '', item.label) }}
                 <svg class="dropdown-arrow ml-0.5 opacity-40 transition-transform duration-200" [class.rotated]="activeDropdown === item.label" width="10" height="6" viewBox="0 0 10 6" fill="none">
                   <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -62,11 +62,11 @@
                     @if (sub.external) {
                       <a [href]="sub.path" target="_blank" rel="noopener"
                          class="block px-4 py-2.5 text-sm font-normal text-gray-500 no-underline rounded-md transition-all whitespace-nowrap hover:bg-[#f5f5ff] hover:text-[#41539b] hover:font-medium"
-                         (click)="closeDropdown()">{{ sub.label }}</a>
+                         (click)="closeDropdown()">{{ i18n.t(sub.i18nKey ?? '', sub.label) }}</a>
                     } @else {
                       <a [routerLink]="sub.path"
                          class="block px-4 py-2.5 text-sm font-normal text-gray-500 no-underline rounded-md transition-all whitespace-nowrap hover:bg-[#f5f5ff] hover:text-[#41539b] hover:font-medium"
-                         (click)="closeDropdown()">{{ sub.label }}</a>
+                         (click)="closeDropdown()">{{ i18n.t(sub.i18nKey ?? '', sub.label) }}</a>
                     }
                   }
                 </div>
@@ -74,18 +74,40 @@
             </div>
           } @else {
             <a [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
-               class="nav-item flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#4a4a4a] no-underline rounded-md border-none bg-transparent transition-colors cursor-pointer whitespace-nowrap hover:text-[#41539b] hover:bg-gray-100">{{ item.label }}</a>
+               class="nav-item flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#4a4a4a] no-underline rounded-md border-none bg-transparent transition-colors cursor-pointer whitespace-nowrap hover:text-[#41539b] hover:bg-gray-100">{{ i18n.t(item.i18nKey ?? '', item.label) }}</a>
           }
         }
       </nav>
 
-      <button class="lang-btn hidden lg:flex items-center gap-1.5 px-3.5 py-1.5 border border-gray-200 rounded-full bg-white text-[13px] font-medium text-[#4a4a4a] cursor-pointer transition-colors hover:border-[#41539b]">
-        <span class="text-base leading-none">🇰🇷</span>
-        <span class="tracking-[-0.02em]">한국어</span>
-        <svg class="dropdown-arrow ml-1 opacity-40" width="10" height="6" viewBox="0 0 10 6" fill="none">
-          <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+      <div class="lang-dropdown-wrap relative hidden lg:block">
+        <button class="lang-btn flex items-center gap-1.5 px-3.5 py-1.5 border border-gray-200 rounded-full bg-white text-[13px] font-medium text-[#4a4a4a] cursor-pointer transition-colors hover:border-[#41539b]"
+                (click)="toggleLangDropdown($event)">
+          <span class="text-base leading-none">{{ i18n.getCurrentOption().flag }}</span>
+          <span class="tracking-[-0.02em]">{{ i18n.getCurrentOption().label }}</span>
+          <svg class="dropdown-arrow ml-1 opacity-40 transition-transform duration-200" [class.rotated]="langDropdownOpen" width="10" height="6" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        @if (langDropdownOpen) {
+          <div class="absolute top-full right-0 mt-1.5 min-w-[140px] bg-white border border-gray-200 rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.08)] p-1.5 z-[100] animate-dropdown-right">
+            @for (lang of languages; track lang.code) {
+              <button class="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm rounded-lg border-none bg-transparent cursor-pointer transition-all hover:bg-[#f5f5ff]"
+                      [class.font-bold]="i18n.currentLang() === lang.code"
+                      [class.text-indigo-600]="i18n.currentLang() === lang.code"
+                      [class.text-gray-500]="i18n.currentLang() !== lang.code"
+                      (click)="selectLang(lang.code)">
+                <span class="text-base">{{ lang.flag }}</span>
+                <span>{{ lang.label }}</span>
+                @if (i18n.currentLang() === lang.code) {
+                  <svg class="ml-auto w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                  </svg>
+                }
+              </button>
+            }
+          </div>
+        }
+      </div>
 
       <button class="flex p-2 text-gray-500 bg-transparent border-none rounded-lg cursor-pointer transition-colors hover:bg-gray-100 lg:hidden"
               (click)="toggleMenu()" aria-label="메뉴 열기">
@@ -112,7 +134,7 @@
             <div class="flex flex-col">
               <button class="mobile-nav-item flex items-center justify-between px-4 py-3 text-[15px] font-medium text-[#4a4a4a] no-underline rounded-lg transition-colors border-none bg-transparent cursor-pointer w-full text-left hover:text-[#41539b] hover:bg-[#f5f5ff]"
                       (click)="toggleMobileDropdown(item.label)">
-                <span>{{ item.label }}</span>
+                <span>{{ i18n.t(item.i18nKey ?? '', item.label) }}</span>
                 <svg class="opacity-40 transition-transform duration-200" [class.rotate-180]="activeDropdown === item.label" width="10" height="6" viewBox="0 0 10 6" fill="none">
                   <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -123,11 +145,11 @@
                     @if (sub.external) {
                       <a [href]="sub.path" target="_blank" rel="noopener"
                          class="px-4 py-2.5 text-sm font-normal text-gray-500 no-underline rounded-md transition-all hover:text-[#41539b] hover:bg-[#f0f0ff]"
-                         (click)="closeMenu()">{{ sub.label }}</a>
+                         (click)="closeMenu()">{{ i18n.t(sub.i18nKey ?? '', sub.label) }}</a>
                     } @else {
                       <a [routerLink]="sub.path"
                          class="px-4 py-2.5 text-sm font-normal text-gray-500 no-underline rounded-md transition-all hover:text-[#41539b] hover:bg-[#f0f0ff]"
-                         (click)="closeMenu()">{{ sub.label }}</a>
+                         (click)="closeMenu()">{{ i18n.t(sub.i18nKey ?? '', sub.label) }}</a>
                     }
                   }
                 </div>
@@ -136,7 +158,7 @@
           } @else {
             <a [routerLink]="item.path" routerLinkActive="active"
                class="mobile-nav-item flex items-center justify-between px-4 py-3 text-[15px] font-medium text-[#4a4a4a] no-underline rounded-lg transition-colors hover:text-[#41539b] hover:bg-[#f5f5ff]"
-               (click)="closeMenu()">{{ item.label }}</a>
+               (click)="closeMenu()">{{ i18n.t(item.i18nKey ?? '', item.label) }}</a>
           }
         }
       </nav>

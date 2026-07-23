@@ -8,7 +8,6 @@ import { ClientApiService, NoticeItem } from '../../shared/services/client-api.s
   standalone: true,
   imports: [DatePipe, RouterLink],
   templateUrl: './notice.page.html',
-  styleUrl: './notice.page.css',
 })
 export class NoticePage implements OnInit {
   private platformId = inject(PLATFORM_ID);

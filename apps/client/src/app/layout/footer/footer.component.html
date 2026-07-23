@@ -21,17 +21,17 @@
     <!-- 하단: 회사 정보 + 약관 -->
     <div class="footer-bottom">
       <div class="company-info">
-        <p>업체명 : 레피소드</p>
-        <p>대표자명 : 양주성</p>
-        <p>사업자번호 : 277-87-01880</p>
-        <p>주소 : 광주광역시 남구 대남대로 388, 3층</p>
-        <p>고객지원 : 062-675-2314 Email : help&#64;lepisode.team</p>
+        <p>{{ i18n.t('footer.company', '업체명 : 레피소드') }}</p>
+        <p>{{ i18n.t('footer.ceo', '대표자명 : 양주성') }}</p>
+        <p>{{ i18n.t('footer.biz_no', '사업자번호 : 277-87-01880') }}</p>
+        <p>{{ i18n.t('footer.address', '주소 : 광주광역시 남구 대남대로 388, 3층') }}</p>
+        <p>{{ i18n.t('footer.support', '고객지원 : 062-675-2314 Email : help@lepisode.team') }}</p>
         <p class="copyright">COPYRIGHT © {{ currentYear }} LEPISODE ALL RIGHTS RESERVED</p>
       </div>
       <div class="footer-links">
-        <a routerLink="/privacy" class="footer-link highlight">개인정보취급방침</a>
-        <a routerLink="/terms" class="footer-link">서비스 이용약관</a>
-        <a routerLink="/marketing-terms" class="footer-link">마케팅 수신동의 약관</a>
+        <a routerLink="/terms/privacy" class="footer-link highlight">{{ i18n.t('footer.privacy', '개인정보취급방침') }}</a>
+        <a routerLink="/terms/service" class="footer-link">{{ i18n.t('footer.terms', '서비스 이용약관') }}</a>
+        <a routerLink="/terms/marketing" class="footer-link">{{ i18n.t('footer.marketing', '마케팅 수신동의 약관') }}</a>
       </div>
     </div>
   </div>

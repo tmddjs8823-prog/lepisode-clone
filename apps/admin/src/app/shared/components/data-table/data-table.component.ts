@@ -92,6 +92,19 @@ export class DataTableComponent<T extends Record<string, unknown>> {
     });
   });
 
+  /* 내부 페이지 추적 (클라이언트 사이드 페이지네이션용) */
+  internalPage = signal(1);
+  internalLimit = signal(10);
+
+  /** 실제 테이블에 표시할 데이터 (페이지 슬라이싱 적용) */
+  paginatedData = computed(() => {
+    const all = this.sortedData();
+    const p = this.internalPage();
+    const l = this.internalLimit();
+    const start = (p - 1) * l;
+    return all.slice(start, start + l);
+  });
+
   toggleSortMenu(): void {
     this.showSortMenu.update(v => !v);
   }
@@ -151,7 +164,14 @@ export class DataTableComponent<T extends Record<string, unknown>> {
   }
 
   onPageSizeChange(size: number): void {
+    this.internalLimit.set(size);
+    this.internalPage.set(1);
     this.pageSizeChange.emit(size);
+  }
+
+  onInternalPageChange(page: number): void {
+    this.internalPage.set(page);
+    this.pageChange.emit(page);
   }
 
   /* ── 우클릭 컨텍스트 메뉴 ── */

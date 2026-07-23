@@ -8,7 +8,6 @@ import { ClientApiService, NoticeItem } from '../../shared/services/client-api.s
   standalone: true,
   imports: [DatePipe],
   templateUrl: './notice-detail.page.html',
-  styleUrl: './notice-detail.page.css',
 })
 export class NoticeDetailPage implements OnInit {
   private platformId = inject(PLATFORM_ID);

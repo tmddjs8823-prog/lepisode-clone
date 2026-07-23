@@ -117,6 +117,23 @@ export interface InquiryPayload {
   company?: string;
 }
 
+/* ── 이벤트 ── */
+export interface EventItem {
+  id: number;
+  title: string;
+  titleEn?: string;
+  titleJa?: string;
+  description?: string;
+  imageUrl?: string;
+  linkUrl?: string;
+  attachmentUrl?: string;
+  startDate?: string;
+  endDate?: string;
+  selectedDate?: string;
+  published: boolean;
+  createdAt: string;
+}
+
 /* ── 채용공고 ── */
 export interface JobItem {
   id: number;
@@ -196,6 +213,16 @@ export class ClientApiService {
     return this.http.post(`${API}/inquiries`, payload);
   }
 
+  /* 이벤트 목록 (공개) */
+  getEvents(): Observable<EventItem[]> {
+    return this.http.get<EventItem[]>(`${API}/content/events`);
+  }
+
+  /* 이벤트 상세 */
+  getEventDetail(id: number): Observable<EventItem> {
+    return this.http.get<EventItem>(`${API}/content/events/${id}`);
+  }
+
   /* 블로그 목록 */
   getBlogs(limit = 10): Observable<BlogItem[]> {
     return this.http.get<{ data: BlogItem[] }>(`${API}/blog`, {
@@ -221,6 +248,16 @@ export class ClientApiService {
   getTeamMembers(): Observable<TeamMember[]> {
     return this.http.get<TeamMember[]>(`${API}/company/team`);
   }
+
+  /* 약관 타입별 조회 */
+  getTermsByType(type: string): Observable<TermsItem> {
+    return this.http.get<TermsItem>(`${API}/content/terms/${type}`);
+  }
+
+  /* 다국어 번역 전체 조회 */
+  getTranslations(): Observable<TranslationItem[]> {
+    return this.http.get<TranslationItem[]>(`${API}/i18n/translations`);
+  }
 }
 
 /* ── 팀원 ── */
@@ -234,4 +271,24 @@ export interface TeamMember {
   bio?: string;
   bioEn?: string;
   sortOrder?: number;
+}
+
+/* ── 약관 ── */
+export interface TermsItem {
+  id: number;
+  type: string;
+  title: string;
+  titleEn?: string;
+  content: string;
+  contentEn?: string;
+  updatedAt?: string;
+}
+
+/* ── 다국어 번역 ── */
+export interface TranslationItem {
+  id: number;
+  key: string;
+  ko: string;
+  en?: string | null;
+  ja?: string | null;
 }

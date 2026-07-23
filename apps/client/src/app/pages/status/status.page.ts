@@ -7,7 +7,6 @@ import { ClientApiService, ProjectStatusItem } from '../../shared/services/clien
   standalone: true,
   imports: [],
   templateUrl: './status.page.html',
-  styleUrl: './status.page.css',
 })
 export class StatusPage implements OnInit {
   private platformId = inject(PLATFORM_ID);

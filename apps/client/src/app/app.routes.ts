@@ -14,6 +14,9 @@ import { CareersPage } from './pages/careers/careers.page';
 import { ConsultPage } from './pages/consult/consult.page';
 import { SupportProjectsPage } from './pages/support-projects/support-projects.page';
 import { MarketingPage } from './pages/marketing/marketing.page';
+import { TermsPage } from './pages/terms/terms.page';
+import { EventsPage } from './pages/events/events.page';
+import { EventDetailPage } from './pages/events/event-detail.page';
 
 export const appRoutes: Route[] = [
   {
@@ -34,6 +37,9 @@ export const appRoutes: Route[] = [
       { path: 'consult',   component: ConsultPage },
       { path: 'support-projects', component: SupportProjectsPage },
       { path: 'marketing', component: MarketingPage },
+      { path: 'terms/:type', component: TermsPage },
+      { path: 'events',   component: EventsPage },
+      { path: 'events/:id', component: EventDetailPage },
     ],
   },
   { path: '**', redirectTo: '' },

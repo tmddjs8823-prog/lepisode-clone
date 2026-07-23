@@ -8,17 +8,20 @@ import {
   PortfolioItem,
   NoticeItem,
 } from '../../shared/services/client-api.service';
+import { I18nService } from '../../shared/services/i18n.service';
+import { HomeJaComponent } from './ja/home-ja.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [RouterLink, NgClass, DatePipe],
+  imports: [RouterLink, NgClass, DatePipe, HomeJaComponent],
   templateUrl: './home.page.html',
   styleUrl: './home.page.css',
 })
 export class HomePage implements OnInit {
   private api = inject(ClientApiService);
   private platformId = inject(PLATFORM_ID);
+  i18n = inject(I18nService);
 
   /* ── 서비스 (상단 원스톱: 고정) ── */
   private readonly fallbackServices: ServiceItem[] = [

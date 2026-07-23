@@ -1,0 +1,28 @@
+<!-- ═══════════ 약관 페이지 ═══════════ -->
+<section class="min-h-screen bg-white py-20 px-6 md:pb-32">
+  <div class="max-w-[860px] mx-auto">
+
+    <!-- 헤더 (중앙) -->
+    <div class="text-center mb-10">
+      <h1 class="text-[2.2rem] font-extrabold text-gray-900 mb-3 tracking-tight">{{ title() }}</h1>
+      <p class="text-[0.95rem] text-gray-400 mb-2">{{ subtitle() }}</p>
+      @if (updatedAt()) {
+        <p class="text-xs text-gray-300">최종 수정일: {{ updatedAt().slice(0, 10) }}</p>
+      }
+    </div>
+
+    <!-- 구분선 -->
+    <hr class="border-t border-gray-100 mb-10" />
+
+    <!-- 본문 (왼쪽 정렬) -->
+    @if (loading()) {
+      <div class="text-center py-20 text-gray-400 text-sm">
+        <div class="w-8 h-8 border-[3px] border-gray-200 border-t-indigo-600 rounded-full mx-auto mb-4 animate-spin"></div>
+        <p>약관을 불러오는 중입니다...</p>
+      </div>
+    } @else {
+      <div class="terms-content" [innerHTML]="content()"></div>
+    }
+
+  </div>
+</section>

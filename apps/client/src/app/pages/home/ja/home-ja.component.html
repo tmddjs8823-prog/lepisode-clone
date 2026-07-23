@@ -1,0 +1,90 @@
+<!-- ═══════════ 日本語ホーム ═══════════ -->
+
+<!-- ── Hero ── -->
+<section class="hero-ja">
+  <div class="hero-inner">
+    <div class="hero-badge">🇯🇵 LEPISODE JAPAN</div>
+    <h1 class="hero-title">
+      企画からAIまで、<br>デジタル変革のすべてを。
+    </h1>
+    <p class="hero-desc">
+      ウェブ・アプリ開発、AI ソリューション、マーケティングまで<br>
+      レピソードがDX推進のすべてのステップを共に設計します。
+    </p>
+    <div class="hero-actions">
+      <a routerLink="/consult" class="hero-btn-primary">お問い合わせ →</a>
+      <a routerLink="/portfolio" class="hero-btn-secondary">実績を見る</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── 数字で見る実績 ── -->
+<section class="stats-section">
+  <div class="stats-grid">
+    @for (s of strengths; track s.label) {
+      <div class="stat-card">
+        <span class="stat-icon">{{ s.icon }}</span>
+        <span class="stat-num">{{ s.num }}</span>
+        <span class="stat-label">{{ s.label }}</span>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ── サービス ── -->
+<section class="services-ja">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-tag">SERVICES</span>
+      <h2 class="section-title">ワンストップサービス</h2>
+      <p class="section-desc">企画から運用まで、すべてをお任せください。</p>
+    </div>
+    <div class="services-grid">
+      @for (svc of services; track svc.title) {
+        <div class="service-card-ja">
+          <span class="service-icon-ja">{{ svc.icon }}</span>
+          <h3 class="service-title-ja">{{ svc.title }}</h3>
+          <p class="service-desc-ja">{{ svc.desc }}</p>
+          <div class="service-tags-ja">
+            @for (tag of svc.tags; track tag) {
+              <span class="service-tag-ja">{{ tag }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ── プロセス ── -->
+<section class="process-ja">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-tag">PROCESS</span>
+      <h2 class="section-title">プロジェクト進行フロー</h2>
+    </div>
+    <div class="process-grid">
+      @for (p of processes; track p.step) {
+        <div class="process-card-ja">
+          <div class="process-step-ja">{{ p.step }}</div>
+          <h3 class="process-title-ja">{{ p.title }}</h3>
+          <p class="process-desc-ja">{{ p.desc }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-ja">
+  <div class="cta-inner">
+    <h2 class="cta-title">プロジェクトをお考えですか？</h2>
+    <p class="cta-desc">お気軽にご相談ください。専門チームが最適なソリューションをご提案します。</p>
+    <div class="cta-actions">
+      <a routerLink="/consult" class="cta-btn-primary">無料相談を申し込む</a>
+      <a href="https://pf.kakao.com/_ugdxln" target="_blank" rel="noopener" class="cta-btn-kakao">
+        💬 KakaoTalk 相談
+      </a>
+    </div>
+  </div>
+</section>

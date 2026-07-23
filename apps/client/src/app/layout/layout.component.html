@@ -28,22 +28,22 @@
 <!-- ── 문의하기 모달 ── -->
 @if (showInquiry) {
   <!-- 배경 오버레이 -->
-  <div class="inquiry-overlay" (click)="closeInquiry()"></div>
+  <div class="inquiry-overlay" (click)="closeInquiry()" (keydown.enter)="closeInquiry()" role="button" tabindex="0" aria-label="모달 닫기"></div>
 
   <!-- 모달 패널 -->
   <div class="inquiry-modal">
     @if (submitted()) {
       <div class="flex flex-col items-center justify-center py-12 gap-3">
         <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-2xl">✓</div>
-        <h3 class="text-lg font-bold text-gray-900">문의가 접수되었습니다</h3>
-        <p class="text-xs text-gray-400">빠른 시일 내에 연락드리겠습니다.</p>
+        <h3 class="text-lg font-bold text-gray-900">{{ i18n.t('inquiry.success_title', '문의가 접수되었습니다') }}</h3>
+        <p class="text-xs text-gray-400">{{ i18n.t('inquiry.success_desc', '빠른 시일 내에 연락드리겠습니다.') }}</p>
       </div>
     } @else {
       <!-- 헤더 -->
       <div class="flex items-start justify-between mb-4">
         <div>
-          <h2 class="text-xl font-extrabold text-gray-900 mb-1">문의하기</h2>
-          <p class="text-xs text-gray-400">이름, 연락처, 이메일을 남겨주시면 확인 후 연락드리겠습니다.</p>
+          <h2 class="text-xl font-extrabold text-gray-900 mb-1">{{ i18n.t('inquiry.title', '문의하기') }}</h2>
+          <p class="text-xs text-gray-400">{{ i18n.t('inquiry.desc', '이름, 연락처, 이메일을 남겨주시면 확인 후 연락드리겠습니다.') }}</p>
         </div>
         <button class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors border-none bg-transparent cursor-pointer text-gray-400 hover:text-gray-600"
                 (click)="closeInquiry()">
@@ -58,22 +58,22 @@
         <!-- 이름 + 이메일 (한 줄) -->
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-gray-900 mb-1">이름 <span class="text-red-500">*</span></label>
-            <input type="text" [(ngModel)]="formName" placeholder="성함을 입력해 주세요"
+            <label for="inq-name" class="block text-xs font-bold text-gray-900 mb-1">{{ i18n.t('inquiry.name', '이름') }} <span class="text-red-500">*</span></label>
+            <input id="inq-name" type="text" [(ngModel)]="formName" placeholder="성함을 입력해 주세요"
                    class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-900 bg-gray-50/50 outline-none transition-all focus:border-[#41539b] focus:ring-2 focus:ring-[#41539b]/10 placeholder:text-gray-300" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-gray-900 mb-1">이메일 <span class="text-red-500">*</span></label>
-            <input type="email" [(ngModel)]="formEmail" placeholder="example@company.com"
+            <label for="inq-email" class="block text-xs font-bold text-gray-900 mb-1">{{ i18n.t('inquiry.email', '이메일') }} <span class="text-red-500">*</span></label>
+            <input id="inq-email" type="email" [(ngModel)]="formEmail" placeholder="example@company.com"
                    class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-900 bg-gray-50/50 outline-none transition-all focus:border-[#41539b] focus:ring-2 focus:ring-[#41539b]/10 placeholder:text-gray-300" />
           </div>
         </div>
 
         <!-- 연락처 -->
         <div>
-          <label class="block text-xs font-bold text-gray-900 mb-1">연락처 <span class="text-red-500">*</span></label>
+          <label for="inq-phone1" class="block text-xs font-bold text-gray-900 mb-1">{{ i18n.t('inquiry.phone', '연락처') }} <span class="text-red-500">*</span></label>
           <div class="flex items-center gap-1.5">
-            <input type="text" [(ngModel)]="phone1" maxlength="3"
+            <input id="inq-phone1" type="text" [(ngModel)]="phone1" maxlength="3"
                    class="w-16 px-2 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-900 bg-gray-50/50 text-center outline-none transition-all focus:border-[#41539b] focus:ring-2 focus:ring-[#41539b]/10" />
             <span class="text-gray-300 text-xs">-</span>
             <input type="text" [(ngModel)]="phone2" maxlength="4" placeholder="0000"
@@ -109,15 +109,15 @@
                 [class]="submitting() ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#7c8ddf] hover:bg-[#6366f1] active:scale-[0.98] shadow-[0_4px_16px_rgba(99,102,241,0.3)]'"
                 [disabled]="submitting()"
                 (click)="submitInquiry()">
-          {{ submitting() ? '접수 중...' : '문의 접수하기' }}
+          {{ submitting() ? i18n.t('inquiry.submitting', '접수 중...') : i18n.t('inquiry.submit', '문의 접수하기') }}
         </button>
       </div>
 
       <!-- 하단 링크 -->
       <div class="flex items-center justify-center gap-3 mt-4 pt-3 border-t border-gray-100">
-        <a href="javascript:void(0)" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">개인정보취급방침</a>
-        <a href="javascript:void(0)" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">서비스 이용약관</a>
-        <a href="javascript:void(0)" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">마케팅 수신동의 약관</a>
+        <a routerLink="/terms/privacy" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">개인정보취급방침</a>
+        <a routerLink="/terms/service" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">서비스 이용약관</a>
+        <a routerLink="/terms/marketing" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">마케팅 수신동의 약관</a>
       </div>
     }
   </div>

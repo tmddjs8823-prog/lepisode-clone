@@ -44,7 +44,7 @@ export class I18nPage implements OnInit {
   );
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: 'id',        label: '순번',   align: 'center', width: '6%', type: 'number' },
+    { key: 'id',        label: '순번',   align: 'center', width: '6%', type: 'index' },
     { key: 'key',       label: '키',     align: 'center', width: '18%' },
     { key: 'ko',        label: '한국어', align: 'center', width: '18%' },
     { key: 'en',        label: '영어',   align: 'center', width: '18%' },

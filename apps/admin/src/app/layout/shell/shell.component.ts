@@ -13,12 +13,18 @@ export class ShellComponent implements OnInit {
   private authService = inject(AuthService);
   currentUser = this.authService.currentUser;
   showUserMenu = signal(false);
+  scrolled = false;
 
   ngOnInit(): void {
     // 새로고침 시 currentUser가 null이면 프로필 로드
     if (!this.currentUser()) {
       this.authService.loadProfile().subscribe();
     }
+  }
+
+  onScroll(event: Event): void {
+    const el = event.target as HTMLElement;
+    this.scrolled = el.scrollTop > 10;
   }
 
   toggleUserMenu() {

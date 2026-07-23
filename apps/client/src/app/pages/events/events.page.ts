@@ -1,0 +1,43 @@
+﻿import { Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import { isPlatformBrowser, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { ClientApiService, EventItem } from '../../shared/services/client-api.service';
+
+@Component({
+  selector: 'app-events-page',
+  standalone: true,
+  imports: [DatePipe, RouterLink],
+  templateUrl: './events.page.html',
+})
+export class EventsPage implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+  private api = inject(ClientApiService);
+
+  events = signal<EventItem[]>([]);
+  loading = signal(true);
+
+  ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.api.getEvents().subscribe({
+      next: (list) => {
+        this.events.set(list.filter(e => e.published));
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+    });
+  }
+
+  getStatus(event: EventItem): 'upcoming' | 'ongoing' | 'ended' {
+    const now = new Date();
+    if (event.startDate && new Date(event.startDate) > now) return 'upcoming';
+    if (event.endDate && new Date(event.endDate) < now) return 'ended';
+    return 'ongoing';
+  }
+
+  getStatusLabel(event: EventItem): string {
+    const s = this.getStatus(event);
+    if (s === 'upcoming') return '예정';
+    if (s === 'ended') return '종료';
+    return '진행중';
+  }
+}

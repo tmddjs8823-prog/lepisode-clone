@@ -5,6 +5,7 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { PopupComponent } from '../shared/components/popup/popup.component';
 import { ClientApiService } from '../shared/services/client-api.service';
+import { I18nService } from '../shared/services/i18n.service';
 
 @Component({
   selector: 'app-layout',
@@ -15,6 +16,7 @@ import { ClientApiService } from '../shared/services/client-api.service';
 })
 export class LayoutComponent {
   private api = inject(ClientApiService);
+  i18n = inject(I18nService);
 
   showInquiry = false;
   submitting = signal(false);

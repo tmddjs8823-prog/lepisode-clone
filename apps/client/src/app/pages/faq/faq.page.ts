@@ -54,7 +54,7 @@ export class FaqPage implements OnInit {
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     this.api.getFaqs().subscribe({
-      next: (list: any[]) => {
+      next: (list: FaqItemFull[]) => {
         const faqs = Array.isArray(list) ? list : [];
         this.allFaqs.set(faqs);
         const catMap = new Map<number, FaqCategory>();

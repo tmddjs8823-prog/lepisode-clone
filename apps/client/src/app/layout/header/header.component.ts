@@ -2,15 +2,18 @@ import { Component, HostListener, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { I18nService, LANGUAGES, Lang } from '../../shared/services/i18n.service';
 
 interface SubItem {
   label: string;
+  i18nKey?: string;
   path: string;
   external?: boolean;
 }
 
 interface NavItem {
   label: string;
+  i18nKey?: string;
   path: string;
   children?: SubItem[];
 }
@@ -25,6 +28,8 @@ interface NavItem {
 export class HeaderComponent {
   private platformId = inject(PLATFORM_ID);
   private router = inject(Router);
+  i18n = inject(I18nService);
+  languages = LANGUAGES;
 
   mobileMenuOpen = false;
   activeDropdown: string | null = null;
@@ -37,9 +42,10 @@ export class HeaderComponent {
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd)
     ).subscribe(e => {
-      this.isHome = e.urlAfterRedirects === '/' || e.urlAfterRedirects === '';
-      this.isHeroPage = e.urlAfterRedirects.startsWith('/careers');
-      this.isTransparentPage = e.urlAfterRedirects.startsWith('/support-projects') || e.urlAfterRedirects.startsWith('/marketing');
+      const url = e.urlAfterRedirects.split('?')[0]; // query string 제거
+      this.isHome = url === '/' || url === '';
+      this.isHeroPage = url === '/careers';
+      this.isTransparentPage = url === '/support-projects' || url === '/marketing';
     });
   }
 
@@ -52,35 +58,35 @@ export class HeaderComponent {
 
   readonly navItems: NavItem[] = [
     {
-      label: '회사 소개', path: '/about',
+      label: '회사 소개', i18nKey: 'nav.about', path: '/about',
       children: [
-        { label: '회사소개', path: '/about' },
-        { label: '채용', path: '/careers' },
-        { label: '블로그', path: '/blog' },
-        { label: '개발 블로그', path: 'https://techblog.lepisode.kr/', external: true },
+        { label: '회사소개', i18nKey: 'nav.about.intro', path: '/about' },
+        { label: '채용', i18nKey: 'nav.about.careers', path: '/careers' },
+        { label: '블로그', i18nKey: 'nav.about.blog', path: '/blog' },
+        { label: '개발 블로그', i18nKey: 'nav.about.techblog', path: 'https://techblog.lepisode.kr/', external: true },
       ],
     },
     {
-      label: '포트폴리오', path: '/portfolio',
+      label: '포트폴리오', i18nKey: 'nav.portfolio', path: '/portfolio',
       children: [
-        { label: '포트폴리오', path: '/portfolio' },
-        { label: '서비스 소개', path: '/services' },
+        { label: '포트폴리오', i18nKey: 'nav.portfolio.list', path: '/portfolio' },
+        { label: '서비스 소개', i18nKey: 'nav.portfolio.services', path: '/services' },
       ],
     },
-    { label: '작업현황', path: '/status' },
+    { label: '작업현황', i18nKey: 'nav.status', path: '/status' },
     {
-      label: '지원사업', path: '/services',
+      label: '지원사업', i18nKey: 'nav.support', path: '/services',
       children: [
-        { label: '지원사업 찾기', path: '/support-projects' },
+        { label: '지원사업 찾기', i18nKey: 'nav.support.find', path: '/support-projects' },
       ],
     },
-    { label: '마케팅·호스팅', path: '/marketing' },
+    { label: '마케팅·호스팅', i18nKey: 'nav.marketing', path: '/marketing' },
     {
-      label: '고객센터', path: '/faq',
+      label: '고객센터', i18nKey: 'nav.cs', path: '/faq',
       children: [
-        { label: 'FAQ', path: '/faq' },
-        { label: '공지사항', path: '/notice' },
-        { label: '이벤트', path: '/event' },
+        { label: 'FAQ', i18nKey: 'nav.cs.faq', path: '/faq' },
+        { label: '공지사항', i18nKey: 'nav.cs.notice', path: '/notice' },
+        { label: '이벤트', i18nKey: 'nav.cs.event', path: '/events' },
       ],
     },
   ];
@@ -118,5 +124,21 @@ export class HeaderComponent {
     if (!target.closest('.nav-group') && !target.closest('.mobile-nav')) {
       this.activeDropdown = null;
     }
+    if (!target.closest('.lang-dropdown-wrap')) {
+      this.langDropdownOpen = false;
+    }
+  }
+
+  /* 언어 드롭다운 */
+  langDropdownOpen = false;
+
+  toggleLangDropdown(event: Event): void {
+    event.stopPropagation();
+    this.langDropdownOpen = !this.langDropdownOpen;
+  }
+
+  selectLang(lang: Lang): void {
+    this.i18n.setLang(lang);
+    this.langDropdownOpen = false;
   }
 }
