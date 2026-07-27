@@ -1,12 +1,12 @@
 import { Component, OnInit, signal, inject, PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgClass, DatePipe, isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import {
   ClientApiService,
   ServiceItem,
   PortfolioItem,
   NoticeItem,
+  NaverBlogPost,
 } from '../../shared/services/client-api.service';
 import { I18nService } from '../../shared/services/i18n.service';
 import { HomeJaComponent } from './ja/home-ja.component';
@@ -121,14 +121,13 @@ export class HomePage implements OnInit {
     });
   }
 
-  /* ── 블로그 (JSON 파일에서 로드, admin 비연동) ── */
-  private http = inject(HttpClient);
-  blogPosts = signal<{ title: string; category: string; icon: string; gradient: string; url: string; thumbnail: string }[]>([]);
+  /* ── 블로그 (네이버 RSS 프록시) ── */
+  blogPosts = signal<NaverBlogPost[]>([]);
 
   private loadBlogs(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    this.http.get<{ title: string; category: string; icon: string; gradient: string; url: string; thumbnail: string }[]>('/data/blog-posts.json').subscribe({
-      next: (list) => this.blogPosts.set(list),
+    this.api.getNaverBlogs().subscribe({
+      next: (list) => this.blogPosts.set(list.slice(0, 4)),
       error: () => { /* fallback: 빈 목록 */ },
     });
   }

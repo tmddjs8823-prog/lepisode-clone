@@ -1,11 +1,6 @@
 :host { display: block; }
 
 /* ═══════════ 벨트 영역 (pseudo-element + keyframes) ═══════════ */
-.belt-area {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-}
 .belt-area::before,
 .belt-area::after {
   content: '';
@@ -19,52 +14,6 @@
 .belt-area::before { left: 0; background: linear-gradient(90deg, #fff, transparent); }
 .belt-area::after { right: 0; background: linear-gradient(270deg, #fff, transparent); }
 
-.belt-track {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: max-content;
-  animation: belt-scroll 25s linear infinite;
-}
-.belt-track:hover {
-  animation-play-state: paused;
-}
-
-@keyframes belt-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* ═══════════ 수상 뱃지 ═══════════ */
-.award-badge {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 18px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  flex-shrink: 0;
-  background: #fff;
-  transition: box-shadow 0.2s;
-}
-.award-badge:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.06); }
-
-.ab-y {
-  font-size: 12px;
-  font-weight: 600;
-  color: #fff;
-  padding: 3px 10px;
-  border-radius: 4px;
-  flex-shrink: 0;
-}
-
-.ab-t {
-  font-size: 13px;
-  color: #555;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
 /* ═══════════ 스크롤 상태 ═══════════ */
 .header.scrolled {
   background: rgba(255, 255, 255, 0.97);
@@ -72,9 +21,13 @@
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
 }
 
-/* ═══════════ 드롭다운 Arrow ═══════════ */
-.dropdown-arrow.rotated {
-  transform: rotate(180deg);
+.belt-track {
+  animation: belt-scroll 25s linear infinite;
+}
+
+@keyframes belt-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 /* ═══════════ 드롭다운 애니메이션 ═══════════ */

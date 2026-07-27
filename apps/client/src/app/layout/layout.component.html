@@ -6,32 +6,32 @@
 <app-popup />
 
 <!-- ── 플로팅 글로벌 아이콘 (우하단) ── -->
-<div class="fab-wrap">
+<div class="fab-wrap fixed bottom-7 right-7 z-[9999] flex flex-col gap-3 items-end">
   <!-- 카카오톡 상담 -->
   <a href="https://pf.kakao.com/_ugdxln" target="_blank" rel="noopener noreferrer"
-     class="fab-btn fab-kakao" aria-label="카카오톡 상담">
+     class="fab-btn fab-kakao relative w-14 h-14 rounded-full flex items-center justify-center cursor-pointer no-underline border-none bg-[#FEE500] transition-transform duration-200 hover:scale-110 active:scale-95" aria-label="카카오톡 상담">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="#3C1E1E">
       <path d="M12 3C6.477 3 2 6.463 2 10.691c0 2.685 1.785 5.037 4.472 6.378-.143.518-.921 3.339-.953 3.536 0 0-.019.164.087.227.106.063.23.028.23.028.303-.043 3.516-2.302 4.07-2.691.681.097 1.391.148 2.094.148 5.523 0 10-3.463 10-7.626C22 6.463 17.523 3 12 3z"/>
     </svg>
-    <span class="fab-tooltip">카카오톡 상담</span>
+    <span class="fab-tooltip absolute right-[calc(100%+12px)] top-1/2 -translate-y-1/2 bg-black/80 text-white text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 pointer-events-none transition-opacity duration-200">카카오톡 상담</span>
   </a>
 
   <!-- 문의하기 -->
-  <button class="fab-btn fab-inquiry" aria-label="문의하기" (click)="toggleInquiry()">
+  <button class="fab-btn fab-inquiry relative w-14 h-14 rounded-full flex items-center justify-center cursor-pointer no-underline border-none transition-transform duration-200 hover:scale-110 active:scale-95" aria-label="문의하기" (click)="toggleInquiry()">
     <svg width="22" height="22" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
     </svg>
-    <span class="fab-tooltip">문의하기</span>
+    <span class="fab-tooltip absolute right-[calc(100%+12px)] top-1/2 -translate-y-1/2 bg-black/80 text-white text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap opacity-0 pointer-events-none transition-opacity duration-200">문의하기</span>
   </button>
 </div>
 
 <!-- ── 문의하기 모달 ── -->
 @if (showInquiry) {
   <!-- 배경 오버레이 -->
-  <div class="inquiry-overlay" (click)="closeInquiry()" (keydown.enter)="closeInquiry()" role="button" tabindex="0" aria-label="모달 닫기"></div>
+  <div class="inquiry-overlay fixed inset-0 bg-black/50 z-[10000] animate-[overlayFadeIn_0.2s_ease-out]" (click)="closeInquiry()" (keydown.enter)="closeInquiry()" role="button" tabindex="0" aria-label="모달 닫기"></div>
 
   <!-- 모달 패널 -->
-  <div class="inquiry-modal">
+  <div class="inquiry-modal fixed bottom-[100px] right-7 w-[460px] max-h-[calc(100vh-140px)] overflow-y-auto bg-white rounded-2xl px-6 py-5 z-[10001] animate-[modalSlideUp_0.3s_ease-out]">
     @if (submitted()) {
       <div class="flex flex-col items-center justify-center py-12 gap-3">
         <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-2xl">✓</div>

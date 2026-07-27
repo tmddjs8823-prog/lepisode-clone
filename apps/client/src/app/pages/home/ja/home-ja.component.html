@@ -1,53 +1,53 @@
 <!-- ═══════════ 日本語ホーム ═══════════ -->
 
 <!-- ── Hero ── -->
-<section class="hero-ja">
-  <div class="hero-inner">
-    <div class="hero-badge">🇯🇵 LEPISODE JAPAN</div>
-    <h1 class="hero-title">
+<section class="hero-ja relative overflow-hidden text-center -mt-[50px] pt-[140px] pb-20 px-6">
+  <div class="hero-inner max-w-[800px] mx-auto relative z-[1]">
+    <div class="inline-block px-4 py-1.5 bg-white/[0.08] border border-white/[0.12] rounded-full text-xs font-semibold text-white/70 tracking-[0.1em] mb-7 backdrop-blur-sm">🇯🇵 LEPISODE JAPAN</div>
+    <h1 class="hero-title text-[2.8rem] font-black text-white leading-[1.3] mb-5 -tracking-[0.02em]">
       企画からAIまで、<br>デジタル変革のすべてを。
     </h1>
-    <p class="hero-desc">
+    <p class="text-[0.95rem] text-white/60 leading-[1.8] mb-9">
       ウェブ・アプリ開発、AI ソリューション、マーケティングまで<br>
       レピソードがDX推進のすべてのステップを共に設計します。
     </p>
-    <div class="hero-actions">
-      <a routerLink="/consult" class="hero-btn-primary">お問い合わせ →</a>
-      <a routerLink="/portfolio" class="hero-btn-secondary">実績を見る</a>
+    <div class="flex gap-3 justify-center max-md:flex-col max-md:items-center">
+      <a routerLink="/support-projects" fragment="support-contact" class="px-8 py-3.5 bg-[#41539b] text-white rounded-xl font-bold text-[0.9rem] no-underline transition-all duration-200 hover:bg-[#354690] hover:-translate-y-0.5">お問い合わせ →</a>
+      <a routerLink="/portfolio" class="px-8 py-3.5 bg-white/[0.08] text-white/80 border border-white/[0.15] rounded-xl font-semibold text-[0.9rem] no-underline transition-all duration-200 hover:bg-white/[0.15]">実績を見る</a>
     </div>
   </div>
 </section>
 
 <!-- ── 数字で見る実績 ── -->
-<section class="stats-section">
-  <div class="stats-grid">
+<section class="px-6 -mt-10 relative z-[2]">
+  <div class="max-w-[900px] mx-auto grid grid-cols-4 gap-4 max-md:grid-cols-2">
     @for (s of strengths; track s.label) {
-      <div class="stat-card">
-        <span class="stat-icon">{{ s.icon }}</span>
-        <span class="stat-num">{{ s.num }}</span>
-        <span class="stat-label">{{ s.label }}</span>
+      <div class="bg-white rounded-2xl py-7 px-4 text-center shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex flex-col gap-1.5 transition-transform duration-200 hover:-translate-y-1">
+        <span class="text-2xl">{{ s.icon }}</span>
+        <span class="text-[2rem] font-black text-[#41539b]">{{ s.num }}</span>
+        <span class="text-xs text-[#888] font-medium">{{ s.label }}</span>
       </div>
     }
   </div>
 </section>
 
 <!-- ── サービス ── -->
-<section class="services-ja">
-  <div class="section-inner">
-    <div class="section-header">
-      <span class="section-tag">SERVICES</span>
-      <h2 class="section-title">ワンストップサービス</h2>
-      <p class="section-desc">企画から運用まで、すべてをお任せください。</p>
+<section class="py-20 px-6 bg-[#fafafa]">
+  <div class="max-w-[1100px] mx-auto">
+    <div class="text-center mb-12">
+      <span class="inline-block px-3.5 py-1 bg-[#41539b] text-white rounded-full text-[0.7rem] font-bold tracking-[0.1em] mb-3">SERVICES</span>
+      <h2 class="text-[2rem] font-extrabold text-[#1a1a2e] mb-2">ワンストップサービス</h2>
+      <p class="text-[0.9rem] text-[#888] m-0">企画から運用まで、すべてをお任せください。</p>
     </div>
-    <div class="services-grid">
+    <div class="grid grid-cols-3 gap-5 max-md:grid-cols-1">
       @for (svc of services; track svc.title) {
-        <div class="service-card-ja">
-          <span class="service-icon-ja">{{ svc.icon }}</span>
-          <h3 class="service-title-ja">{{ svc.title }}</h3>
-          <p class="service-desc-ja">{{ svc.desc }}</p>
-          <div class="service-tags-ja">
+        <div class="bg-white border border-gray-100 rounded-2xl py-7 px-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:border-[#41539b]">
+          <span class="text-[2rem] block mb-3.5">{{ svc.icon }}</span>
+          <h3 class="text-base font-bold text-[#1a1a2e] mb-2">{{ svc.title }}</h3>
+          <p class="text-[0.82rem] text-[#888] leading-relaxed whitespace-pre-line mb-3.5">{{ svc.desc }}</p>
+          <div class="flex flex-wrap gap-1.5">
             @for (tag of svc.tags; track tag) {
-              <span class="service-tag-ja">{{ tag }}</span>
+              <span class="py-[3px] px-2.5 bg-[#f5f5ff] text-[#41539b] rounded-md text-[0.7rem] font-semibold">{{ tag }}</span>
             }
           </div>
         </div>
@@ -57,18 +57,18 @@
 </section>
 
 <!-- ── プロセス ── -->
-<section class="process-ja">
-  <div class="section-inner">
-    <div class="section-header">
-      <span class="section-tag">PROCESS</span>
-      <h2 class="section-title">プロジェクト進行フロー</h2>
+<section class="py-20 px-6 bg-white">
+  <div class="max-w-[1100px] mx-auto">
+    <div class="text-center mb-12">
+      <span class="inline-block px-3.5 py-1 bg-[#41539b] text-white rounded-full text-[0.7rem] font-bold tracking-[0.1em] mb-3">PROCESS</span>
+      <h2 class="text-[2rem] font-extrabold text-[#1a1a2e] mb-2">プロジェクト進行フロー</h2>
     </div>
-    <div class="process-grid">
+    <div class="grid grid-cols-4 gap-5 max-md:grid-cols-2">
       @for (p of processes; track p.step) {
-        <div class="process-card-ja">
-          <div class="process-step-ja">{{ p.step }}</div>
-          <h3 class="process-title-ja">{{ p.title }}</h3>
-          <p class="process-desc-ja">{{ p.desc }}</p>
+        <div class="text-center py-8 px-4 rounded-2xl border border-gray-100 transition-all duration-200 hover:border-[#41539b] hover:bg-[#fafaff]">
+          <div class="process-step-ja inline-flex w-12 h-12 items-center justify-center text-white font-black text-[1.1rem] rounded-full mb-4">{{ p.step }}</div>
+          <h3 class="text-base font-bold text-[#1a1a2e] mb-2">{{ p.title }}</h3>
+          <p class="text-[0.82rem] text-[#888] leading-relaxed whitespace-pre-line m-0">{{ p.desc }}</p>
         </div>
       }
     </div>
@@ -76,13 +76,14 @@
 </section>
 
 <!-- ── CTA ── -->
-<section class="cta-ja">
-  <div class="cta-inner">
-    <h2 class="cta-title">プロジェクトをお考えですか？</h2>
-    <p class="cta-desc">お気軽にご相談ください。専門チームが最適なソリューションをご提案します。</p>
-    <div class="cta-actions">
-      <a routerLink="/consult" class="cta-btn-primary">無料相談を申し込む</a>
-      <a href="https://pf.kakao.com/_ugdxln" target="_blank" rel="noopener" class="cta-btn-kakao">
+<section class="cta-ja py-20 px-6 text-center">
+  <div class="max-w-[600px] mx-auto">
+    <h2 class="text-[1.8rem] font-extrabold text-white mb-3">プロジェクトをお考えですか？</h2>
+    <p class="text-[0.9rem] text-white/60 leading-[1.7] mb-8">お気軽にご相談ください。専門チームが最適なソリューションをご提案します。</p>
+    <div class="flex gap-3 justify-center max-md:flex-col max-md:items-center">
+      <a routerLink="/support-projects" fragment="support-contact" class="px-8 py-3.5 bg-[#41539b] text-white rounded-xl font-bold text-[0.9rem] no-underline transition-all duration-200 hover:bg-[#354690] hover:-translate-y-0.5">無料相談を申し込む</a>
+      <a href="https://pf.kakao.com/_ugdxln" target="_blank" rel="noopener"
+         class="px-7 py-3.5 bg-[#fee500] text-[#3c1e1e] rounded-xl font-bold text-[0.9rem] no-underline transition-all duration-200 hover:-translate-y-0.5">
         💬 KakaoTalk 相談
       </a>
     </div>

@@ -49,12 +49,16 @@ export class PopupComponent implements OnInit {
 
         this.popups.set(active);
       },
-      error: () => {},
+      error: (err) => console.error('팝업 로드 실패', err),
     });
   }
 
   close(popupId: number): void {
     this.popups.update((list) => list.filter((p) => p.id !== popupId));
+  }
+
+  closeAll(): void {
+    this.popups.set([]);
   }
 
   dismissToday(popupId: number): void {

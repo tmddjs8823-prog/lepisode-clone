@@ -1,31 +1,37 @@
-@for (popup of popups(); track popup.id) {
-  <!-- 오버레이 -->
-  <div class="popup-overlay" (click)="close(popup.id)"></div>
+@if (popups().length > 0) {
+  <!-- 오버레이 (1개만) -->
+  <div class="fixed inset-0 bg-black/45 z-[10010] animate-[popupFadeIn_0.2s_ease-out]"
+       (click)="closeAll()" (keydown.enter)="closeAll()" role="button" tabindex="0" aria-label="팝업 닫기"></div>
 
-  <!-- 팝업 카드 -->
-  <div class="popup-card">
-    <!-- X 닫기 버튼 -->
-    <button class="popup-close" (click)="close(popup.id)" aria-label="닫기">
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-      </svg>
-    </button>
+  <!-- 팝업 카드 컨테이너 (수평 배치) -->
+  <div class="fixed inset-0 z-[10011] flex items-center justify-center gap-5 pointer-events-none px-6">
+    @for (popup of popups(); track popup.id) {
+      <div class="popup-card relative w-[360px] max-w-[90vw] bg-white rounded-2xl overflow-hidden pointer-events-auto animate-[popupSlideUp_0.3s_ease-out]">
+        <!-- X 닫기 버튼 -->
+        <button class="absolute top-3 right-3 z-[2] w-8 h-8 flex items-center justify-center rounded-full border-none bg-black/40 text-white cursor-pointer transition-colors duration-200 hover:bg-black/60" (click)="close(popup.id)" aria-label="닫기">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
 
-    <!-- 이미지 영역 -->
-    <div class="popup-image-wrap" (click)="onImageClick(popup)">
-      @if (popup.imageUrl) {
-        <img [src]="popup.imageUrl" [alt]="popup.title" class="popup-image" />
-      } @else {
-        <div class="popup-placeholder">
-          <span class="popup-placeholder-text">{{ popup.title }}</span>
+        <!-- 이미지 영역 -->
+        <div class="w-full aspect-[3/4] cursor-pointer bg-gray-100 overflow-hidden leading-none"
+             (click)="onImageClick(popup)" (keyup.enter)="onImageClick(popup)" role="button" tabindex="0">
+          @if (popup.imageUrl) {
+            <img [src]="popup.imageUrl" [alt]="popup.title" class="w-full h-full block object-cover" />
+          } @else {
+            <div class="popup-placeholder w-full aspect-[3/4] flex items-center justify-center">
+              <span class="text-lg font-bold text-[#41539b]">{{ popup.title }}</span>
+            </div>
+          }
         </div>
-      }
-    </div>
 
-    <!-- 하단 버튼 -->
-    <div class="popup-footer">
-      <button class="popup-footer-btn dismiss" (click)="dismissToday(popup.id)">오늘 하루 보지 않기</button>
-      <button class="popup-footer-btn close-btn" (click)="close(popup.id)">닫기</button>
-    </div>
+        <!-- 하단 버튼 -->
+        <div class="flex border-t border-gray-200">
+          <button class="flex-1 py-3.5 text-[13px] font-medium border-none cursor-pointer transition-colors duration-150 font-[inherit] bg-gray-50 text-gray-400 hover:bg-gray-200" (click)="dismissToday(popup.id)">오늘 하루 보지 않기</button>
+          <button class="flex-1 py-3.5 text-[13px] font-semibold border-none cursor-pointer transition-colors duration-150 font-[inherit] bg-white text-gray-700 border-l border-gray-200 hover:bg-[#f5f5ff] hover:text-[#41539b]" (click)="close(popup.id)">닫기</button>
+        </div>
+      </div>
+    }
   </div>
 }

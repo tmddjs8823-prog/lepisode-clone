@@ -72,6 +72,15 @@ export interface BlogItem {
   createdAt: string;
 }
 
+/* ── 네이버 블로그 RSS ── */
+export interface NaverBlogPost {
+  title: string;
+  link: string;
+  category: string;
+  pubDate: string;
+  thumbnail: string;
+}
+
 /* ── 채용 ── */
 export interface JobItem {
   id: number;
@@ -235,6 +244,13 @@ export class ClientApiService {
     return this.http.get<{ data: BlogItem[]; total: number }>(`${API}/blog`, {
       params: { page: String(page), limit: String(limit) },
     });
+  }
+
+  /* 네이버 블로그 RSS (프록시) */
+  getNaverBlogs(): Observable<NaverBlogPost[]> {
+    return this.http.get<{ data: NaverBlogPost[]; total: number }>(`${API}/blog/naver-rss`).pipe(
+      map(res => res.data),
+    );
   }
 
   /* 채용공고 목록 */

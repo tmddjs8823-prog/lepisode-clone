@@ -1,6 +1,6 @@
 import { Component, OnInit, PLATFORM_ID, inject, signal, computed } from '@angular/core';
 import { isPlatformBrowser, DatePipe } from '@angular/common';
-import { ClientApiService, BlogItem } from '../../shared/services/client-api.service';
+import { ClientApiService, NaverBlogPost } from '../../shared/services/client-api.service';
 
 @Component({
   selector: 'app-blog-page',
@@ -13,12 +13,16 @@ export class BlogPage implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private api = inject(ClientApiService);
 
-  blogs = signal<BlogItem[]>([]);
-  total = signal(0);
+  allPosts = signal<NaverBlogPost[]>([]);
   currentPage = signal(1);
-  readonly pageSize = 12; // 4열 x 3행
+  readonly pageSize = 12; // 4컬럼 × 3행
 
-  totalPages = computed(() => Math.ceil(this.total() / this.pageSize) || 1);
+  totalPages = computed(() => Math.ceil(this.allPosts().length / this.pageSize) || 1);
+
+  blogs = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize;
+    return this.allPosts().slice(start, start + this.pageSize);
+  });
 
   pages = computed(() => {
     const tp = this.totalPages();
@@ -32,22 +36,14 @@ export class BlogPage implements OnInit {
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    this.loadPage(1);
+    this.api.getNaverBlogs().subscribe({
+      next: (list) => this.allPosts.set(list),
+      error: () => this.allPosts.set([]),
+    });
   }
 
   loadPage(page: number): void {
     this.currentPage.set(page);
-    this.api.getBlogsPaged(page, this.pageSize).subscribe({
-      next: (res) => {
-        this.blogs.set(Array.isArray(res.data) ? res.data : []);
-        this.total.set(res.total ?? 0);
-      },
-      error: () => {
-        this.blogs.set([]);
-        this.total.set(0);
-      },
-    });
-    // 스크롤 상단 이동
     if (isPlatformBrowser(this.platformId)) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }

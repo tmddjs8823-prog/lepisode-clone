@@ -1,76 +1,23 @@
-/* ═══════════ 레이아웃 – 플로팅 버튼 ═══════════ */
+/* ═══════════ 레이아웃 – Tailwind로 표현 불가한 스타일만 유지 ═══════════ */
 
-.fab-wrap {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: flex-end;
-}
-
-.fab-btn {
-  position: relative;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  text-decoration: none;
-  border: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.fab-btn:hover {
-  transform: scale(1.1);
-}
-
-.fab-btn:active {
-  transform: scale(0.95);
-}
-
-/* 카카오톡 */
+/* ── 카카오톡 FAB 커스텀 shadow ── */
 .fab-kakao {
-  background: #FEE500;
   box-shadow: 0 4px 16px rgba(254, 229, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-
 .fab-kakao:hover {
   box-shadow: 0 6px 24px rgba(254, 229, 0, 0.6), 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
-/* 문의하기 */
+/* ── 문의하기 FAB 그라디언트 + 커스텀 shadow ── */
 .fab-inquiry {
   background: linear-gradient(135deg, #41539b 0%, #6366f1 100%);
   box-shadow: 0 4px 16px rgba(65, 83, 155, 0.4), 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-
 .fab-inquiry:hover {
   box-shadow: 0 6px 24px rgba(65, 83, 155, 0.6), 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
-/* 툴팁 */
-.fab-tooltip {
-  position: absolute;
-  right: calc(100% + 12px);
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 8px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-
+/* ── 툴팁 화살표 (::after pseudo-element) ── */
 .fab-tooltip::after {
   content: '';
   position: absolute;
@@ -81,36 +28,14 @@
   border-left-color: rgba(0, 0, 0, 0.8);
 }
 
-.fab-btn:hover .fab-tooltip {
-  opacity: 1;
-}
-
-/* ═══════════ 문의 모달 ═══════════ */
-.inquiry-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 10000;
-  animation: overlayFadeIn 0.2s ease-out;
-}
-
+/* ── 모달 커스텀 shadow ── */
 .inquiry-modal {
-  position: fixed;
-  bottom: 100px;
-  right: 28px;
-  width: 460px;
-  max-height: calc(100vh - 140px);
-  overflow-y: auto;
-  background: #fff;
-  border-radius: 16px;
-  padding: 20px 24px;
-  z-index: 10001;
   box-shadow:
     0 24px 64px rgba(0, 0, 0, 0.15),
     0 8px 24px rgba(0, 0, 0, 0.08);
-  animation: modalSlideUp 0.3s ease-out;
 }
 
+/* ── 키프레임 애니메이션 ── */
 @keyframes overlayFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

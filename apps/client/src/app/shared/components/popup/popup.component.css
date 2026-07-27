@@ -1,123 +1,26 @@
-/* ═══════════ 팝업 오버레이 ═══════════ */
-.popup-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  z-index: 10010;
-  animation: popupFadeIn 0.2s ease-out;
-}
+/* ═══════════ Popup – Tailwind로 표현 불가한 스타일만 유지 ═══════════ */
 
-/* ═══════════ 팝업 카드 ═══════════ */
+/* ── 팝업 카드 다중 shadow ── */
 .popup-card {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10011;
-  width: 360px;
-  max-width: 90vw;
-  background: #fff;
-  border-radius: 16px;
-  overflow: hidden;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.1);
-  animation: popupSlideUp 0.3s ease-out;
 }
 
-/* X 닫기 버튼 */
-.popup-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 2;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: none;
-  background: rgba(0, 0, 0, 0.4);
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.popup-close:hover {
-  background: rgba(0, 0, 0, 0.6);
-}
-
-/* 이미지 영역 */
-.popup-image-wrap {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  cursor: pointer;
-  background: #f5f5f5;
-  overflow: hidden;
-  line-height: 0;
-}
-.popup-image {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-}
+/* ── placeholder 그라디언트 배경 ── */
 .popup-placeholder {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
 }
-.popup-placeholder-text {
-  font-size: 18px;
-  font-weight: 700;
-  color: #41539b;
-}
 
-/* 하단 버튼 바 */
-.popup-footer {
-  display: flex;
-  border-top: 1px solid #eee;
-}
-.popup-footer-btn {
-  flex: 1;
-  padding: 14px 0;
-  font-size: 13px;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: background 0.15s;
-  font-family: inherit;
-}
-.popup-footer-btn.dismiss {
-  background: #f8f8f8;
-  color: #888;
-}
-.popup-footer-btn.dismiss:hover {
-  background: #eee;
-}
-.popup-footer-btn.close-btn {
-  background: #fff;
-  color: #333;
-  font-weight: 600;
-  border-left: 1px solid #eee;
-}
-.popup-footer-btn.close-btn:hover {
-  background: #f5f5ff;
-  color: #41539b;
-}
-
-/* ═══════════ 애니메이션 ═══════════ */
+/* ── 애니메이션 ── */
 @keyframes popupFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 @keyframes popupSlideUp {
-  from { opacity: 0; transform: translate(-50%, -48%); }
-  to { opacity: 1; transform: translate(-50%, -50%); }
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* 반응형 */
+/* ── 반응형 ── */
 @media (max-width: 480px) {
   .popup-card {
     width: 92vw;

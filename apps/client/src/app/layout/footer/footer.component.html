@@ -1,37 +1,38 @@
-<footer class="footer">
-  <div class="footer-inner">
+<footer class="bg-[#2a2a2a] text-[#999]">
+  <div class="max-w-[1280px] mx-auto pt-10 pb-8 px-6">
 
     <!-- 상단: 로고 + 소셜 -->
-    <div class="footer-top">
-      <a routerLink="/" class="footer-logo">
-        <div class="logo-icon">L</div>
-        <span class="logo-text">LEPISODE</span>
+    <div class="flex items-center justify-between pb-5">
+      <a routerLink="/" class="flex items-center gap-2.5 no-underline">
+        <div class="logo-icon w-8 h-8 rounded-md flex items-center justify-center text-white font-bold text-base">L</div>
+        <span class="text-lg font-bold text-white tracking-[0.02em]">LEPISODE</span>
       </a>
-      <div class="footer-social">
-        <a href="https://blog.naver.com/lepisode" target="_blank" rel="noopener" class="social-link">blog</a>
-        <a href="https://pf.kakao.com/_ugdxln" target="_blank" rel="noopener" class="social-kakao">
-          <span class="kakao-badge">TALK</span>
+      <div class="flex items-center gap-3">
+        <a href="https://blog.naver.com/lepisode" target="_blank" rel="noopener"
+           class="text-[13px] font-medium text-[#ccc] no-underline transition-colors duration-200 hover:text-white">blog</a>
+        <a href="https://pf.kakao.com/_ugdxln" target="_blank" rel="noopener" class="no-underline">
+          <span class="inline-flex items-center justify-center px-2.5 py-1 bg-[#555] rounded text-[11px] font-bold text-white tracking-[0.05em]">TALK</span>
         </a>
       </div>
     </div>
 
     <!-- 구분선 -->
-    <div class="footer-divider"></div>
+    <div class="h-px bg-[#444]"></div>
 
     <!-- 하단: 회사 정보 + 약관 -->
-    <div class="footer-bottom">
-      <div class="company-info">
-        <p>{{ i18n.t('footer.company', '업체명 : 레피소드') }}</p>
-        <p>{{ i18n.t('footer.ceo', '대표자명 : 양주성') }}</p>
-        <p>{{ i18n.t('footer.biz_no', '사업자번호 : 277-87-01880') }}</p>
-        <p>{{ i18n.t('footer.address', '주소 : 광주광역시 남구 대남대로 388, 3층') }}</p>
-        <p>{{ i18n.t('footer.support', '고객지원 : 062-675-2314 Email : help@lepisode.team') }}</p>
-        <p class="copyright">COPYRIGHT © {{ currentYear }} LEPISODE ALL RIGHTS RESERVED</p>
+    <div class="flex justify-between items-end pt-6 gap-10 max-md:flex-col max-md:items-start max-md:gap-6">
+      <div class="flex flex-col gap-1">
+        <p class="text-[13px] text-[#888] leading-relaxed m-0">{{ i18n.t('footer.company', '업체명 : 레피소드') }}</p>
+        <p class="text-[13px] text-[#888] leading-relaxed m-0">{{ i18n.t('footer.ceo', '대표자명 : 양주성') }}</p>
+        <p class="text-[13px] text-[#888] leading-relaxed m-0">{{ i18n.t('footer.biz_no', '사업자번호 : 277-87-01880') }}</p>
+        <p class="text-[13px] text-[#888] leading-relaxed m-0">{{ i18n.t('footer.address', '주소 : 광주광역시 남구 대남대로 388, 3층') }}</p>
+        <p class="text-[13px] text-[#888] leading-relaxed m-0">{{ i18n.t('footer.support', '고객지원 : 062-675-2314 Email : help@lepisode.team') }}</p>
+        <p class="mt-2 text-xs text-[#666] leading-relaxed m-0">COPYRIGHT © {{ currentYear }} LEPISODE ALL RIGHTS RESERVED</p>
       </div>
-      <div class="footer-links">
-        <a routerLink="/terms/privacy" class="footer-link highlight">{{ i18n.t('footer.privacy', '개인정보취급방침') }}</a>
-        <a routerLink="/terms/service" class="footer-link">{{ i18n.t('footer.terms', '서비스 이용약관') }}</a>
-        <a routerLink="/terms/marketing" class="footer-link">{{ i18n.t('footer.marketing', '마케팅 수신동의 약관') }}</a>
+      <div class="flex items-center gap-5 flex-shrink-0 max-md:flex-wrap max-md:gap-3">
+        <a routerLink="/terms/privacy" class="text-[13px] font-normal text-[#7eb8f0] no-underline transition-colors duration-200 whitespace-nowrap hover:text-[#a8d4ff]">{{ i18n.t('footer.privacy', '개인정보취급방침') }}</a>
+        <a routerLink="/terms/service" class="text-[13px] font-normal text-[#aaa] no-underline transition-colors duration-200 whitespace-nowrap hover:text-white">{{ i18n.t('footer.terms', '서비스 이용약관') }}</a>
+        <a routerLink="/terms/marketing" class="text-[13px] font-normal text-[#aaa] no-underline transition-colors duration-200 whitespace-nowrap hover:text-white">{{ i18n.t('footer.marketing', '마케팅 수신동의 약관') }}</a>
       </div>
     </div>
   </div>
