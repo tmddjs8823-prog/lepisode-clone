@@ -1,6 +1,6 @@
 import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { ClientApiService, TranslationItem } from './client-api.service';
+import { TranslateService } from '@ngx-translate/core';
 
 export type Lang = 'ko' | 'en' | 'ja';
 
@@ -18,57 +18,33 @@ export const LANGUAGES: LangOption[] = [
 
 @Injectable({ providedIn: 'root' })
 export class I18nService {
-  private api = inject(ClientApiService);
   private platformId = inject(PLATFORM_ID);
+  private translate = inject(TranslateService);
 
   /** 현재 선택된 언어 */
   currentLang = signal<Lang>('ko');
 
-  /** 번역 데이터 로드 완료 여부 */
-  loaded = signal(false);
-
-  /** 번역 맵: key → { ko, en, ja } */
-  private translations = new Map<string, TranslationItem>();
-
   constructor() {
     // localStorage에서 저장된 언어 복원
-    if (typeof localStorage !== 'undefined') {
+    if (isPlatformBrowser(this.platformId) && typeof localStorage !== 'undefined') {
       const saved = localStorage.getItem('lang') as Lang | null;
       if (saved && LANGUAGES.some(l => l.code === saved)) {
         this.currentLang.set(saved);
       }
     }
 
-    // 브라우저에서만 번역 데이터 로드
-    if (isPlatformBrowser(this.platformId)) {
-      this.loadTranslations();
-    }
-  }
-
-  /** API에서 전체 번역 데이터 로드 */
-  private loadTranslations(): void {
-    this.api.getTranslations().subscribe({
-      next: (items) => {
-        this.translations.clear();
-        items.forEach(item => this.translations.set(item.key, item));
-        this.loaded.set(true);
-      },
-      error: () => {
-        // API 실패해도 한국어 하드코딩 텍스트가 폴백으로 동작
-        this.loaded.set(true);
-      },
-    });
-  }
-
-  /** 번역 데이터 새로고침 (언어 변경 시 불필요 — 이미 전부 로드됨) */
-  refresh(): void {
-    this.loadTranslations();
+    // ngx-translate 초기 언어 설정
+    this.translate.setFallbackLang('ko').subscribe();
+    this.translate.use(this.currentLang()).subscribe();
   }
 
   /** 언어 변경 */
   setLang(lang: Lang): void {
     this.currentLang.set(lang);
-    if (typeof localStorage !== 'undefined') {
+    // 캐시된 번역을 제거하고 새로 로드
+    this.translate.resetLang(lang);
+    this.translate.use(lang).subscribe();
+    if (isPlatformBrowser(this.platformId) && typeof localStorage !== 'undefined') {
       localStorage.setItem('lang', lang);
     }
   }
@@ -80,22 +56,11 @@ export class I18nService {
 
   /**
    * 번역 키로 현재 언어의 텍스트를 반환합니다.
-   *
-   * @param key 번역 키 (예: 'nav.about', 'home.hero.title')
-   * @param fallback 번역이 없을 때 표시할 기본 텍스트 (보통 한국어 원문)
-   * @returns 현재 언어의 번역 텍스트. 없으면 fallback → ko 순서로 폴백
-   *
-   * 사용법:
-   *   {{ i18n.t('nav.about', '회사 소개') }}
+   * @deprecated translate pipe 사용을 권장합니다: {{ 'key' | translate }}
    */
   t(key: string, fallback = ''): string {
-    const item = this.translations.get(key);
-    if (!item) return fallback;
-
-    const lang = this.currentLang();
-    if (lang === 'ko') return item.ko || fallback;
-    if (lang === 'en') return item.en || item.ko || fallback;
-    if (lang === 'ja') return item.ja || item.ko || fallback;
-    return item.ko || fallback;
+    const result = this.translate.instant(key);
+    // instant()는 키를 찾지 못하면 키 자체를 반환
+    return (result === key) ? fallback : result;
   }
 }

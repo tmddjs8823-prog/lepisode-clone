@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, inject, PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgClass, DatePipe, isPlatformBrowser } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import {
   ClientApiService,
   ServiceItem,
@@ -9,12 +10,11 @@ import {
   NaverBlogPost,
 } from '../../shared/services/client-api.service';
 import { I18nService } from '../../shared/services/i18n.service';
-import { HomeJaComponent } from './ja/home-ja.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [RouterLink, NgClass, DatePipe, HomeJaComponent],
+  imports: [RouterLink, NgClass, DatePipe, TranslatePipe],
   templateUrl: './home.page.html',
   styleUrl: './home.page.css',
 })
@@ -22,6 +22,28 @@ export class HomePage implements OnInit {
   private api = inject(ClientApiService);
   private platformId = inject(PLATFORM_ID);
   i18n = inject(I18nService);
+
+  /* ── JA 전용 홈 데이터 ── */
+  readonly jaServices = [
+    { icon: '🤖', titleKey: 'home_ja.svc.0.title', descKey: 'home_ja.svc.0.desc', tags: ['NLP', 'OCR'] },
+    { icon: '🔷', titleKey: 'home_ja.svc.1.title', descKey: 'home_ja.svc.1.desc', tags: ['SaaS', 'B2B', 'ERP'] },
+    { icon: '📱', titleKey: 'home_ja.svc.2.title', descKey: 'home_ja.svc.2.desc', tags: ['React', 'Flutter', 'API'] },
+    { icon: '🏛️', titleKey: 'home_ja.svc.3.title', descKey: 'home_ja.svc.3.desc', tags: ['CRM', 'ERP', 'POS'] },
+    { icon: '📣', titleKey: 'home_ja.svc.4.title', descKey: 'home_ja.svc.4.desc', tags: ['SNS', 'BI', 'SEO'] },
+    { icon: '☁️', titleKey: 'home_ja.svc.5.title', descKey: 'home_ja.svc.5.desc', tags: ['AWS', 'GCP', 'DevOps'] },
+  ];
+  readonly jaStrengths = [
+    { num: '200+', labelKey: 'home_ja.strength.0', icon: '📂' },
+    { num: '7', labelKey: 'home_ja.strength.1', icon: '🏆' },
+    { num: '50+', labelKey: 'home_ja.strength.2', icon: '👥' },
+    { num: '24/7', labelKey: 'home_ja.strength.3', icon: '🛡️' },
+  ];
+  readonly jaProcesses = [
+    { step: '01', titleKey: 'home_ja.process.0.title', descKey: 'home_ja.process.0.desc' },
+    { step: '02', titleKey: 'home_ja.process.1.title', descKey: 'home_ja.process.1.desc' },
+    { step: '03', titleKey: 'home_ja.process.2.title', descKey: 'home_ja.process.2.desc' },
+    { step: '04', titleKey: 'home_ja.process.3.title', descKey: 'home_ja.process.3.desc' },
+  ];
 
   /* ── 서비스 (상단 원스톱: 고정) ── */
   private readonly fallbackServices: ServiceItem[] = [

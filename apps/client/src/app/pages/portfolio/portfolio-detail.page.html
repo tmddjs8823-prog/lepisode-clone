@@ -19,7 +19,7 @@
     @if (item(); as p) {
       <!-- 제목 -->
       <h1 class="text-2xl md:text-[2rem] font-extrabold text-gray-900 mt-6 mb-3">
-        {{ p.title }}
+        {{ loc(p, 'title') }}
       </h1>
 
       <!-- 카테고리 뱃지 -->
@@ -60,7 +60,7 @@
           <div class="flex flex-col">
             <div class="flex items-center gap-8 py-4 border-b border-gray-100">
               <span class="text-[0.85rem] font-semibold text-gray-400 min-w-[80px] shrink-0">Project</span>
-              <span class="text-[0.85rem] text-gray-700 font-medium">{{ p.title }}</span>
+              <span class="text-[0.85rem] text-gray-700 font-medium">{{ loc(p, 'title') }}</span>
             </div>
             @if (p.category) {
               <div class="flex items-center gap-8 py-4 border-b border-gray-100">
@@ -91,7 +91,7 @@
       <!-- 설명 -->
       @if (p.description) {
         <div class="mt-8 pt-7 border-t border-gray-200">
-          <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{{ p.description }}</p>
+          <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{{ loc(p, 'description') }}</p>
         </div>
       }
 
@@ -111,7 +111,7 @@
                   </div>
                 }
               </div>
-              <h3 class="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{{ rec.title }}</h3>
+              <h3 class="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{{ loc(rec, 'title') }}</h3>
             </a>
           } @empty {
             <p class="text-sm text-gray-400 col-span-3">추천 포트폴리오가 없습니다.</p>

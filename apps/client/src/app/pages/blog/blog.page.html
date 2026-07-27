@@ -3,13 +3,11 @@
   <div class="max-w-[1200px] mx-auto">
     <div class="flex items-center gap-2 mb-3">
       <span class="text-indigo-600 text-lg">📋</span>
-      <span class="text-sm font-semibold text-indigo-600">블로그</span>
+      <span class="text-sm font-semibold text-indigo-600">{{ 'blog.label' | translate }}</span>
     </div>
-    <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 mb-3">
-      레피소드 <span class="text-indigo-600">블로그</span>
-    </h1>
+    <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 mb-3" [innerHTML]="'blog.title' | translate"></h1>
     <p class="text-sm text-gray-400 leading-relaxed">
-      레피소드의 개발, 디자인, 서비스 구축 과정에서 쌓인 인사이트와 작업 이야기를 전합니다.
+      {{ 'blog.desc' | translate }}
     </p>
   </div>
 </section>
@@ -38,13 +36,13 @@
           <div class="p-5 flex flex-col">
             <span class="text-[11px] font-semibold text-indigo-600 mb-1.5 block">{{ blog.category }}</span>
             <h3 class="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2 mb-4">
-              {{ blog.title }}
+              {{ loc(blog, 'title') }}
             </h3>
             <!-- 날짜 (왼쪽) + 자세히보기 (오른쪽) -->
             <div class="flex items-center justify-between mt-auto">
               <span class="text-xs text-gray-400">{{ blog.pubDate | date:'yyyy-MM-dd' }}</span>
               <span class="text-xs font-semibold text-indigo-600 flex items-center gap-0.5">
-                자세히 보기
+                {{ 'blog.view_detail' | translate }}
                 <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10"/></svg>
               </span>
             </div>
@@ -53,7 +51,7 @@
       } @empty {
         <div class="col-span-4 py-20 text-center">
           <span class="text-5xl mb-4 block">📭</span>
-          <p class="text-gray-400">아직 등록된 블로그가 없습니다.</p>
+          <p class="text-gray-400">{{ 'blog.empty' | translate }}</p>
         </div>
       }
     </div>

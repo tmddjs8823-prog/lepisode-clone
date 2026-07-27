@@ -2,7 +2,9 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter, withViewTransitions, withInMemoryScrolling } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideTranslateService, provideTranslateLoader } from '@ngx-translate/core';
 import { appRoutes } from './app.routes';
+import { ApiTranslateLoader } from './shared/services/api-translate-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,5 +16,10 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' }),
     ),
     provideHttpClient(withFetch()),
+    provideTranslateService({
+      fallbackLang: 'ko',
+      lang: 'ko',
+      loader: provideTranslateLoader(ApiTranslateLoader),
+    }),
   ],
 };

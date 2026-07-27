@@ -1,0 +1,28 @@
+{
+  "about.label": "会社紹介",
+  "about.hero.title": "LEPISODEの<span class=\"text-indigo-600\">哲学</span>",
+  "about.hero.desc": "お客様の成長こそが私たちの成長であるという信念で<br class=\"hidden md:block\">ビジネスの新しいエピソードを創り出します。",
+  "about.stat.completion": "プロジェクト完了率",
+  "about.stat.partners": "パートナー企業",
+  "about.stat.awards": "主要受賞",
+  "about.values.title": "私たちが追求する価値",
+  "about.values.customer.title": "顧客中心",
+  "about.values.customer.desc": "お客様のビジョンを最優先に考え<br>カスタマイズされたソリューションを提供します。",
+  "about.values.innovation.title": "技術革新",
+  "about.values.innovation.desc": "最新の技術トレンドを反映し<br>未来志向のサービスを構築します。",
+  "about.values.trust.title": "信頼と協力",
+  "about.values.trust.desc": "透明なコミュニケーションと協業で<br>長期的なパートナーシップを構築します。",
+  "about.team.title": "チーム紹介",
+  "about.team.desc": "LEPISODEを率いる人々",
+  "about.slogan.title": "最新技術をリードする<br><span class=\"text-indigo-600\">若い企業、LEPISODE</span>",
+  "about.slogan.desc": "ウェブとアプリ、そしてすべての機能を一括管理できる統合管理システムを構築します。<br class=\"hidden md:block\">ユーザー中心のUI/UXデザインと安定したサーバーインフラでビジネスの成功を支援します。",
+
+  "footer.company": "会社名 : LEPISODE",
+  "footer.ceo": "代表者 : ヤン・ジュソン",
+  "footer.biz_no": "事業者番号 : 277-87-01880",
+  "footer.address": "住所 : 光州広域市南区大南大路388, 3階",
+  "footer.support": "サポート : 062-675-2314 Email : help@lepisode.team",
+  "footer.privacy": "個人情報保護方針",
+  "footer.terms": "利用規約",
+  "footer.marketing": "マーケティング同意規約"
+}

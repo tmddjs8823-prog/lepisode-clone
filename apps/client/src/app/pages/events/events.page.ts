@@ -1,17 +1,20 @@
-﻿import { Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ClientApiService, EventItem } from '../../shared/services/client-api.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { I18nService } from '../../shared/services/i18n.service';
 
 @Component({
   selector: 'app-events-page',
   standalone: true,
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, TranslatePipe],
   templateUrl: './events.page.html',
 })
 export class EventsPage implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private api = inject(ClientApiService);
+  private i18n = inject(I18nService);
 
   events = signal<EventItem[]>([]);
   loading = signal(true);
@@ -39,5 +42,14 @@ export class EventsPage implements OnInit {
     if (s === 'upcoming') return '예정';
     if (s === 'ended') return '종료';
     return '진행중';
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  loc(item: any, field: string): string {
+    if (!item) return '';
+    const lang = this.i18n.currentLang();
+    if (lang === 'en') return String(item[field + 'En'] || item[field] || '');
+    if (lang === 'ja') return String(item[field + 'Ja'] || item[field] || '');
+    return String(item[field] || '');
   }
 }

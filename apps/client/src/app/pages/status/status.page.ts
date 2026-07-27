@@ -1,28 +1,34 @@
 import { Component, OnInit, PLATFORM_ID, inject, signal, computed } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ClientApiService, ProjectStatusItem } from '../../shared/services/client-api.service';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { I18nService } from '../../shared/services/i18n.service';
 
 @Component({
   selector: 'app-status-page',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './status.page.html',
 })
 export class StatusPage implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private api = inject(ClientApiService);
+  private i18n = inject(I18nService);
+  private translate = inject(TranslateService);
 
   allStatuses = signal<ProjectStatusItem[]>([]);
-  activeTab = signal('모두');
+  activeTab = signal('all');
 
-  readonly tabs = ['모두', '웹', '앱'];
+  readonly tabKeys = ['all', 'web', 'app'];
 
   filtered = computed(() => {
     const tab = this.activeTab();
     const all = this.allStatuses();
-    if (tab === '모두') return all;
+    if (tab === 'all') return all;
+    const platformMap: Record<string, string> = { web: '웹', app: '앱' };
+    const target = platformMap[tab] || tab;
     return all.filter(item =>
-      item.platforms?.some(p => p === tab) ?? false
+      item.platforms?.some(p => p === target) ?? false
     );
   });
 
@@ -38,11 +44,20 @@ export class StatusPage implements OnInit {
     this.activeTab.set(tab);
   }
 
+  getTabLabel(key: string): string {
+    return this.translate.instant('status.tab_' + key);
+  }
+
   formatPeriod(start?: string, end?: string): string {
+    const lang = this.i18n.currentLang();
     const fmt = (d?: string) => {
       if (!d) return '';
       const date = new Date(d);
-      return `${String(date.getFullYear()).slice(2)}년 ${String(date.getMonth() + 1).padStart(2, '0')}월`;
+      const y = String(date.getFullYear()).slice(2);
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      if (lang === 'ja') return `${y}年 ${m}月`;
+      if (lang === 'en') return `${date.getFullYear()}.${m}`;
+      return `${y}년 ${m}월`;
     };
     const s = fmt(start);
     const e = fmt(end);
@@ -62,12 +77,23 @@ export class StatusPage implements OnInit {
   }
 
   getStatusLabel(status: string): string {
-    switch (status) {
-      case 'ESTIMATING': return '견적중';
-      case 'IN_PROGRESS': return '진행중';
-      case 'ANSWERED': return '답변완료';
-      case 'COMPLETE': return '납품완료';
-      default: return status;
-    }
+    const keyMap: Record<string, string> = {
+      ESTIMATING: 'status.estimating',
+      IN_PROGRESS: 'status.in_progress',
+      ANSWERED: 'status.answered',
+      COMPLETE: 'status.delivered',
+    };
+    const key = keyMap[status];
+    if (key) return this.translate.instant(key);
+    return status;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  loc(item: any, field: string): string {
+    if (!item) return '';
+    const lang = this.i18n.currentLang();
+    if (lang === 'en') return String(item[field + 'En'] || item[field] || '');
+    if (lang === 'ja') return String(item[field + 'Ja'] || item[field] || '');
+    return String(item[field] || '');
   }
 }

@@ -7,12 +7,16 @@ const API = '/api/v1';
 
 /* ── 서비스 ── */
 export interface ServiceItem {
+  [key: string]: unknown;
   id: number;
   title: string;
   titleEn?: string;
+  titleJa?: string;
   slug?: string;
   seoDescription?: string;
   content?: string;
+  contentEn?: string;
+  contentJa?: string;
   icon?: string;
   thumbnailUrl?: string;
   description?: string;
@@ -24,11 +28,16 @@ export interface ServiceItem {
 
 /* ── 포트폴리오 ── */
 export interface PortfolioItem {
+  [key: string]: unknown;
   id: number;
   title: string;
+  titleEn?: string;
+  titleJa?: string;
   client?: string;
   category?: string;
   description?: string;
+  descriptionEn?: string;
+  descriptionJa?: string;
   keywords?: string;
   thumbnailUrl?: string;
   images?: string[];
@@ -41,9 +50,14 @@ export interface PortfolioItem {
 
 /* ── 공지사항 ── */
 export interface NoticeItem {
+  [key: string]: unknown;
   id: number;
   title: string;
+  titleEn?: string;
+  titleJa?: string;
   content?: string;
+  contentEn?: string;
+  contentJa?: string;
   thumbnailUrl?: string;
   published: boolean;
   createdAt: string;
@@ -51,9 +65,14 @@ export interface NoticeItem {
 
 /* ── FAQ ── */
 export interface FaqItem {
+  [key: string]: unknown;
   id: number;
   question: string;
+  questionEn?: string;
+  questionJa?: string;
   answer: string;
+  answerEn?: string;
+  answerJa?: string;
   categoryId?: number;
   published: boolean;
   sortOrder: number;
@@ -61,8 +80,14 @@ export interface FaqItem {
 
 /* ── 블로그 ── */
 export interface BlogItem {
+  [key: string]: unknown;
   id: number;
   title: string;
+  titleEn?: string;
+  titleJa?: string;
+  content?: string;
+  contentEn?: string;
+  contentJa?: string;
   thumbnailUrl?: string;
   category?: string;
   author?: string;
@@ -74,6 +99,7 @@ export interface BlogItem {
 
 /* ── 네이버 블로그 RSS ── */
 export interface NaverBlogPost {
+  [key: string]: unknown;
   title: string;
   link: string;
   category: string;
@@ -106,9 +132,11 @@ export interface PopupItem {
 
 /* ── 현황 ── */
 export interface ProjectStatusItem {
+  [key: string]: unknown;
   id: number;
   title: string;
   titleEn?: string;
+  titleJa?: string;
   client?: string;
   status: string;
   platforms?: string[];
@@ -128,6 +156,7 @@ export interface InquiryPayload {
 
 /* ── 이벤트 ── */
 export interface EventItem {
+  [key: string]: unknown;
   id: number;
   title: string;
   titleEn?: string;
@@ -145,8 +174,11 @@ export interface EventItem {
 
 /* ── 채용공고 ── */
 export interface JobItem {
+  [key: string]: unknown;
   id: number;
   title: string;
+  titleEn?: string;
+  titleJa?: string;
   category: string | null;
   jobUrl: string | null;
   published: boolean;
@@ -162,6 +194,11 @@ export class ClientApiService {
   /* 서비스 목록 (공개) */
   getServices(): Observable<ServiceItem[]> {
     return this.http.get<ServiceItem[]>(`${API}/services`);
+  }
+
+  /* 서비스 상세 조회 */
+  getServiceDetail(id: number): Observable<ServiceItem> {
+    return this.http.get<ServiceItem>(`${API}/services/${id}`);
   }
 
   /* 포트폴리오 목록 (공개, 최신 6건) */

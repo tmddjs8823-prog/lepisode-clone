@@ -1,17 +1,20 @@
 import { Component, OnInit, PLATFORM_ID, inject, signal, computed } from '@angular/core';
 import { isPlatformBrowser, DatePipe } from '@angular/common';
 import { ClientApiService, NaverBlogPost } from '../../shared/services/client-api.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { I18nService } from '../../shared/services/i18n.service';
 
 @Component({
   selector: 'app-blog-page',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, TranslatePipe],
   templateUrl: './blog.page.html',
   styleUrl: './blog.page.css',
 })
 export class BlogPage implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private api = inject(ClientApiService);
+  private i18n = inject(I18nService);
 
   allPosts = signal<NaverBlogPost[]>([]);
   currentPage = signal(1);
@@ -55,5 +58,14 @@ export class BlogPage implements OnInit {
 
   nextPage(): void {
     if (this.currentPage() < this.totalPages()) this.loadPage(this.currentPage() + 1);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  loc(item: any, field: string): string {
+    if (!item) return '';
+    const lang = this.i18n.currentLang();
+    if (lang === 'en') return String(item[field + 'En'] || item[field] || '');
+    if (lang === 'ja') return String(item[field + 'Ja'] || item[field] || '');
+    return String(item[field] || '');
   }
 }

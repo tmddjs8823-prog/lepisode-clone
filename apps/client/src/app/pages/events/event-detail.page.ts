@@ -1,7 +1,8 @@
-﻿import { Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser, DatePipe, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ClientApiService, EventItem } from '../../shared/services/client-api.service';
+import { I18nService } from '../../shared/services/i18n.service';
 
 @Component({
   selector: 'app-event-detail-page',
@@ -14,6 +15,7 @@ export class EventDetailPage implements OnInit {
   private route = inject(ActivatedRoute);
   private location = inject(Location);
   private api = inject(ClientApiService);
+  private i18n = inject(I18nService);
 
   event = signal<EventItem | null>(null);
   loading = signal(true);
@@ -50,5 +52,14 @@ export class EventDetailPage implements OnInit {
 
   goBack(): void {
     this.location.back();
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  loc(item: any, field: string): string {
+    if (!item) return '';
+    const lang = this.i18n.currentLang();
+    if (lang === 'en') return String(item[field + 'En'] || item[field] || '');
+    if (lang === 'ja') return String(item[field + 'Ja'] || item[field] || '');
+    return String(item[field] || '');
   }
 }

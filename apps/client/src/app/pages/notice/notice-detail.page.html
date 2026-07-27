@@ -5,7 +5,7 @@
       <!-- 헤더 -->
       <div class="mb-10">
         <span class="text-sm font-semibold text-[#41539b] block mb-2">공지사항</span>
-        <h1 class="text-[1.8rem] font-extrabold text-[#1a1a2e] mb-2">{{ n.title }}</h1>
+        <h1 class="text-[1.8rem] font-extrabold text-[#1a1a2e] mb-2">{{ loc(n, 'title') }}</h1>
         <span class="text-sm text-gray-400">{{ n.createdAt | date:'yyyy.MM.dd' }}</span>
       </div>
 
@@ -19,7 +19,7 @@
 
       <!-- 본문 -->
       <div class="text-[0.92rem] text-gray-600 leading-relaxed whitespace-pre-line">
-        {{ n.content }}
+        {{ loc(n, 'content') }}
       </div>
 
       <!-- 목록으로 -->

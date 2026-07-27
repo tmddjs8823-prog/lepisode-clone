@@ -3,9 +3,9 @@
 
     <!-- 타이틀 -->
     <div class="mb-12">
-      <span class="text-sm font-semibold text-[#41539b] block mb-2">📢 공지사항</span>
-      <h1 class="text-[1.8rem] font-extrabold text-[#1a1a2e] mb-2">레피소드 공지사항</h1>
-      <p class="text-sm text-gray-400">레피소드의 공지사항을 살펴보세요.</p>
+      <span class="text-sm font-semibold text-[#41539b] block mb-2">📢 {{ 'notice.label' | translate }}</span>
+      <h1 class="text-[1.8rem] font-extrabold text-[#1a1a2e] mb-2">{{ 'notice.title' | translate }}</h1>
+      <p class="text-sm text-gray-400">{{ 'notice.desc' | translate }}</p>
     </div>
 
     <!-- 공지 리스트 -->
@@ -18,17 +18,17 @@
             <span class="text-xs text-[#41539b]">{{ item.createdAt | date:'yyyy.MM.dd' }}</span>
           </div>
           <!-- 제목 -->
-          <h3 class="text-base font-bold text-[#1a1a2e] mb-2">{{ item.title }}</h3>
+          <h3 class="text-base font-bold text-[#1a1a2e] mb-2">{{ loc(item, 'title') }}</h3>
           <!-- 내용 미리보기 -->
-          <p class="text-sm text-gray-400 line-clamp-1 mb-3">{{ item.content }}</p>
+          <p class="text-sm text-gray-400 line-clamp-1 mb-3">{{ loc(item, 'content') }}</p>
           <!-- 자세히보기 -->
           <span class="text-sm font-medium text-[#41539b] flex items-center gap-1">
-            자세히보기 ↗
+            {{ 'notice.view_detail' | translate }} ↗
           </span>
         </a>
       } @empty {
         <div class="py-16 text-center">
-          <p class="text-gray-400">등록된 공지사항이 없습니다.</p>
+          <p class="text-gray-400">{{ 'notice.empty' | translate }}</p>
         </div>
       }
     </div>

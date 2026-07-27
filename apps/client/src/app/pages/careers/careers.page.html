@@ -5,24 +5,19 @@
 
   <!-- 히어로 콘텐츠 -->
   <div class="hero-content relative z-[2] text-center px-6">
-    <span class="hero-badge inline-block px-5 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-[#c7d2fe] text-[13px] font-semibold tracking-[2px] uppercase mb-6 border border-white/[0.18]">채용 중</span>
-    <h1 class="hero-title font-black text-white leading-[1.3] mb-4">
-      함께 만들어갈<br>
-      <span class="hero-accent">다음 이야기</span>의 주인공
-    </h1>
-    <p class="hero-subtitle text-white/70 font-normal m-0">
-      레피소드와 함께 디지털 혁신의 미래를 설계하세요
-    </p>
+    <span class="hero-badge inline-block px-5 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-[#c7d2fe] text-[13px] font-semibold tracking-[2px] uppercase mb-6 border border-white/[0.18]">{{ 'careers.badge' | translate }}</span>
+    <h1 class="hero-title font-black text-white leading-[1.3] mb-4" [innerHTML]="'careers.hero_title' | translate"></h1>
+    <p class="hero-subtitle text-white/70 font-normal m-0">{{ 'careers.hero_desc' | translate }}</p>
   </div>
 
   <!-- 섹션 네비게이션 바 (배너 70% 경계선 위치) -->
   <nav class="section-nav absolute bottom-0 left-0 right-0 z-10 translate-y-1/2">
     <div class="section-nav-inner max-w-[900px] mx-auto flex items-center justify-center gap-1.5 bg-white rounded-full px-2 py-1.5">
-      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('엔진들')">레피소드 엔진들</button>
-      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('약속')">우리들의 약속</button>
-      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('팀문화')">팀 문화 소개</button>
-      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('회사복지')">회사 복지</button>
-      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('채용공고')">채용공고</button>
+      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('엔진들')">{{ 'careers.nav_engines' | translate }}</button>
+      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('약속')">{{ 'careers.nav_promise' | translate }}</button>
+      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('팀문화')">{{ 'careers.nav_culture' | translate }}</button>
+      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('회사복지')">{{ 'careers.nav_welfare' | translate }}</button>
+      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('채용공고')">{{ 'careers.nav_jobs' | translate }}</button>
     </div>
   </nav>
 </section>
@@ -30,14 +25,8 @@
 <!-- ═══════════ 홍보 문구 영역 (나머지 30vh) ═══════════ -->
 <section class="promo-section min-h-[30vh] flex items-center justify-center bg-white py-20 px-6 pt-[80px] pb-[60px]">
   <div class="promo-inner max-w-[800px] text-center">
-    <h2 class="promo-title font-black text-[#1a1a2e] leading-[1.45] mb-5">
-      기술로 세상을 바꾸는 사람들,<br>
-      <span class="text-[#41539b]">레피소드</span>에서 시작됩니다.
-    </h2>
-    <p class="promo-desc text-[#888] leading-[1.8] m-0">
-      우리는 단순한 개발을 넘어, 비즈니스의 본질을 이해하고 디지털 전환을 이끄는 파트너입니다.<br>
-      당신의 아이디어가 현실이 되는 곳, 지금 합류하세요.
-    </p>
+    <h2 class="promo-title font-black text-[#1a1a2e] leading-[1.45] mb-5" [innerHTML]="'careers.promo_title' | translate"></h2>
+    <p class="promo-desc text-[#888] leading-[1.8] m-0" [innerHTML]="'careers.promo_desc' | translate"></p>
   </div>
 </section>
 
@@ -49,14 +38,11 @@
     <div class="grid grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-[300px]">
       <div class="flex flex-col justify-center py-5 px-10">
         <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">01</span>
-        <h3 class="text-xl font-extrabold text-gray-900 mb-2">웹개발</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">
-          반응형 웹사이트부터 대규모 플랫폼까지,<br>
-          최신 기술 스택으로 빠르고 안정적인 웹 서비스를 구축합니다.
-        </p>
+        <h3 class="text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work1_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work1_desc' | translate"></p>
       </div>
       <div class="overflow-hidden">
-        <img src="/assets/images/careers/workspace.png" alt="웹개발" loading="lazy"
+        <img src="/assets/images/careers/workspace.png" [attr.alt]="'careers.work1_title' | translate" loading="lazy"
              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
     </div>
@@ -65,14 +51,11 @@
     <div class="grid grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-[300px]">
       <div class="flex flex-col justify-center py-5 px-10">
         <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">02</span>
-        <h3 class="text-xl font-extrabold text-gray-900 mb-2">AI기반 비즈니스 자동화</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">
-          데이터 분석, 자연어 처리, 이미지 인식 등<br>
-          AI 기술을 활용하여 업무 프로세스를 자동화하고 효율을 극대화합니다.
-        </p>
+        <h3 class="text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work2_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work2_desc' | translate"></p>
       </div>
       <div class="overflow-hidden">
-        <img src="/assets/images/careers/teamwork.png" alt="AI 자동화" loading="lazy"
+        <img src="/assets/images/careers/teamwork.png" [attr.alt]="'careers.work2_title' | translate" loading="lazy"
              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
     </div>
@@ -81,14 +64,11 @@
     <div class="grid grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-[300px]">
       <div class="flex flex-col justify-center py-5 px-10">
         <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">03</span>
-        <h3 class="text-xl font-extrabold text-gray-900 mb-2">맞춤형 비즈니스 시스템 구축</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">
-          ERP, CRM, POS 등 기업 맞춤형 시스템을<br>
-          설계부터 운영까지 원스톱으로 제공합니다.
-        </p>
+        <h3 class="text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work3_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work3_desc' | translate"></p>
       </div>
       <div class="overflow-hidden">
-        <img src="/assets/images/careers/creative.png" alt="시스템 구축" loading="lazy"
+        <img src="/assets/images/careers/creative.png" [attr.alt]="'careers.work3_title' | translate" loading="lazy"
              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
     </div>
@@ -104,14 +84,10 @@
     <div class="text-center mb-14">
       <div class="flex items-center justify-center gap-2 mb-3">
         <span class="text-indigo-600 text-lg">◇</span>
-        <span class="text-sm font-semibold text-gray-500">레피소드 엔진들</span>
+        <span class="text-sm font-semibold text-gray-500">{{ 'careers.engines_label' | translate }}</span>
       </div>
-      <h2 class="text-2xl md:text-[2.2rem] font-extrabold text-gray-900 mb-4">
-        각자의 자리에서 <span class="text-[#41539b]">최고의 엔진</span>이 되다
-      </h2>
-      <p class="text-sm text-gray-400">
-        레피소드를 움직이는 세 개의 팀을 소개합니다
-      </p>
+      <h2 class="text-2xl md:text-[2.2rem] font-extrabold text-gray-900 mb-4" [innerHTML]="'careers.engines_title' | translate"></h2>
+      <p class="text-sm text-gray-400">{{ 'careers.engines_desc' | translate }}</p>
     </div>
 
     <!-- 팀 카드 3개 (이미지 위 텍스트 오버레이) -->
@@ -119,15 +95,12 @@
 
       <!-- 개발팀 -->
       <div class="relative rounded-2xl overflow-hidden group" style="aspect-ratio:9/16">
-        <img src="/assets/images/careers/team-dev.png" alt="개발팀" loading="lazy"
+        <img src="/assets/images/careers/team-dev.png" [attr.alt]="'careers.team_dev' | translate" loading="lazy"
              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 p-7">
-          <h3 class="text-xl font-extrabold text-white mb-2">개발팀</h3>
-          <p class="text-sm text-white/70 leading-relaxed mb-4">
-            프론트엔드, 백엔드, 모바일, AI까지<br>
-            기술의 최전선에서 제품을 만들어갑니다.
-          </p>
+          <h3 class="text-xl font-extrabold text-white mb-2">{{ 'careers.team_dev' | translate }}</h3>
+          <p class="text-sm text-white/70 leading-relaxed mb-4" [innerHTML]="'careers.team_dev_desc' | translate"></p>
           <div class="flex flex-wrap gap-2">
             <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">Angular</span>
             <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">NestJS</span>
@@ -140,19 +113,16 @@
 
       <!-- 기획/디자인팀 -->
       <div class="relative rounded-2xl overflow-hidden group mt-10" style="aspect-ratio:9/16">
-        <img src="/assets/images/careers/team-design.png" alt="기획/디자인팀" loading="lazy"
+        <img src="/assets/images/careers/team-design.png" [attr.alt]="'careers.team_design' | translate" loading="lazy"
              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 p-7">
-          <h3 class="text-xl font-extrabold text-white mb-2">기획/디자인팀</h3>
-          <p class="text-sm text-white/70 leading-relaxed mb-4">
-            사용자 경험을 설계하고,<br>
-            브랜드의 가치를 시각적으로 표현합니다.
-          </p>
+          <h3 class="text-xl font-extrabold text-white mb-2">{{ 'careers.team_design' | translate }}</h3>
+          <p class="text-sm text-white/70 leading-relaxed mb-4" [innerHTML]="'careers.team_design_desc' | translate"></p>
           <div class="flex flex-wrap gap-2">
-            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">UX/UI 설계</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">{{ 'careers.team_design_tag1' | translate }}</span>
             <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">Figma</span>
-            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">서비스 기획</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">{{ 'careers.team_design_tag2' | translate }}</span>
             <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">BI/CI</span>
           </div>
         </div>
@@ -160,20 +130,17 @@
 
       <!-- 사업/영업팀 -->
       <div class="relative rounded-2xl overflow-hidden group" style="aspect-ratio:9/16">
-        <img src="/assets/images/careers/team-business.png" alt="사업/영업팀" loading="lazy"
+        <img src="/assets/images/careers/team-business.png" [attr.alt]="'careers.team_biz' | translate" loading="lazy"
              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 p-7">
-          <h3 class="text-xl font-extrabold text-white mb-2">사업/영업팀</h3>
-          <p class="text-sm text-white/70 leading-relaxed mb-4">
-            고객의 비즈니스를 이해하고,<br>
-            최적의 솔루션을 연결합니다.
-          </p>
+          <h3 class="text-xl font-extrabold text-white mb-2">{{ 'careers.team_biz' | translate }}</h3>
+          <p class="text-sm text-white/70 leading-relaxed mb-4" [innerHTML]="'careers.team_biz_desc' | translate"></p>
           <div class="flex flex-wrap gap-2">
-            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">고객 상담</span>
-            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">제안서</span>
-            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">파트너십</span>
-            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">시장 분석</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">{{ 'careers.team_biz_tag1' | translate }}</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">{{ 'careers.team_biz_tag2' | translate }}</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">{{ 'careers.team_biz_tag3' | translate }}</span>
+            <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">{{ 'careers.team_biz_tag4' | translate }}</span>
           </div>
         </div>
       </div>
@@ -190,15 +157,10 @@
     <div class="text-center mb-14">
       <div class="flex items-center justify-center gap-2 mb-3">
         <span class="text-indigo-600 text-lg">◇</span>
-        <span class="text-sm font-semibold text-gray-500">우리들의 약속</span>
+        <span class="text-sm font-semibold text-gray-500">{{ 'careers.promise_label' | translate }}</span>
       </div>
-      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-6">
-        "좋은 사람이 좋은 결과를 만든다"
-      </h2>
-      <p class="text-base text-gray-400 leading-relaxed max-w-[600px] mx-auto">
-        레피소드는 함께 일하는 사람들이 행복해야<br>
-        더 좋은 서비스가 탄생한다고 믿습니다.
-      </p>
+      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-6">{{ 'careers.promise_title' | translate }}</h2>
+      <p class="text-base text-gray-400 leading-relaxed max-w-[600px] mx-auto" [innerHTML]="'careers.promise_desc' | translate"></p>
     </div>
 
     <!-- 장점 리스트 -->
@@ -210,8 +172,8 @@
           🕐
         </div>
         <div>
-          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">오전 10시 출근, 여유로운 아침</h3>
-          <p class="text-sm text-gray-400 leading-relaxed">충분한 아침 시간으로 하루를 여유롭게 시작하고, 집중력 있는 오후를 보냅니다.</p>
+          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">{{ 'careers.p1_title' | translate }}</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">{{ 'careers.p1_desc' | translate }}</p>
         </div>
       </div>
 
@@ -221,8 +183,8 @@
           📚
         </div>
         <div>
-          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">끊임없는 성장 지원</h3>
-          <p class="text-sm text-gray-400 leading-relaxed">도서 구입, 온라인 강의, 컨퍼런스 참가 등 자기계발에 필요한 비용을 지원합니다.</p>
+          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">{{ 'careers.p2_title' | translate }}</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">{{ 'careers.p2_desc' | translate }}</p>
         </div>
       </div>
 
@@ -232,8 +194,8 @@
           💬
         </div>
         <div>
-          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">수평적 소통 문화</h3>
-          <p class="text-sm text-gray-400 leading-relaxed">직급에 관계없이 누구나 의견을 제시할 수 있는 열린 소통 환경을 지향합니다.</p>
+          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">{{ 'careers.p3_title' | translate }}</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">{{ 'careers.p3_desc' | translate }}</p>
         </div>
       </div>
 
@@ -243,8 +205,8 @@
           💻
         </div>
         <div>
-          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">최고의 장비와 환경</h3>
-          <p class="text-sm text-gray-400 leading-relaxed">최신 맥북·모니터·의자 등 업무에 몰입할 수 있는 최고의 장비를 제공합니다.</p>
+          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">{{ 'careers.p4_title' | translate }}</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">{{ 'careers.p4_desc' | translate }}</p>
         </div>
       </div>
 
@@ -254,8 +216,8 @@
           ⚖️
         </div>
         <div>
-          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">진짜 워라밸을 실천합니다</h3>
-          <p class="text-sm text-gray-400 leading-relaxed">정시 퇴근을 기본으로, 개인의 삶과 업무의 균형을 존중하는 문화입니다.</p>
+          <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-[#41539b] transition-colors">{{ 'careers.p5_title' | translate }}</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">{{ 'careers.p5_desc' | translate }}</p>
         </div>
       </div>
 
@@ -270,14 +232,9 @@
 
       <!-- 왼쪽: 큰 제목 -->
       <div style="text-align: center; width: 320px; flex-shrink: 0;">
-        <span class="text-sm font-semibold text-[#41539b] tracking-widest uppercase mb-4 block">기술 블로그</span>
-        <h2 class="text-4xl md:text-[3rem] font-black text-gray-900 leading-tight mb-4">
-          우리가<br>추구하는 방식
-        </h2>
-        <p class="text-base text-gray-400 leading-relaxed">
-          레피소드 팀이 문제를 풀어가는<br>
-          기술적 고민과 인사이트를 공유합니다.
-        </p>
+        <span class="text-sm font-semibold text-[#41539b] tracking-widest uppercase mb-4 block">{{ 'careers.blog_label' | translate }}</span>
+        <h2 class="text-4xl md:text-[3rem] font-black text-gray-900 leading-tight mb-4" [innerHTML]="'careers.blog_title' | translate"></h2>
+        <p class="text-base text-gray-400 leading-relaxed" [innerHTML]="'careers.blog_desc' | translate"></p>
       </div>
 
       <!-- 오른쪽: 블로그 카드 리스트 -->
@@ -292,15 +249,15 @@
                 </div>
               }
               <div class="flex-1 min-w-0">
-                <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#41539b] transition-colors">{{ post.title }}</h3>
-                <p class="text-base text-gray-400">작성일: {{ post.createdAt | date:'yyyy.MM.dd' }}</p>
+                <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#41539b] transition-colors">{{ loc(post, 'title') }}</h3>
+                <p class="text-base text-gray-400">{{ 'careers.blog_date' | translate }}: {{ post.createdAt | date:'yyyy.MM.dd' }}</p>
               </div>
             </div>
           }
 
           @if (blogPosts().length === 0) {
             <div class="text-center py-16">
-              <p class="text-sm text-gray-400">아직 등록된 글이 없습니다.</p>
+              <p class="text-sm text-gray-400">{{ 'careers.blog_empty' | translate }}</p>
             </div>
           }
         </div>
@@ -308,7 +265,7 @@
         <!-- 더보기 원형 버튼 (밑변 중앙 오버레이) -->
         <a (click)="goToDevBlog()" (keyup.enter)="goToDevBlog()" tabindex="0"
            class="more-btn absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-[#41539b] text-white flex items-center justify-center shadow-[0_4px_16px_rgba(65,83,155,0.3)] no-underline text-[11px] font-semibold transition-all duration-200 cursor-pointer">
-          더보기
+          {{ 'careers.blog_more' | translate }}
         </a>
       </div>
 
@@ -324,15 +281,10 @@
     <div class="text-center mb-16">
       <div class="flex items-center justify-center gap-2 mb-3">
         <span class="text-indigo-600 text-lg">◇</span>
-        <span class="text-sm font-semibold text-gray-500">팀 문화</span>
+        <span class="text-sm font-semibold text-gray-500">{{ 'careers.culture_label' | translate }}</span>
       </div>
-      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-4">
-        함께이기에 <span class="text-[#41539b]">더 빛나는</span> 순간들
-      </h2>
-      <p class="text-base text-gray-400 leading-relaxed max-w-[600px] mx-auto">
-        레피소드는 일만 하는 곳이 아닙니다.<br>
-        함께 웃고, 함께 성장하는 문화를 만들어갑니다.
-      </p>
+      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-4" [innerHTML]="'careers.culture_title' | translate"></h2>
+      <p class="text-base text-gray-400 leading-relaxed max-w-[600px] mx-auto" [innerHTML]="'careers.culture_desc' | translate"></p>
     </div>
 
     <!-- 벤토 그리드 카드 -->
@@ -340,37 +292,37 @@
 
       <!-- 워크샵 1박2일 (큰 카드) -->
       <div class="culture-card culture-card--large relative rounded-[20px] overflow-hidden cursor-pointer row-span-2 group">
-        <img src="/assets/images/careers/culture-workshop.png" alt="워크샵 1박2일" loading="lazy"
+        <img src="/assets/images/careers/culture-workshop.png" [attr.alt]="'careers.c1_title' | translate" loading="lazy"
              class="culture-card__img w-full h-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.06]" />
         <div class="culture-card__overlay absolute inset-0"></div>
         <div class="culture-card__content absolute bottom-0 left-0 right-0 p-7 z-[2]">
           <span class="culture-card__tag inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-semibold mb-2.5">🏕️ Workshop</span>
-          <h3 class="culture-card__title text-2xl font-extrabold text-white mb-1.5">1박2일 워크샵</h3>
-          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0">분기마다 떠나는 팀 워크샵.<br>바베큐와 함께 깊어지는 우리의 이야기.</p>
+          <h3 class="culture-card__title text-2xl font-extrabold text-white mb-1.5">{{ 'careers.c1_title' | translate }}</h3>
+          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0" [innerHTML]="'careers.c1_desc' | translate"></p>
         </div>
       </div>
 
       <!-- 일본 여행 -->
       <div class="culture-card relative rounded-[20px] overflow-hidden cursor-pointer group">
-        <img src="/assets/images/careers/culture-japan.png" alt="일본 여행" loading="lazy"
+        <img src="/assets/images/careers/culture-japan.png" [attr.alt]="'careers.c2_title' | translate" loading="lazy"
              class="culture-card__img w-full h-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.06]" />
         <div class="culture-card__overlay absolute inset-0"></div>
         <div class="culture-card__content absolute bottom-0 left-0 right-0 p-7 z-[2]">
           <span class="culture-card__tag inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-semibold mb-2.5">✈️ Travel</span>
-          <h3 class="culture-card__title text-2xl font-extrabold text-white mb-1.5">해외 워크샵</h3>
-          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0">연 1회 해외 여행으로<br>리프레시 &amp; 팀 빌딩</p>
+          <h3 class="culture-card__title text-2xl font-extrabold text-white mb-1.5">{{ 'careers.c2_title' | translate }}</h3>
+          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0" [innerHTML]="'careers.c2_desc' | translate"></p>
         </div>
       </div>
 
       <!-- 스포츠 관람 -->
       <div class="culture-card relative rounded-[20px] overflow-hidden cursor-pointer group">
-        <img src="/assets/images/careers/culture-sports.png" alt="스포츠 관람" loading="lazy"
+        <img src="/assets/images/careers/culture-sports.png" [attr.alt]="'careers.c3_title' | translate" loading="lazy"
              class="culture-card__img w-full h-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.06]" />
         <div class="culture-card__overlay absolute inset-0"></div>
         <div class="culture-card__content absolute bottom-0 left-0 right-0 p-7 z-[2]">
           <span class="culture-card__tag inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-semibold mb-2.5">⚾ Sports</span>
-          <h3 class="culture-card__title text-2xl font-extrabold text-white mb-1.5">스포츠 관람</h3>
-          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0">야구·축구·농구 등<br>함께 응원하는 짜릿한 순간</p>
+          <h3 class="culture-card__title text-2xl font-extrabold text-white mb-1.5">{{ 'careers.c3_title' | translate }}</h3>
+          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0" [innerHTML]="'careers.c3_desc' | translate"></p>
         </div>
       </div>
 
@@ -384,12 +336,8 @@
 
     <!-- 섹션 헤더 -->
     <div class="text-center mb-16">
-      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-2">
-        아낌없는 지원으로 완성하는
-      </h2>
-      <h2 class="text-3xl md:text-[2.8rem] font-black leading-tight mb-6">
-        <span class="text-[#41539b]">최상의 퍼포먼스</span>
-      </h2>
+      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-2">{{ 'careers.welfare_title1' | translate }}</h2>
+      <h2 class="text-3xl md:text-[2.8rem] font-black leading-tight mb-6" [innerHTML]="'careers.welfare_title2' | translate"></h2>
     </div>
 
     <!-- 3x3 카드 그리드 -->
@@ -398,64 +346,64 @@
       <!-- 01 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">😊</div>
-        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">무한 제공 스낵바</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">업무 중 출출하면 언제나<br>간단하게 즐길 수 있습니다.</p>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w1_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w1_desc' | translate"></p>
       </div>
 
       <!-- 02 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">🍽️</div>
-        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">점심 식사 지원</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">메뉴 고민 끝! 건강한 샐러드와<br>든든한 도시락을 무료로 제공합니다.</p>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w2_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w2_desc' | translate"></p>
       </div>
 
       <!-- 03 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">🎧</div>
-        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">자유로운 복장</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">후드티, 크록스, 헤드폰 장착 환영!<br>가장 몰입하기 좋은 모습으로 일하세요.</p>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w3_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w3_desc' | translate"></p>
       </div>
 
       <!-- 04 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">🕐</div>
-        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">10 to 7</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">러시아워를 피해 여유로운<br>출근길을 보장합니다.</p>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w4_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w4_desc' | translate"></p>
       </div>
 
       <!-- 05 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">🙌</div>
-        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">술 강요 없는 문화</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">회식은 신입 환영회 때만 가볍게!<br>개인의 저녁 있는 삶을 존중합니다.</p>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w5_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w5_desc' | translate"></p>
       </div>
 
       <!-- 06 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">💻</div>
-        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">체계적인 온보딩</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">신입 사원이 헤매지 않고<br>부드럽게 적응할 수 있도록 돕습니다.</p>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w6_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w6_desc' | translate"></p>
       </div>
 
       <!-- 07 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">🎯</div>
-        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">다양한 프로젝트 경험</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">정체되지 않고 폭넓은 프로젝트에<br>참여하며 실무 역량을 키울 수 있습니다.</p>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w7_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w7_desc' | translate"></p>
       </div>
 
       <!-- 08 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">📖</div>
-        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">성장 세미나</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">동아리처럼 편안한 분위기에서<br>지식을 나누는 자체 세미나로 성장합니다.</p>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w8_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w8_desc' | translate"></p>
       </div>
 
       <!-- 09 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">✈️</div>
-        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">눈치 ZERO 자율 연차</h3>
-        <p class="text-sm text-gray-400 leading-relaxed">눈치 볼 필요 없습니다. 휴식이<br>필요한 순간, 내 일정은 내가 결정합니다.</p>
+        <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w9_title' | translate }}</h3>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w9_desc' | translate"></p>
       </div>
 
     </div>
@@ -468,22 +416,18 @@
 
     <!-- 섹션 헤더 -->
     <div class="text-center mb-14">
-      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-2">
-        함께 성장할
-      </h2>
-      <h2 class="text-3xl md:text-[2.8rem] font-black leading-tight">
-        <span class="text-[#2ec4b6]">동료를 찾고 있어요</span>
-      </h2>
+      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-2">{{ 'careers.jobs_title1' | translate }}</h2>
+      <h2 class="text-3xl md:text-[2.8rem] font-black leading-tight" [innerHTML]="'careers.jobs_title2' | translate"></h2>
     </div>
 
     <!-- 필터 + 전체 공고 보기 -->
     <div class="flex items-center justify-between mb-6">
       <div class="flex gap-2">
-        <span class="px-4 py-1.5 rounded-full bg-[#2ec4b6] text-white text-sm font-semibold">전체</span>
+        <span class="px-4 py-1.5 rounded-full bg-[#2ec4b6] text-white text-sm font-semibold">{{ 'careers.jobs_all' | translate }}</span>
       </div>
       <a (click)="scrollTo('채용공고')" (keyup.enter)="scrollTo('채용공고')" tabindex="0"
          class="text-sm font-semibold text-[#2ec4b6] hover:underline cursor-pointer flex items-center gap-1">
-        전체 공고 보기
+        {{ 'careers.jobs_view_all' | translate }}
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </a>
     </div>
@@ -494,12 +438,12 @@
         <div class="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-md transition-all">
           <!-- 상태 뱃지 -->
           @if (getJobStatus(job) === '모집중') {
-            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-3 bg-emerald-50 text-emerald-500">모집중</span>
+            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-3 bg-emerald-50 text-emerald-500">{{ 'careers.recruiting' | translate }}</span>
           } @else {
-            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-3 bg-gray-100 text-gray-400">마감</span>
+            <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full mb-3 bg-gray-100 text-gray-400">{{ 'careers.closed' | translate }}</span>
           }
           <!-- 제목 -->
-          <h3 class="text-lg font-bold text-gray-900 mb-2">{{ job.title }}</h3>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">{{ loc(job, 'title') }}</h3>
           <!-- 날짜 + 공고보기 -->
           <div class="flex items-center justify-between">
             <span class="text-sm text-gray-400">
@@ -508,14 +452,14 @@
             @if (job.jobUrl) {
               <a [href]="job.jobUrl" target="_blank" rel="noopener"
                  class="text-sm font-semibold text-emerald-500 hover:underline">
-                공고 보기
+                {{ 'careers.view_posting' | translate }}
               </a>
             }
           </div>
         </div>
       } @empty {
         <div class="bg-white rounded-2xl border border-gray-100 p-8 text-center">
-          <p class="text-sm text-gray-400">현재 진행 중인 채용 공고가 없습니다.</p>
+          <p class="text-sm text-gray-400">{{ 'careers.empty' | translate }}</p>
         </div>
       }
     </div>

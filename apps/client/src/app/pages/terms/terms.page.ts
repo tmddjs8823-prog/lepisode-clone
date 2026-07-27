@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ClientApiService} from '../../shared/services/client-api.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 interface TermsMeta {
   type: string;
@@ -18,6 +19,7 @@ const TERMS_MAP: Record<string, TermsMeta> = {
 @Component({
   selector: 'app-terms-page',
   standalone: true,
+  imports: [TranslatePipe],
   templateUrl: './terms.page.html',
   styleUrl: './terms.page.css',
 })

@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { PopupComponent } from '../shared/components/popup/popup.component';
@@ -10,7 +11,7 @@ import { I18nService } from '../shared/services/i18n.service';
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, FormsModule, HeaderComponent, FooterComponent, PopupComponent],
+  imports: [RouterOutlet, RouterLink, FormsModule, TranslatePipe, HeaderComponent, FooterComponent, PopupComponent],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css',
 })

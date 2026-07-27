@@ -3,9 +3,9 @@
 
     <!-- 타이틀 -->
     <div class="mb-10">
-      <span class="text-sm font-semibold text-[#41539b] block mb-2">💬 자주 묻는 질문</span>
-      <h1 class="text-[1.8rem] font-extrabold text-[#1a1a2e] mb-2">레피소드 자주 묻는 질문</h1>
-      <p class="text-sm text-gray-400">레피소드에 자주 문의하시는 질문들을 모았습니다.</p>
+      <span class="text-sm font-semibold text-[#41539b] block mb-2">💬 {{ 'faq.label' | translate }}</span>
+      <h1 class="text-[1.8rem] font-extrabold text-[#1a1a2e] mb-2">{{ 'faq.title' | translate }}</h1>
+      <p class="text-sm text-gray-400">{{ 'faq.desc' | translate }}</p>
     </div>
 
     <!-- 검색 -->
@@ -41,7 +41,7 @@
           <button class="w-full flex items-center gap-3 py-5 bg-transparent border-none cursor-pointer text-left"
                   (click)="toggle(item.id)">
             <span class="shrink-0 w-7 h-7 rounded-md bg-[#41539b] text-white text-xs font-bold flex items-center justify-center">Q</span>
-            <span class="flex-1 text-[0.92rem] font-semibold text-[#1a1a2e]">{{ item.question }}</span>
+            <span class="flex-1 text-[0.92rem] font-semibold text-[#1a1a2e]">{{ loc(item, 'question') }}</span>
             <svg class="shrink-0 w-5 h-5 text-[#41539b] transition-transform duration-200"
                  [class.rotate-180]="openId() === item.id"
                  fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -52,13 +52,13 @@
           @if (openId() === item.id) {
             <div class="flex gap-3 pb-5 animate-fadeIn">
               <span class="shrink-0 w-7 h-7 rounded-md bg-green-50 text-green-700 text-xs font-bold flex items-center justify-center">A</span>
-              <span class="flex-1 text-sm text-gray-500 leading-relaxed pt-1">{{ item.answer }}</span>
+              <span class="flex-1 text-sm text-gray-500 leading-relaxed pt-1">{{ loc(item, 'answer') }}</span>
             </div>
           }
         </div>
       } @empty {
         <div class="py-16 text-center">
-          <p class="text-gray-400">등록된 FAQ가 없습니다.</p>
+          <p class="text-gray-400">{{ 'faq.empty' | translate }}</p>
         </div>
       }
     </div>

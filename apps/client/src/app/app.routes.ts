@@ -3,6 +3,7 @@ import { LayoutComponent } from './layout/layout.component';
 import { HomePage } from './pages/home/home.page';
 import { AboutPage } from './pages/about/about.page';
 import { ServicesPage } from './pages/services/services.page';
+import { ServiceDetailPage } from './pages/services/service-detail.page';
 import { PortfolioPage } from './pages/portfolio/portfolio.page';
 import { PortfolioDetailPage } from './pages/portfolio/portfolio-detail.page';
 import { BlogPage } from './pages/blog/blog.page';
@@ -26,6 +27,7 @@ export const appRoutes: Route[] = [
       { path: '',          component: HomePage },
       { path: 'about',     component: AboutPage },
       { path: 'services',  component: ServicesPage },
+      { path: 'services/:id', component: ServiceDetailPage },
       { path: 'portfolio', component: PortfolioPage },
       { path: 'portfolio/:id', component: PortfolioDetailPage },
       { path: 'blog',      component: BlogPage },

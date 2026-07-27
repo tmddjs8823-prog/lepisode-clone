@@ -7,13 +7,8 @@
 
       <!-- 왼쪽: 타이틀 + 설명 -->
       <div class="max-w-[560px]">
-        <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 leading-tight mb-4">
-          레피소드와 함께하는<br>프로젝트를 경험해 보세요.
-        </h1>
-        <p class="text-sm text-gray-400 leading-relaxed">
-          트렌디한 웹/앱 개발은 물론, 고도화된 AI 솔루션과 공간의 가치를 높이는 브랜딩까지.<br>
-          비즈니스에 필요한 모든 IT 인프라를 한 곳에서 완성하세요.
-        </p>
+        <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 leading-tight mb-4" [innerHTML]="'portfolio.title' | translate"></h1>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'portfolio.desc' | translate"></p>
       </div>
 
       <!-- 오른쪽: 통계 카드 -->
@@ -21,30 +16,30 @@
         <div class="flex flex-col items-center min-w-[100px] px-4 max-md:min-w-[70px] max-md:px-2">
           <span class="text-base mb-1.5 text-emerald-500">✓</span>
           <div class="text-[2.2rem] font-extrabold text-[#1a1a2e] leading-none max-md:text-[1.6rem]">{{ completedCount() }}<span class="text-[1.4rem] font-semibold text-gray-400 ml-0.5">+</span></div>
-          <div class="text-[0.72rem] text-gray-400 mt-1.5 whitespace-nowrap">완료 프로젝트</div>
+          <div class="text-[0.72rem] text-gray-400 mt-1.5 whitespace-nowrap">{{ 'portfolio.stat.completed' | translate }}</div>
         </div>
         <div class="w-px h-[50px] bg-gray-200"></div>
         <div class="flex flex-col items-center min-w-[100px] px-4 max-md:min-w-[70px] max-md:px-2">
           <span class="text-base mb-1.5 text-orange-400">♥</span>
           <div class="text-[2.2rem] font-extrabold text-[#1a1a2e] leading-none max-md:text-[1.6rem]">98<span class="text-[1.4rem] font-semibold text-gray-400 ml-0.5">%</span></div>
-          <div class="text-[0.72rem] text-gray-400 mt-1.5 whitespace-nowrap">고객 만족도</div>
+          <div class="text-[0.72rem] text-gray-400 mt-1.5 whitespace-nowrap">{{ 'portfolio.stat.satisfaction' | translate }}</div>
         </div>
         <div class="w-px h-[50px] bg-gray-200"></div>
         <div class="flex flex-col items-center min-w-[100px] px-4 max-md:min-w-[70px] max-md:px-2">
           <span class="text-base mb-1.5 text-orange-500">⚡</span>
           <div class="text-[2.2rem] font-extrabold text-[#1a1a2e] leading-none max-md:text-[1.6rem]">12<span class="text-[1.4rem] font-semibold text-gray-400 ml-0.5">+</span></div>
-          <div class="text-[0.72rem] text-gray-400 mt-1.5 whitespace-nowrap">진행 중인 프로젝트</div>
+          <div class="text-[0.72rem] text-gray-400 mt-1.5 whitespace-nowrap">{{ 'portfolio.stat.ongoing' | translate }}</div>
         </div>
       </div>
     </div>
 
     <!-- 카테고리 필터 탭 -->
     <div class="flex items-center gap-2 border-b border-gray-100 pb-0">
-      @for (cat of categories; track cat.key) {
+      @for (cat of categoryKeys; track cat) {
         <button class="relative px-5 py-2.5 text-[0.9rem] font-medium bg-transparent border-none cursor-pointer transition-colors border-b-2 -mb-px max-md:px-3 max-md:text-[0.8rem]"
-                [class]="activeCategory() === cat.key ? 'text-[#1a1a2e] font-bold border-b-[#1a1a2e]' : 'text-gray-400 border-b-transparent hover:text-[#1a1a2e]'"
-                (click)="selectCategory(cat.key)">
-          {{ cat.label }}
+                [class]="activeCategory() === cat ? 'text-[#1a1a2e] font-bold border-b-[#1a1a2e]' : 'text-gray-400 border-b-transparent hover:text-[#1a1a2e]'"
+                (click)="selectCategory(cat)">
+          {{ getCategoryLabel(cat) }}
         </button>
       }
     </div>
@@ -72,7 +67,7 @@
           </div>
           <!-- 제목 -->
           <h3 class="text-base font-bold text-gray-900 group-hover:text-indigo-600 transition-colors mb-1">
-            {{ item.title }}
+            {{ loc(item, 'title') }}
           </h3>
           <!-- 클라이언트 -->
           @if (item.client) {
@@ -88,7 +83,7 @@
       } @empty {
         <div class="col-span-3 py-20 text-center">
           <span class="text-5xl mb-4 block">📂</span>
-          <p class="text-gray-400">해당 카테고리에 등록된 포트폴리오가 없습니다.</p>
+          <p class="text-gray-400">{{ 'portfolio.empty' | translate }}</p>
         </div>
       }
     </div>

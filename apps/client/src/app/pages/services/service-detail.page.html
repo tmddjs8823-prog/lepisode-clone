@@ -1,0 +1,127 @@
+<!-- ═══════════ 서비스 상세 ═══════════ -->
+<section class="pt-10 pb-24 px-6" id="service-detail">
+  <div class="max-w-[1000px] mx-auto">
+
+    <!-- 뒤로가기 -->
+    <button class="inline-flex items-center justify-center w-10 h-10 border-none bg-transparent text-gray-700 cursor-pointer rounded-[10px] transition-colors hover:bg-gray-100"
+            (click)="goBack()">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+
+    @if (loading()) {
+      <div class="py-20 text-center">
+        <p class="text-gray-400">로딩 중...</p>
+      </div>
+    }
+
+    @if (item(); as svc) {
+      <!-- 제목 -->
+      <h1 class="text-2xl md:text-[2rem] font-extrabold text-gray-900 mt-6 mb-8">
+        {{ loc(svc, 'title') }}
+      </h1>
+
+      <!-- 메인 이미지 -->
+      <div class="flex flex-col gap-4">
+        @if (svc.thumbnailUrl) {
+          <div class="rounded-[20px] overflow-hidden bg-[#f8f9fb]">
+            <img [src]="svc.thumbnailUrl" [alt]="svc.title" class="w-full h-auto block object-cover" />
+          </div>
+        } @else if (svc.iconUrl) {
+          <div class="rounded-[20px] overflow-hidden bg-[#f8f9fb]">
+            <img [src]="svc.iconUrl" [alt]="svc.title" class="w-full h-auto block object-cover" />
+          </div>
+        } @else {
+          <div class="rounded-[20px] overflow-hidden bg-gradient-to-br from-indigo-50 to-slate-100 flex items-center justify-center" style="min-height: 400px;">
+            @if (svc.icon) {
+              <span class="text-[120px]">{{ svc.icon }}</span>
+            } @else {
+              <span class="text-[120px] opacity-20">🔧</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Service Overview -->
+      <div class="flex gap-[60px] mt-12 pt-12 border-t border-gray-200 max-md:flex-col max-md:gap-6">
+        <div class="shrink-0 min-w-[140px] max-md:min-w-0">
+          <h2 class="text-[1.6rem] font-extrabold text-[#1a1a2e] leading-tight">Service<br>Overview</h2>
+        </div>
+        <div class="flex-1">
+          <div class="flex flex-col">
+            <div class="flex items-center gap-8 py-4 border-b border-gray-100">
+              <span class="text-[0.85rem] font-semibold text-gray-400 min-w-[80px] shrink-0">Service</span>
+              <span class="text-[0.85rem] text-gray-700 font-medium">{{ loc(svc, 'title') }}</span>
+            </div>
+            @if (svc.titleEn) {
+              <div class="flex items-center gap-8 py-4 border-b border-gray-100">
+                <span class="text-[0.85rem] font-semibold text-gray-400 min-w-[80px] shrink-0">English</span>
+                <span class="text-[0.85rem] text-gray-700 font-medium">{{ svc.titleEn }}</span>
+              </div>
+            }
+            @if (svc.seoDescription) {
+              <div class="flex items-center gap-8 py-4">
+                <span class="text-[0.85rem] font-semibold text-gray-400 min-w-[80px] shrink-0">SEO</span>
+                <span class="text-[0.85rem] text-gray-700 font-medium">{{ svc.seoDescription }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- 설명 -->
+      @if (svc.description) {
+        <div class="mt-8 pt-7 border-t border-gray-200">
+          <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{{ loc(svc, 'description') }}</p>
+        </div>
+      }
+
+      <!-- 본문 콘텐츠 -->
+      @if (svc.content) {
+        <div class="mt-8 pt-7 border-t border-gray-200">
+          <div class="text-[15px] text-gray-700 leading-relaxed whitespace-pre-line" [innerHTML]="loc(svc, 'content')"></div>
+        </div>
+      }
+
+      <!-- 추천 서비스 -->
+      <div class="mt-14 pt-10 border-t border-gray-200">
+        <h2 class="text-xl font-extrabold text-gray-900 mb-8">추천 서비스</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (rec of recommended(); track rec.id) {
+            <a [routerLink]="['/services', rec.id]" class="group block no-underline">
+              <div class="rounded-2xl overflow-hidden bg-gray-50 mb-3" style="aspect-ratio: 4/3;">
+                @if (rec.thumbnailUrl) {
+                  <img [src]="rec.thumbnailUrl" [alt]="rec.title"
+                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                } @else if (rec.iconUrl) {
+                  <img [src]="rec.iconUrl" [alt]="rec.title"
+                       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                } @else {
+                  <div class="w-full h-full bg-gradient-to-br from-indigo-50 to-slate-100 flex items-center justify-center">
+                    @if (rec.icon) {
+                      <span class="text-4xl">{{ rec.icon }}</span>
+                    } @else {
+                      <span class="text-4xl opacity-20">🔧</span>
+                    }
+                  </div>
+                }
+              </div>
+              <h3 class="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{{ loc(rec, 'title') }}</h3>
+            </a>
+          } @empty {
+            <p class="text-sm text-gray-400 col-span-3">추천 서비스가 없습니다.</p>
+          }
+        </div>
+      </div>
+    }
+
+    @if (!loading() && !item()) {
+      <div class="py-20 text-center">
+        <span class="text-5xl mb-4 block">😢</span>
+        <p class="text-gray-400">서비스를 찾을 수 없습니다.</p>
+      </div>
+    }
+
+  </div>
+</section>

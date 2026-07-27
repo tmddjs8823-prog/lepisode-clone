@@ -3,34 +3,31 @@
   <div class="max-w-[800px] mx-auto text-center">
 
     <!-- 라벨 -->
-    <span class="inline-block text-sm font-semibold text-indigo-600 mb-4">회사 소개</span>
+    <span class="inline-block text-sm font-semibold text-indigo-600 mb-4">{{ 'about.label' | translate }}</span>
 
     <!-- 타이틀 -->
-    <h1 class="text-3xl md:text-[2.8rem] font-extrabold text-gray-900 mb-6 leading-tight">
-      레피소드의 <span class="text-indigo-600">철학</span>
-    </h1>
+    <h1 class="text-3xl md:text-[2.8rem] font-extrabold text-gray-900 mb-6 leading-tight"
+        [innerHTML]="'about.hero.title' | translate"></h1>
 
     <!-- 설명 -->
-    <p class="text-sm md:text-base text-gray-500 leading-relaxed mb-10">
-      고객의 성장이 곧 우리의 성장이라는 믿음으로<br class="hidden md:block">
-      비즈니스의 새로운 에피소드를 만들어갑니다.
-    </p>
+    <p class="text-sm md:text-base text-gray-500 leading-relaxed mb-10"
+       [innerHTML]="'about.hero.desc' | translate"></p>
 
     <!-- 통계 -->
     <div class="flex items-center justify-center gap-0 mb-4">
       <div class="flex-1 py-4">
         <div class="text-3xl md:text-4xl font-extrabold text-gray-900">100%</div>
-        <div class="text-xs text-gray-400 mt-1">프로젝트 완료율</div>
+        <div class="text-xs text-gray-400 mt-1">{{ 'about.stat.completion' | translate }}</div>
       </div>
       <div class="w-px h-12 bg-gray-200"></div>
       <div class="flex-1 py-4">
         <div class="text-3xl md:text-4xl font-extrabold text-gray-900">50+</div>
-        <div class="text-xs text-gray-400 mt-1">파트너사</div>
+        <div class="text-xs text-gray-400 mt-1">{{ 'about.stat.partners' | translate }}</div>
       </div>
       <div class="w-px h-12 bg-gray-200"></div>
       <div class="flex-1 py-4">
         <div class="text-3xl md:text-4xl font-extrabold text-gray-900">7+</div>
-        <div class="text-xs text-gray-400 mt-1">주요 수상</div>
+        <div class="text-xs text-gray-400 mt-1">{{ 'about.stat.awards' | translate }}</div>
       </div>
     </div>
 
@@ -56,14 +53,10 @@
 <!-- ═══════════ 슬로건 ═══════════ -->
 <section class="py-20 px-6">
   <div class="max-w-[800px] mx-auto text-center">
-    <h2 class="text-2xl md:text-[2.2rem] font-extrabold text-gray-900 mb-4 leading-tight">
-      최신 기술을 선도하는<br>
-      <span class="text-indigo-600">젊은 기업, 레피소드</span>
-    </h2>
-    <p class="text-sm md:text-base text-gray-500 leading-relaxed">
-      웹과 앱, 그리고 모든 기능을 한 번에 통제할 수 있는 통합 관리 시스템을 구축합니다.<br class="hidden md:block">
-      사용자 중심의 UI/UX 디자인과 안정적인 서버 인프라로 비즈니스의 성공을 돕습니다.
-    </p>
+    <h2 class="text-2xl md:text-[2.2rem] font-extrabold text-gray-900 mb-4 leading-tight"
+        [innerHTML]="'about.slogan.title' | translate"></h2>
+    <p class="text-sm md:text-base text-gray-500 leading-relaxed"
+       [innerHTML]="'about.slogan.desc' | translate"></p>
   </div>
 </section>
 
@@ -73,29 +66,29 @@
 
     <div class="text-center mb-12">
       <span class="inline-block text-sm font-semibold text-indigo-600 mb-2">Core Values</span>
-      <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900">우리가 추구하는 가치</h2>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900">{{ 'about.values.title' | translate }}</h2>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- 가치 1 -->
       <div class="bg-white rounded-2xl p-8 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl mx-auto mb-5">🎯</div>
-        <h3 class="text-lg font-bold text-gray-900 mb-2">고객 중심</h3>
-        <p class="text-xs text-gray-400 leading-relaxed">고객의 비전을 최우선으로 생각하며<br>맞춤형 솔루션을 제공합니다.</p>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">{{ 'about.values.customer.title' | translate }}</h3>
+        <p class="text-xs text-gray-400 leading-relaxed" [innerHTML]="'about.values.customer.desc' | translate"></p>
       </div>
 
       <!-- 가치 2 -->
       <div class="bg-white rounded-2xl p-8 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mx-auto mb-5">🚀</div>
-        <h3 class="text-lg font-bold text-gray-900 mb-2">기술 혁신</h3>
-        <p class="text-xs text-gray-400 leading-relaxed">최신 기술 트렌드를 반영하여<br>미래 지향적인 서비스를 만듭니다.</p>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">{{ 'about.values.innovation.title' | translate }}</h3>
+        <p class="text-xs text-gray-400 leading-relaxed" [innerHTML]="'about.values.innovation.desc' | translate"></p>
       </div>
 
       <!-- 가치 3 -->
       <div class="bg-white rounded-2xl p-8 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl mx-auto mb-5">🤝</div>
-        <h3 class="text-lg font-bold text-gray-900 mb-2">신뢰와 협력</h3>
-        <p class="text-xs text-gray-400 leading-relaxed">투명한 소통과 협업으로<br>장기적인 파트너십을 구축합니다.</p>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">{{ 'about.values.trust.title' | translate }}</h3>
+        <p class="text-xs text-gray-400 leading-relaxed" [innerHTML]="'about.values.trust.desc' | translate"></p>
       </div>
     </div>
 
@@ -108,8 +101,8 @@
 
     <div class="text-center mb-12">
       <span class="inline-block text-sm font-semibold text-indigo-600 mb-2">Our Team</span>
-      <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">팀원소개</h2>
-      <p class="text-sm text-gray-400">레피소드를 이끌어가는 사람들</p>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">{{ 'about.team.title' | translate }}</h2>
+      <p class="text-sm text-gray-400">{{ 'about.team.desc' | translate }}</p>
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">

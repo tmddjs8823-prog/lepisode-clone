@@ -19,6 +19,8 @@
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/swagger": "^11.4.5",
+    "@ngx-translate/core": "^18.0.0",
+    "@ngx-translate/http-loader": "^18.0.0",
     "@supabase/supabase-js": "^2.110.0",
     "@types/cookie-parser": "^1.4.10",
     "axios": "^1.6.0",

@@ -1,10 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ClientApiService, TeamMember } from '../../shared/services/client-api.service';
 
 @Component({
   selector: 'app-about-page',
   standalone: true,
+  imports: [TranslatePipe],
   templateUrl: './about.page.html',
 })
 export class AboutPage {

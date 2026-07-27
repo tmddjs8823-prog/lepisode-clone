@@ -35,15 +35,15 @@
     @if (submitted()) {
       <div class="flex flex-col items-center justify-center py-12 gap-3">
         <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-2xl">✓</div>
-        <h3 class="text-lg font-bold text-gray-900">{{ i18n.t('inquiry.success_title', '문의가 접수되었습니다') }}</h3>
-        <p class="text-xs text-gray-400">{{ i18n.t('inquiry.success_desc', '빠른 시일 내에 연락드리겠습니다.') }}</p>
+        <h3 class="text-lg font-bold text-gray-900">{{ 'inquiry.success_title' | translate }}</h3>
+        <p class="text-xs text-gray-400">{{ 'inquiry.success_desc' | translate }}</p>
       </div>
     } @else {
       <!-- 헤더 -->
       <div class="flex items-start justify-between mb-4">
         <div>
-          <h2 class="text-xl font-extrabold text-gray-900 mb-1">{{ i18n.t('inquiry.title', '문의하기') }}</h2>
-          <p class="text-xs text-gray-400">{{ i18n.t('inquiry.desc', '이름, 연락처, 이메일을 남겨주시면 확인 후 연락드리겠습니다.') }}</p>
+          <h2 class="text-xl font-extrabold text-gray-900 mb-1">{{ 'inquiry.title' | translate }}</h2>
+          <p class="text-xs text-gray-400">{{ 'inquiry.desc' | translate }}</p>
         </div>
         <button class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors border-none bg-transparent cursor-pointer text-gray-400 hover:text-gray-600"
                 (click)="closeInquiry()">
@@ -58,12 +58,12 @@
         <!-- 이름 + 이메일 (한 줄) -->
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="inq-name" class="block text-xs font-bold text-gray-900 mb-1">{{ i18n.t('inquiry.name', '이름') }} <span class="text-red-500">*</span></label>
+            <label for="inq-name" class="block text-xs font-bold text-gray-900 mb-1">{{ 'inquiry.name' | translate }} <span class="text-red-500">*</span></label>
             <input id="inq-name" type="text" [(ngModel)]="formName" placeholder="성함을 입력해 주세요"
                    class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-900 bg-gray-50/50 outline-none transition-all focus:border-[#41539b] focus:ring-2 focus:ring-[#41539b]/10 placeholder:text-gray-300" />
           </div>
           <div>
-            <label for="inq-email" class="block text-xs font-bold text-gray-900 mb-1">{{ i18n.t('inquiry.email', '이메일') }} <span class="text-red-500">*</span></label>
+            <label for="inq-email" class="block text-xs font-bold text-gray-900 mb-1">{{ 'inquiry.email' | translate }} <span class="text-red-500">*</span></label>
             <input id="inq-email" type="email" [(ngModel)]="formEmail" placeholder="example@company.com"
                    class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-900 bg-gray-50/50 outline-none transition-all focus:border-[#41539b] focus:ring-2 focus:ring-[#41539b]/10 placeholder:text-gray-300" />
           </div>
@@ -71,7 +71,7 @@
 
         <!-- 연락처 -->
         <div>
-          <label for="inq-phone1" class="block text-xs font-bold text-gray-900 mb-1">{{ i18n.t('inquiry.phone', '연락처') }} <span class="text-red-500">*</span></label>
+          <label for="inq-phone1" class="block text-xs font-bold text-gray-900 mb-1">{{ 'inquiry.phone' | translate }} <span class="text-red-500">*</span></label>
           <div class="flex items-center gap-1.5">
             <input id="inq-phone1" type="text" [(ngModel)]="phone1" maxlength="3"
                    class="w-16 px-2 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-900 bg-gray-50/50 text-center outline-none transition-all focus:border-[#41539b] focus:ring-2 focus:ring-[#41539b]/10" />
@@ -109,7 +109,7 @@
                 [class]="submitting() ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#7c8ddf] hover:bg-[#6366f1] active:scale-[0.98] shadow-[0_4px_16px_rgba(99,102,241,0.3)]'"
                 [disabled]="submitting()"
                 (click)="submitInquiry()">
-          {{ submitting() ? i18n.t('inquiry.submitting', '접수 중...') : i18n.t('inquiry.submit', '문의 접수하기') }}
+          {{ submitting() ? ('inquiry.submitting' | translate) : ('inquiry.submit' | translate) }}
         </button>
       </div>
 

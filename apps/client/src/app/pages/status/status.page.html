@@ -4,8 +4,8 @@
 
     <!-- 왼쪽: 타이틀 -->
     <div>
-      <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-white leading-tight mb-3">작업현황</h1>
-      <p class="text-sm text-white/60">현재 진행 중인 프로젝트 상태를 한눈에 확인해보세요.</p>
+      <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-white leading-tight mb-3">{{ 'status.title' | translate }}</h1>
+      <p class="text-sm text-white/60">{{ 'status.desc' | translate }}</p>
     </div>
 
     <!-- 오른쪽: 상태 플로우 -->
@@ -13,19 +13,19 @@
       <!-- 견적중 -->
       <div class="flex flex-col items-center gap-2.5">
         <div class="text-[1.6rem]">📋</div>
-        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-[#41539b]">견적 중</div>
+        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-[#41539b]">{{ 'status.estimating' | translate }}</div>
       </div>
       <div class="text-white/40 text-base tracking-[-2px] -mt-4 max-md:hidden">▸▸</div>
       <!-- 진행중 -->
       <div class="flex flex-col items-center gap-2.5">
         <div class="text-[1.6rem]">⚙️</div>
-        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-gray-500">진행 중</div>
+        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-gray-500">{{ 'status.in_progress' | translate }}</div>
       </div>
       <div class="text-white/40 text-base tracking-[-2px] -mt-4 max-md:hidden">▸▸</div>
       <!-- 납품완료 -->
       <div class="flex flex-col items-center gap-2.5">
         <div class="text-[1.6rem]">☑️</div>
-        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-[#5a6a30]">납품완료</div>
+        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-[#5a6a30]">{{ 'status.delivered' | translate }}</div>
       </div>
     </div>
 
@@ -35,15 +35,15 @@
 <!-- ═══════════ 필터 탭 + 리스트 ═══════════ -->
 <section class="py-16 px-6" id="status-list">
   <div class="max-w-[1200px] mx-auto">
-    <div class="max-w-[500px]">
+    <div class="max-w-[500px] mx-auto">
 
     <!-- 탭 -->
     <div class="flex items-center gap-2 mb-10">
-      @for (tab of tabs; track tab) {
+      @for (tab of tabKeys; track tab) {
         <button class="px-6 py-2.5 rounded-xl text-[0.9rem] font-medium transition-all cursor-pointer"
                 [class]="activeTab() === tab ? 'bg-[#f0f0ff] border border-[#d0d4e8] text-[#1a1a2e] font-bold' : 'border border-transparent text-gray-400 hover:text-gray-700'"
                 (click)="selectTab(tab)">
-          {{ tab }}
+          {{ getTabLabel(tab) }}
         </button>
       }
     </div>
@@ -68,13 +68,13 @@
           </div>
           <!-- 하단: 제목 + 기간 -->
           <div class="flex items-center justify-between max-md:flex-col max-md:items-start max-md:gap-1">
-            <span class="text-[0.95rem] font-bold text-[#1a1a2e]">{{ item.title }}</span>
+            <span class="text-[0.95rem] font-bold text-[#1a1a2e]">{{ loc(item, 'title') }}</span>
             <span class="text-[0.82rem] text-gray-400">{{ formatPeriod(item.startDate, item.endDate) }}</span>
           </div>
         </div>
       } @empty {
         <div class="py-16 text-center">
-          <p class="text-gray-400">등록된 프로젝트 현황이 없습니다.</p>
+          <p class="text-gray-400">{{ 'status.empty' | translate }}</p>
         </div>
       }
     </div>
