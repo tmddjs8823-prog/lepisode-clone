@@ -312,6 +312,11 @@ export class ClientApiService {
   getTranslations(): Observable<TranslationItem[]> {
     return this.http.get<TranslationItem[]>(`${API}/i18n/translations`);
   }
+
+  /* 마케팅 수신동의 등록 */
+  createMarketingConsent(payload: { name: string; email: string; phone?: string }): Observable<unknown> {
+    return this.http.post(`${API}/marketing/consent`, payload);
+  }
 }
 
 /* ── 팀원 ── */

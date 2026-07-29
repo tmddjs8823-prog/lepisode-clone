@@ -58,6 +58,14 @@ export class LayoutComponent {
       content: `[글로벌 문의] ${this.formName}님 문의`,
     }).subscribe({
       next: () => {
+        // 마케팅 수신동의 체크 시 → consent API 호출
+        if (this.agreeMarketing) {
+          this.api.createMarketingConsent({
+            name: this.formName,
+            email: this.formEmail,
+            phone,
+          }).subscribe(); // fire-and-forget
+        }
         this.submitting.set(false);
         this.submitted.set(true);
         setTimeout(() => {

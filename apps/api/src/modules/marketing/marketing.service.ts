@@ -22,10 +22,17 @@ export class MarketingService {
   }
 
   async createConsent(dto: CreateMarketingConsentDto) {
-    return this.prisma.marketingConsent.upsert({
-      where: { email: dto.email } as never,
-      create: { ...dto, isConsented: true, consentedAt: new Date() },
-      update: { isConsented: true, consentedAt: new Date(), revokedAt: null },
+    const existing = await this.prisma.marketingConsent.findFirst({
+      where: { email: dto.email },
+    });
+    if (existing) {
+      return this.prisma.marketingConsent.update({
+        where: { id: existing.id },
+        data: { name: dto.name, phone: dto.phone, isConsented: true, consentedAt: new Date(), revokedAt: null },
+      });
+    }
+    return this.prisma.marketingConsent.create({
+      data: { ...dto, isConsented: true, consentedAt: new Date() },
     });
   }
 

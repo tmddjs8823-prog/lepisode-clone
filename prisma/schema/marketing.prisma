@@ -5,7 +5,7 @@
 model MarketingConsent {
   id          Int       @id @default(autoincrement())
   name        String
-  email       String
+  email       String    @unique
   phone       String?
   isConsented Boolean   @default(true)
   consentedAt DateTime?
