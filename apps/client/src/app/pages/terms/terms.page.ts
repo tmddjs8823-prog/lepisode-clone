@@ -11,9 +11,9 @@ interface TermsMeta {
 }
 
 const TERMS_MAP: Record<string, TermsMeta> = {
-  privacy: { type: 'PRIVACY', title: '개인정보 취급방침', subtitle: '개인정보의 수집 및 이용에 관한 안내' },
-  service: { type: 'SERVICE', title: '서비스 이용약관', subtitle: '서비스 이용에 관한 약관 안내' },
-  marketing: { type: 'MARKETING', title: '마케팅 수신동의 약관', subtitle: '마케팅 정보 수신에 관한 안내' },
+  privacy: { type: 'PRIVACY', title: 'terms.title', subtitle: 'footer.privacy' },
+  service: { type: 'SERVICE', title: 'terms.title', subtitle: 'footer.terms' },
+  marketing: { type: 'MARKETING', title: 'terms.title', subtitle: 'footer.marketing' },
 };
 
 @Component({
@@ -35,24 +35,27 @@ export class TermsPage implements OnInit {
   updatedAt = signal('');
 
   ngOnInit(): void {
-    const slug = this.route.snapshot.paramMap.get('type') ?? 'privacy';
-    const meta = TERMS_MAP[slug] ?? TERMS_MAP['privacy'];
+    this.route.paramMap.subscribe(params => {
+      const slug = params.get('type') ?? 'privacy';
+      const meta = TERMS_MAP[slug] ?? TERMS_MAP['privacy'];
 
-    this.title.set(meta.title);
-    this.subtitle.set(meta.subtitle);
+      this.title.set(meta.title);
+      this.subtitle.set(meta.subtitle);
 
-    if (!this.isBrowser) return;
+      if (!this.isBrowser) return;
 
-    this.api.getTermsByType(meta.type).subscribe({
-      next: (item) => {
-        this.content.set(item.content ?? '');
-        this.updatedAt.set(item.updatedAt ?? '');
-        this.loading.set(false);
-      },
-      error: () => {
-        this.content.set('<p>약관 내용을 불러올 수 없습니다.</p>');
-        this.loading.set(false);
-      },
+      this.loading.set(true);
+      this.api.getTermsByType(meta.type).subscribe({
+        next: (item) => {
+          this.content.set(item.content ?? '');
+          this.updatedAt.set(item.updatedAt ?? '');
+          this.loading.set(false);
+        },
+        error: () => {
+          this.content.set('<p>약관 내용을 불러올 수 없습니다.</p>');
+          this.loading.set(false);
+        },
+      });
     });
   }
 }

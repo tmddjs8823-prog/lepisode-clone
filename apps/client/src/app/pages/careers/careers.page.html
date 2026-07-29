@@ -6,7 +6,7 @@
   <!-- 히어로 콘텐츠 -->
   <div class="hero-content relative z-[2] text-center px-6">
     <span class="hero-badge inline-block px-5 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-[#c7d2fe] text-[13px] font-semibold tracking-[2px] uppercase mb-6 border border-white/[0.18]">{{ 'careers.badge' | translate }}</span>
-    <h1 class="hero-title font-black text-white leading-[1.3] mb-4" [innerHTML]="'careers.hero_title' | translate"></h1>
+    <h1 class="hero-title font-black text-white leading-[1.3] mb-4">{{ 'careers.hero_title.prefix' | translate }}<br><span class="hero-accent">{{ 'careers.hero_title.accent' | translate }}</span></h1>
     <p class="hero-subtitle text-white/70 font-normal m-0">{{ 'careers.hero_desc' | translate }}</p>
   </div>
 
@@ -25,8 +25,8 @@
 <!-- ═══════════ 홍보 문구 영역 (나머지 30vh) ═══════════ -->
 <section class="promo-section min-h-[30vh] flex items-center justify-center bg-white py-20 px-6 pt-[80px] pb-[60px]">
   <div class="promo-inner max-w-[800px] text-center">
-    <h2 class="promo-title font-black text-[#1a1a2e] leading-[1.45] mb-5" [innerHTML]="'careers.promo_title' | translate"></h2>
-    <p class="promo-desc text-[#888] leading-[1.8] m-0" [innerHTML]="'careers.promo_desc' | translate"></p>
+    <h2 class="promo-title font-black text-[#1a1a2e] leading-[1.45] mb-5" [innerHTML]="'careers.promo_title' | translate | richText"></h2>
+    <p class="promo-desc text-[#888] leading-[1.8] m-0" [innerHTML]="'careers.promo_desc' | translate | richText"></p>
   </div>
 </section>
 
@@ -39,7 +39,7 @@
       <div class="flex flex-col justify-center py-5 px-10">
         <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">01</span>
         <h3 class="text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work1_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work1_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work1_desc' | translate | richText"></p>
       </div>
       <div class="overflow-hidden">
         <img src="/assets/images/careers/workspace.png" [attr.alt]="'careers.work1_title' | translate" loading="lazy"
@@ -52,7 +52,7 @@
       <div class="flex flex-col justify-center py-5 px-10">
         <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">02</span>
         <h3 class="text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work2_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work2_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work2_desc' | translate | richText"></p>
       </div>
       <div class="overflow-hidden">
         <img src="/assets/images/careers/teamwork.png" [attr.alt]="'careers.work2_title' | translate" loading="lazy"
@@ -65,7 +65,7 @@
       <div class="flex flex-col justify-center py-5 px-10">
         <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">03</span>
         <h3 class="text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work3_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work3_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work3_desc' | translate | richText"></p>
       </div>
       <div class="overflow-hidden">
         <img src="/assets/images/careers/creative.png" [attr.alt]="'careers.work3_title' | translate" loading="lazy"
@@ -82,11 +82,8 @@
 
     <!-- 섹션 헤더 -->
     <div class="text-center mb-14">
-      <div class="flex items-center justify-center gap-2 mb-3">
-        <span class="text-indigo-600 text-lg">◇</span>
-        <span class="text-sm font-semibold text-gray-500">{{ 'careers.engines_label' | translate }}</span>
-      </div>
-      <h2 class="text-2xl md:text-[2.2rem] font-extrabold text-gray-900 mb-4" [innerHTML]="'careers.engines_title' | translate"></h2>
+
+      <h2 class="text-2xl md:text-[2.2rem] font-extrabold text-gray-900 mb-4">{{ 'careers.engines_title' | translate }}</h2>
       <p class="text-sm text-gray-400">{{ 'careers.engines_desc' | translate }}</p>
     </div>
 
@@ -100,7 +97,7 @@
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 p-7">
           <h3 class="text-xl font-extrabold text-white mb-2">{{ 'careers.team_dev' | translate }}</h3>
-          <p class="text-sm text-white/70 leading-relaxed mb-4" [innerHTML]="'careers.team_dev_desc' | translate"></p>
+          <p class="text-sm text-white/70 leading-relaxed mb-4" [innerHTML]="'careers.team_dev_desc' | translate | richText"></p>
           <div class="flex flex-wrap gap-2">
             <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">Angular</span>
             <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">NestJS</span>
@@ -118,7 +115,7 @@
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 p-7">
           <h3 class="text-xl font-extrabold text-white mb-2">{{ 'careers.team_design' | translate }}</h3>
-          <p class="text-sm text-white/70 leading-relaxed mb-4" [innerHTML]="'careers.team_design_desc' | translate"></p>
+          <p class="text-sm text-white/70 leading-relaxed mb-4" [innerHTML]="'careers.team_design_desc' | translate | richText"></p>
           <div class="flex flex-wrap gap-2">
             <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">{{ 'careers.team_design_tag1' | translate }}</span>
             <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">Figma</span>
@@ -135,7 +132,7 @@
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 p-7">
           <h3 class="text-xl font-extrabold text-white mb-2">{{ 'careers.team_biz' | translate }}</h3>
-          <p class="text-sm text-white/70 leading-relaxed mb-4" [innerHTML]="'careers.team_biz_desc' | translate"></p>
+          <p class="text-sm text-white/70 leading-relaxed mb-4" [innerHTML]="'careers.team_biz_desc' | translate | richText"></p>
           <div class="flex flex-wrap gap-2">
             <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">{{ 'careers.team_biz_tag1' | translate }}</span>
             <span class="text-[11px] font-medium px-2.5 py-1 rounded-md bg-white/15 text-white/90 backdrop-blur-sm">{{ 'careers.team_biz_tag2' | translate }}</span>
@@ -155,12 +152,9 @@
 
     <!-- 큰 교훈 문구 -->
     <div class="text-center mb-14">
-      <div class="flex items-center justify-center gap-2 mb-3">
-        <span class="text-indigo-600 text-lg">◇</span>
-        <span class="text-sm font-semibold text-gray-500">{{ 'careers.promise_label' | translate }}</span>
-      </div>
+
       <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-6">{{ 'careers.promise_title' | translate }}</h2>
-      <p class="text-base text-gray-400 leading-relaxed max-w-[600px] mx-auto" [innerHTML]="'careers.promise_desc' | translate"></p>
+      <p class="text-base text-gray-400 leading-relaxed max-w-[600px] mx-auto" [innerHTML]="'careers.promise_desc' | translate | richText"></p>
     </div>
 
     <!-- 장점 리스트 -->
@@ -233,12 +227,12 @@
       <!-- 왼쪽: 큰 제목 -->
       <div style="text-align: center; width: 320px; flex-shrink: 0;">
         <span class="text-sm font-semibold text-[#41539b] tracking-widest uppercase mb-4 block">{{ 'careers.blog_label' | translate }}</span>
-        <h2 class="text-4xl md:text-[3rem] font-black text-gray-900 leading-tight mb-4" [innerHTML]="'careers.blog_title' | translate"></h2>
-        <p class="text-base text-gray-400 leading-relaxed" [innerHTML]="'careers.blog_desc' | translate"></p>
+        <h2 class="text-4xl md:text-[3rem] font-black text-gray-900 leading-tight mb-4" [innerHTML]="'careers.blog_title' | translate | richText"></h2>
+        <p class="text-base text-gray-400 leading-relaxed" [innerHTML]="'careers.blog_desc' | translate | richText"></p>
       </div>
 
       <!-- 오른쪽: 블로그 카드 리스트 -->
-      <div class="relative flex-1 pb-8">
+      <div class="flex-1">
         <div class="flex flex-col gap-4">
           @for (post of blogPosts(); track post.id) {
             <div class="flex gap-6 bg-white rounded-2xl overflow-hidden border border-gray-100 hover:-translate-y-0.5 hover:shadow-lg transition-all group cursor-pointer p-5 items-center">
@@ -262,11 +256,14 @@
           }
         </div>
 
-        <!-- 더보기 원형 버튼 (밑변 중앙 오버레이) -->
-        <a (click)="goToDevBlog()" (keyup.enter)="goToDevBlog()" tabindex="0"
-           class="more-btn absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-[#41539b] text-white flex items-center justify-center shadow-[0_4px_16px_rgba(65,83,155,0.3)] no-underline text-[11px] font-semibold transition-all duration-200 cursor-pointer">
-          {{ 'careers.blog_more' | translate }}
-        </a>
+        <!-- 더보기 버튼 (카드 밑변 중앙 걸침) -->
+        <div class="flex justify-center -mt-7 relative z-10">
+          <a (click)="goToDevBlog()" (keyup.enter)="goToDevBlog()" tabindex="0"
+             class="more-btn w-14 h-14 rounded-full bg-[#41539b] text-white flex items-center justify-center shadow-[0_4px_16px_rgba(65,83,155,0.3)] no-underline text-[11px] font-semibold cursor-pointer"
+             style="transition: transform 0.2s, background-color 0.2s;">
+            {{ 'careers.blog_more' | translate }}
+          </a>
+        </div>
       </div>
 
     </div>
@@ -279,12 +276,9 @@
 
     <!-- 섹션 헤더 -->
     <div class="text-center mb-16">
-      <div class="flex items-center justify-center gap-2 mb-3">
-        <span class="text-indigo-600 text-lg">◇</span>
-        <span class="text-sm font-semibold text-gray-500">{{ 'careers.culture_label' | translate }}</span>
-      </div>
-      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-4" [innerHTML]="'careers.culture_title' | translate"></h2>
-      <p class="text-base text-gray-400 leading-relaxed max-w-[600px] mx-auto" [innerHTML]="'careers.culture_desc' | translate"></p>
+
+      <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-4" [innerHTML]="'careers.culture_title' | translate | richText"></h2>
+      <p class="text-base text-gray-400 leading-relaxed max-w-[600px] mx-auto" [innerHTML]="'careers.culture_desc' | translate | richText"></p>
     </div>
 
     <!-- 벤토 그리드 카드 -->
@@ -298,7 +292,7 @@
         <div class="culture-card__content absolute bottom-0 left-0 right-0 p-7 z-[2]">
           <span class="culture-card__tag inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-semibold mb-2.5">🏕️ Workshop</span>
           <h3 class="culture-card__title text-2xl font-extrabold text-white mb-1.5">{{ 'careers.c1_title' | translate }}</h3>
-          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0" [innerHTML]="'careers.c1_desc' | translate"></p>
+          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0" [innerHTML]="'careers.c1_desc' | translate | richText"></p>
         </div>
       </div>
 
@@ -310,7 +304,7 @@
         <div class="culture-card__content absolute bottom-0 left-0 right-0 p-7 z-[2]">
           <span class="culture-card__tag inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-semibold mb-2.5">✈️ Travel</span>
           <h3 class="culture-card__title text-2xl font-extrabold text-white mb-1.5">{{ 'careers.c2_title' | translate }}</h3>
-          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0" [innerHTML]="'careers.c2_desc' | translate"></p>
+          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0" [innerHTML]="'careers.c2_desc' | translate | richText"></p>
         </div>
       </div>
 
@@ -322,7 +316,7 @@
         <div class="culture-card__content absolute bottom-0 left-0 right-0 p-7 z-[2]">
           <span class="culture-card__tag inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-semibold mb-2.5">⚾ Sports</span>
           <h3 class="culture-card__title text-2xl font-extrabold text-white mb-1.5">{{ 'careers.c3_title' | translate }}</h3>
-          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0" [innerHTML]="'careers.c3_desc' | translate"></p>
+          <p class="culture-card__desc text-sm text-white/80 leading-relaxed m-0" [innerHTML]="'careers.c3_desc' | translate | richText"></p>
         </div>
       </div>
 
@@ -337,7 +331,7 @@
     <!-- 섹션 헤더 -->
     <div class="text-center mb-16">
       <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-2">{{ 'careers.welfare_title1' | translate }}</h2>
-      <h2 class="text-3xl md:text-[2.8rem] font-black leading-tight mb-6" [innerHTML]="'careers.welfare_title2' | translate"></h2>
+      <h2 class="text-3xl md:text-[2.8rem] font-black leading-tight mb-6"><span class="text-[#2ec4b6]">{{ 'careers.welfare_title2' | translate }}</span></h2>
     </div>
 
     <!-- 3x3 카드 그리드 -->
@@ -347,63 +341,63 @@
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">😊</div>
         <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w1_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w1_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w1_desc' | translate | richText"></p>
       </div>
 
       <!-- 02 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">🍽️</div>
         <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w2_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w2_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w2_desc' | translate | richText"></p>
       </div>
 
       <!-- 03 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">🎧</div>
         <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w3_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w3_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w3_desc' | translate | richText"></p>
       </div>
 
       <!-- 04 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">🕐</div>
         <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w4_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w4_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w4_desc' | translate | richText"></p>
       </div>
 
       <!-- 05 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">🙌</div>
         <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w5_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w5_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w5_desc' | translate | richText"></p>
       </div>
 
       <!-- 06 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">💻</div>
         <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w6_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w6_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w6_desc' | translate | richText"></p>
       </div>
 
       <!-- 07 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">🎯</div>
         <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w7_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w7_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w7_desc' | translate | richText"></p>
       </div>
 
       <!-- 08 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">📖</div>
         <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w8_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w8_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w8_desc' | translate | richText"></p>
       </div>
 
       <!-- 09 -->
       <div class="bg-white border-[1.5px] border-[#c8ece0] rounded-2xl py-9 px-6 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="text-4xl mb-4">✈️</div>
         <h3 class="text-lg font-extrabold text-gray-900 mb-2.5">{{ 'careers.w9_title' | translate }}</h3>
-        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w9_desc' | translate"></p>
+        <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.w9_desc' | translate | richText"></p>
       </div>
 
     </div>
@@ -417,7 +411,7 @@
     <!-- 섹션 헤더 -->
     <div class="text-center mb-14">
       <h2 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-2">{{ 'careers.jobs_title1' | translate }}</h2>
-      <h2 class="text-3xl md:text-[2.8rem] font-black leading-tight" [innerHTML]="'careers.jobs_title2' | translate"></h2>
+      <h2 class="text-3xl md:text-[2.8rem] font-black leading-tight"><span class="text-[#2ec4b6]">{{ 'careers.jobs_title2' | translate }}</span></h2>
     </div>
 
     <!-- 필터 + 전체 공고 보기 -->
@@ -425,7 +419,7 @@
       <div class="flex gap-2">
         <span class="px-4 py-1.5 rounded-full bg-[#2ec4b6] text-white text-sm font-semibold">{{ 'careers.jobs_all' | translate }}</span>
       </div>
-      <a (click)="scrollTo('채용공고')" (keyup.enter)="scrollTo('채용공고')" tabindex="0"
+      <a href="https://www.jobkorea.co.kr/Recruit/Co_Read/Recruit/C/34429430" target="_blank" rel="noopener"
          class="text-sm font-semibold text-[#2ec4b6] hover:underline cursor-pointer flex items-center gap-1">
         {{ 'careers.jobs_view_all' | translate }}
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>

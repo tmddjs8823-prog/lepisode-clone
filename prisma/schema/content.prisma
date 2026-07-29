@@ -22,9 +22,13 @@ model Event {
   titleEn        String?
   titleJa        String?
   description    String?   @db.Text
+  content        String?   @db.Text
+  seoTitle       String?
+  metaDesc       String?   @db.Text
   imageUrl       String?
   linkUrl        String?
   attachmentUrl  String?   // 첨부파일 URL
+  attachmentName String?   // 원본 파일명
   startDate      DateTime?
   endDate        DateTime?
   selectedDate   DateTime? // 선정일

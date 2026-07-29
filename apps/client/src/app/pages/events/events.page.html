@@ -47,7 +47,9 @@
                   : getStatus(event) === 'upcoming'
                     ? 'bg-[#41539b]/15 text-[#41539b] border border-[#41539b]/30'
                     : 'bg-slate-400/15 text-slate-400 border border-slate-400/30'">
-                {{ getStatusLabel(event) }}
+                {{ (getStatusLabel(event) | translate) !== getStatusLabel(event) ? (getStatusLabel(event) | translate) :
+                   (getStatusLabel(event) === 'events.status_upcoming' ? '예정' :
+                    getStatusLabel(event) === 'events.status_ended' ? '종료' : '진행중') }}
               </span>
             </div>
             <!-- 정보 -->

@@ -1,4 +1,5 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClientApiService } from '../../shared/services/client-api.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -11,44 +12,57 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
   styleUrl: './marketing.page.css',
 })
 export class MarketingPage implements OnInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
   private api = inject(ClientApiService);
   private translate = inject(TranslateService);
-  private hostingTimer: ReturnType<typeof setInterval> | null = null;
+  private rafId: number | null = null;
+  heroTitleHtml = signal('');
 
-  /* ── 호스팅 벨트 ── */
-  activeHostingIdx = signal(0);
-  hostingOffset = signal(172);
-  hostingTransition = signal(true);
-  private readonly STEP = 88;
-  private readonly CENTER = 172;
+  scrollTo(id: string): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   ngOnInit(): void {
     this.loadTranslatedData();
     this.translate.onLangChange.subscribe(() => this.loadTranslatedData());
 
-    this.hostingTimer = setInterval(() => {
-      const len = this.hostingServices.length;
-      const cur = this.activeHostingIdx();
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => this.startCenterDetection(), 300);
+    }
+  }
 
-      if (cur === len - 1) {
-        this.hostingTransition.set(true);
-        this.activeHostingIdx.set(len);
-        this.hostingOffset.set(this.CENTER - len * this.STEP);
-        setTimeout(() => {
-          this.hostingTransition.set(false);
-          this.activeHostingIdx.set(0);
-          this.hostingOffset.set(this.CENTER);
-          requestAnimationFrame(() => this.hostingTransition.set(true));
-        }, 750);
-      } else {
-        this.activeHostingIdx.set(cur + 1);
-        this.hostingOffset.set(this.CENTER - (cur + 1) * this.STEP);
-      }
-    }, 2500);
+  /** rAF 루프: 컨테이너 중앙에 가장 가까운 카드에 active 클래스 부여 */
+  private startCenterDetection(): void {
+    const container = document.querySelector('.hosting-belt-container') as HTMLElement;
+    if (!container) return;
+
+    const update = () => {
+      const rect = container.getBoundingClientRect();
+      const centerY = rect.top + rect.height / 2;
+      const cards = container.querySelectorAll('.hosting-card');
+
+      let closest: Element | null = null;
+      let minDist = Infinity;
+
+      cards.forEach(card => {
+        const r = card.getBoundingClientRect();
+        const dist = Math.abs(r.top + r.height / 2 - centerY);
+        if (dist < minDist) { minDist = dist; closest = card; }
+      });
+
+      cards.forEach(card => {
+        card.classList.toggle('hosting-card--active', card === closest);
+      });
+
+      this.rafId = requestAnimationFrame(update);
+    };
+
+    this.rafId = requestAnimationFrame(update);
   }
 
   ngOnDestroy(): void {
-    if (this.hostingTimer) clearInterval(this.hostingTimer);
+    if (this.rafId) cancelAnimationFrame(this.rafId);
   }
 
   private t(key: string): string {
@@ -56,6 +70,14 @@ export class MarketingPage implements OnInit, OnDestroy {
   }
 
   private loadTranslatedData(): void {
+    const title = this.t('marketing.hero_title') || '';
+    const parts = title.split(',');
+    if (parts.length >= 2) {
+      this.heroTitleHtml.set(`<span class="text-indigo-900">${parts[0]},</span><br><span class="text-gray-900">${parts.slice(1).join(',').trim()}</span>`);
+    } else {
+      this.heroTitleHtml.set(`<span class="text-indigo-900">${title}</span>`);
+    }
+
     this.marketingServices = [
       { icon: 'search', title: this.t('marketing.ms1_title'), desc: this.t('marketing.ms1_desc') },
       { icon: 'megaphone', title: this.t('marketing.ms2_title'), desc: this.t('marketing.ms2_desc') },
@@ -91,21 +113,34 @@ export class MarketingPage implements OnInit, OnDestroy {
 
   /* ── 문의 폼 ── */
   formName = '';
-  formPhone = '';
+  formPhone1 = '';
+  formPhone2 = '';
+  formPhone3 = '';
   formEmail = '';
   agreePrivacy = false;
+  agreeMarketing = false;
   submitting = signal(false);
   submitted = signal(false);
 
+  autoFocusNext(event: Event, nextId: string, maxLen: number): void {
+    const input = event.target as HTMLInputElement;
+    if (input.value.length >= maxLen) {
+      document.getElementById(nextId)?.focus();
+    }
+  }
+
   submitInquiry(): void {
     if (!this.formName.trim()) { alert('성함을 입력해주세요.'); return; }
-    if (!this.formPhone.trim()) { alert('연락처를 입력해주세요.'); return; }
+    if (!this.formPhone1.trim() || !this.formPhone2.trim() || !this.formPhone3.trim()) {
+      alert('연락처를 입력해주세요.'); return;
+    }
     if (!this.agreePrivacy) { alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
 
+    const phone = `${this.formPhone1}-${this.formPhone2}-${this.formPhone3}`;
     this.submitting.set(true);
     this.api.createInquiry({
       name: this.formName.trim(),
-      phone: this.formPhone.trim(),
+      phone,
       email: this.formEmail.trim() || undefined,
       content: `[마케팅·호스팅 문의] ${this.formName.trim()}`,
     }).subscribe({
@@ -113,9 +148,12 @@ export class MarketingPage implements OnInit, OnDestroy {
         this.submitted.set(true);
         this.submitting.set(false);
         this.formName = '';
-        this.formPhone = '';
+        this.formPhone1 = '';
+        this.formPhone2 = '';
+        this.formPhone3 = '';
         this.formEmail = '';
         this.agreePrivacy = false;
+        this.agreeMarketing = false;
       },
       error: () => {
         alert('문의 등록에 실패했습니다.');

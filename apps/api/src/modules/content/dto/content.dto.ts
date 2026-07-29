@@ -29,9 +29,13 @@ export class CreateEventDto {
   @ApiPropertyOptional({ description: '영문 제목' }) @IsOptional() @IsString() titleEn?: string;
   @ApiPropertyOptional({ description: '일문 제목' }) @IsOptional() @IsString() titleJa?: string;
   @ApiPropertyOptional({ description: '설명' }) @IsOptional() @IsString() description?: string;
+  @ApiPropertyOptional({ description: '본문 내용 (HTML)' }) @IsOptional() @IsString() content?: string;
+  @ApiPropertyOptional({ description: 'SEO 타이틀' }) @IsOptional() @IsString() seoTitle?: string;
+  @ApiPropertyOptional({ description: '메타 설명' }) @IsOptional() @IsString() metaDesc?: string;
   @ApiPropertyOptional({ description: '이미지 URL' }) @IsOptional() @IsString() imageUrl?: string;
   @ApiPropertyOptional({ description: '링크 URL' }) @IsOptional() @IsString() linkUrl?: string;
   @ApiPropertyOptional({ description: '첨부파일 URL' }) @IsOptional() @IsString() attachmentUrl?: string;
+  @ApiPropertyOptional({ description: '원본 파일명' }) @IsOptional() @IsString() attachmentName?: string;
   @ApiPropertyOptional({ description: '시작일' }) @IsOptional() @IsDateString() startDate?: string;
   @ApiPropertyOptional({ description: '종료일' }) @IsOptional() @IsDateString() endDate?: string;
   @ApiPropertyOptional({ description: '선택일' }) @IsOptional() @IsDateString() selectedDate?: string;
@@ -43,9 +47,13 @@ export class UpdateEventDto {
   @ApiPropertyOptional({ description: '영문 제목' }) @IsOptional() @IsString() titleEn?: string;
   @ApiPropertyOptional({ description: '일문 제목' }) @IsOptional() @IsString() titleJa?: string;
   @ApiPropertyOptional({ description: '설명' }) @IsOptional() @IsString() description?: string;
+  @ApiPropertyOptional({ description: '본문 내용 (HTML)' }) @IsOptional() @IsString() content?: string;
+  @ApiPropertyOptional({ description: 'SEO 타이틀' }) @IsOptional() @IsString() seoTitle?: string;
+  @ApiPropertyOptional({ description: '메타 설명' }) @IsOptional() @IsString() metaDesc?: string;
   @ApiPropertyOptional({ description: '이미지 URL' }) @IsOptional() @IsString() imageUrl?: string;
   @ApiPropertyOptional({ description: '링크 URL' }) @IsOptional() @IsString() linkUrl?: string;
   @ApiPropertyOptional({ description: '첨부파일 URL' }) @IsOptional() @IsString() attachmentUrl?: string;
+  @ApiPropertyOptional({ description: '원본 파일명' }) @IsOptional() @IsString() attachmentName?: string;
   @ApiPropertyOptional({ description: '시작일' }) @IsOptional() @IsDateString() startDate?: string;
   @ApiPropertyOptional({ description: '종료일' }) @IsOptional() @IsDateString() endDate?: string;
   @ApiPropertyOptional({ description: '선택일' }) @IsOptional() @IsDateString() selectedDate?: string;

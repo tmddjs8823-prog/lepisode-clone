@@ -165,6 +165,7 @@ export interface EventItem {
   imageUrl?: string;
   linkUrl?: string;
   attachmentUrl?: string;
+  attachmentName?: string;
   startDate?: string;
   endDate?: string;
   selectedDate?: string;

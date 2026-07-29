@@ -4,8 +4,14 @@
 
     <!-- 헤더 (중앙) -->
     <div class="text-center mb-10">
-      <h1 class="text-[2.2rem] font-extrabold text-gray-900 mb-3 tracking-tight">{{ title() }}</h1>
-      <p class="text-[0.95rem] text-gray-400 mb-2">{{ subtitle() }}</p>
+      <h1 class="text-[2.2rem] font-extrabold text-gray-900 mb-3 tracking-tight">
+        {{ (title() | translate) !== title() ? (title() | translate) : '약관' }}
+      </h1>
+      <p class="text-[0.95rem] text-gray-400 mb-2">
+        {{ (subtitle() | translate) !== subtitle() ? (subtitle() | translate) : 
+           (subtitle() === 'footer.privacy' ? '개인정보취급방침' : 
+            subtitle() === 'footer.terms' ? '서비스 이용약관' : '마케팅 수신동의 약관') }}
+      </p>
       @if (updatedAt()) {
         <p class="text-xs text-gray-300">{{ 'terms.last_updated' | translate }}: {{ updatedAt().slice(0, 10) }}</p>
       }

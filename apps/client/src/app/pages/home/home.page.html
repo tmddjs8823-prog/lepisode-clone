@@ -5,9 +5,9 @@
 <section class="hero-ja relative overflow-hidden text-center -mt-[50px] pt-[140px] pb-20 px-6">
   <div class="hero-inner max-w-[800px] mx-auto relative z-[1]">
     <div class="inline-block px-4 py-1.5 bg-white/[0.08] border border-white/[0.12] rounded-full text-xs font-semibold text-white/70 tracking-[0.1em] mb-7 backdrop-blur-sm">{{ 'home_ja.hero.badge' | translate }}</div>
-    <h1 class="hero-title text-[2.8rem] font-black text-white leading-[1.3] mb-5 -tracking-[0.02em]" [innerHTML]="'home_ja.hero.title' | translate">
+    <h1 class="hero-title text-[2.8rem] font-black text-white leading-[1.3] mb-5 -tracking-[0.02em]" [innerHTML]="'home_ja.hero.title' | translate | richText">
     </h1>
-    <p class="text-[0.95rem] text-white/60 leading-[1.8] mb-9" [innerHTML]="'home_ja.hero.desc' | translate">
+    <p class="text-[0.95rem] text-white/60 leading-[1.8] mb-9" [innerHTML]="'home_ja.hero.desc' | translate | richText">
     </p>
     <div class="flex gap-3 justify-center max-md:flex-col max-md:items-center">
       <a routerLink="/support-projects" fragment="support-contact" class="px-8 py-3.5 bg-[#41539b] text-white rounded-xl font-bold text-[0.9rem] no-underline transition-all duration-200 hover:bg-[#354690] hover:-translate-y-0.5">{{ 'home_ja.hero.cta_contact' | translate }}</a>
@@ -92,8 +92,8 @@
 <section class="pt-32 pb-40 px-6" style="background: linear-gradient(180deg, #f0edff 0%, #e8e4ff 40%, #f0edff 100%);">
 
   <div class="max-w-[800px] mx-auto text-center">
-    <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 leading-snug mb-5" [innerHTML]="'home.hero.title' | translate"></h1>
-    <p class="text-sm text-gray-500 leading-relaxed" [innerHTML]="'home.hero.desc' | translate"></p>
+    <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 leading-snug mb-5" [innerHTML]="'home.hero.title' | translate | richText"></h1>
+    <p class="text-sm text-gray-500 leading-relaxed" [innerHTML]="'home.hero.desc' | translate | richText"></p>
   </div>
 </section>
 
@@ -108,52 +108,61 @@
     </div>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
       @for (s of services(); track s.id) {
-        <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl"
+        <div class="rounded-2xl flex flex-col gap-3 transition-all duration-500 cursor-pointer"
+             [class]="activeServiceIndex() === $index
+               ? 'shadow-xl -translate-y-2 scale-[1.03] border-2 ' + (['border-violet-400 bg-violet-50', 'border-sky-400 bg-sky-50', 'border-emerald-400 bg-emerald-50', 'border-amber-400 bg-amber-50', 'border-rose-400 bg-rose-50', 'border-teal-400 bg-teal-50'][$index % 6])
+               : 'bg-gray-50 border-2 border-transparent hover:shadow-lg hover:-translate-y-1'"
+             style="min-height:250px;padding:2rem 1.5rem"
+             (mouseenter)="onServiceEnter($index)"
+             (mouseleave)="onServiceLeave()">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-all duration-500"
                [ngClass]="{
-                 'bg-indigo-100 text-indigo-600': ($index) % 6 === 0,
-                 'bg-blue-100 text-blue-600': ($index) % 6 === 1,
+                 'bg-violet-100 text-violet-600': ($index) % 6 === 0,
+                 'bg-sky-100 text-sky-600': ($index) % 6 === 1,
                  'bg-emerald-100 text-emerald-600': ($index) % 6 === 2,
                  'bg-amber-100 text-amber-600': ($index) % 6 === 3,
-                 'bg-red-100 text-red-600': ($index) % 6 === 4,
-                 'bg-pink-100 text-pink-600': ($index) % 6 === 5
+                 'bg-rose-100 text-rose-600': ($index) % 6 === 4,
+                 'bg-teal-100 text-teal-600': ($index) % 6 === 5
                }">
             {{ serviceIcons[($index) % serviceIcons.length] }}
           </div>
-          <h3 class="text-sm font-bold text-gray-900">{{ 'home.service.' + $index | translate }}</h3>
+          <h3 class="text-sm font-bold transition-colors duration-300"
+              [class]="activeServiceIndex() === $index
+                ? (['text-violet-700', 'text-sky-700', 'text-emerald-700', 'text-amber-700', 'text-rose-700', 'text-teal-700'][$index % 6])
+                : 'text-gray-900'">{{ 'home.service.' + $index | translate }}</h3>
           <div class="flex flex-wrap gap-1.5 mt-auto">
             @for (tag of getServiceTags($index); track tag) {
               <span class="text-[10px] font-medium px-2 py-0.5 rounded-md"
                     [ngClass]="{
-                      'bg-indigo-50 text-indigo-600': ($index) % 6 === 0,
-                      'bg-blue-50 text-blue-600': ($index) % 6 === 1,
+                      'bg-violet-50 text-violet-600': ($index) % 6 === 0,
+                      'bg-sky-50 text-sky-600': ($index) % 6 === 1,
                       'bg-emerald-50 text-emerald-600': ($index) % 6 === 2,
                       'bg-amber-50 text-amber-600': ($index) % 6 === 3,
-                      'bg-red-50 text-red-600': ($index) % 6 === 4,
-                      'bg-pink-50 text-pink-600': ($index) % 6 === 5
+                      'bg-rose-50 text-rose-600': ($index) % 6 === 4,
+                      'bg-teal-50 text-teal-600': ($index) % 6 === 5
                     }">{{ tag }}</span>
             }
           </div>
         </div>
       } @empty {
         <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-indigo-100 text-indigo-600">⚡</div>
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-violet-100 text-violet-600">⚡</div>
           <h3 class="text-sm font-bold text-gray-900">AI 솔루션</h3>
 
           <div class="flex flex-wrap gap-1.5 mt-auto">
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-600">자연어 처리</span>
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-600">OCR</span>
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-600">자동화</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-violet-50 text-violet-600">자연어 처리</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-violet-50 text-violet-600">OCR</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-violet-50 text-violet-600">자동화</span>
           </div>
         </div>
         <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-blue-100 text-blue-600">🔷</div>
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-sky-100 text-sky-600">🔷</div>
           <h3 class="text-sm font-bold text-gray-900">플랫폼</h3>
 
           <div class="flex flex-wrap gap-1.5 mt-auto">
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-blue-50 text-blue-600">SaaS</span>
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-blue-50 text-blue-600">B2B 플랫폼</span>
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-blue-50 text-blue-600">ERP</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-sky-50 text-sky-600">SaaS</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-sky-50 text-sky-600">B2B 플랫폼</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-sky-50 text-sky-600">ERP</span>
           </div>
         </div>
         <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
@@ -177,22 +186,22 @@
           </div>
         </div>
         <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-red-100 text-red-600">🖥️</div>
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-rose-100 text-rose-600">🖥️</div>
           <h3 class="text-sm font-bold text-gray-900">키오스크</h3>
 
           <div class="flex flex-wrap gap-1.5 mt-auto">
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-red-50 text-red-600">키오스크</span>
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-red-50 text-red-600">거래처 시스템</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-rose-50 text-rose-600">키오스크</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-rose-50 text-rose-600">거래처 시스템</span>
           </div>
         </div>
         <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-pink-100 text-pink-600">📊</div>
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-teal-100 text-teal-600">📊</div>
           <h3 class="text-sm font-bold text-gray-900">브랜딩/마케팅</h3>
 
           <div class="flex flex-wrap gap-1.5 mt-auto">
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-pink-50 text-pink-600">SNS 마케팅</span>
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-pink-50 text-pink-600">BI</span>
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-pink-50 text-pink-600">카탈로그</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-teal-50 text-teal-600">SNS 마케팅</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-teal-50 text-teal-600">BI</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-teal-50 text-teal-600">카탈로그</span>
           </div>
         </div>
       }
@@ -201,14 +210,14 @@
 </section>
 
 <!-- ═══════════ Comparison Section ═══════════ -->
-<section class="py-20 px-4" id="comparison" style="background:#f8f9fb">
-  <div class="max-w-[1100px] mx-auto">
+<section class="py-28 px-4" id="comparison" style="background:#f8f9fb">
+  <div class="max-w-[1120px] mx-auto">
 
     <!-- 타이틀 -->
     <div class="text-center mb-14">
       <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white text-sm font-bold mb-4">1</span>
-      <h2 class="text-2xl md:text-[2.2rem] font-extrabold text-gray-900 mb-4" [innerHTML]="'home.compare.title' | translate"></h2>
-      <div class="inline-flex items-center gap-2 bg-gray-800 text-white rounded-full px-6 py-2.5 text-sm" [innerHTML]="'home.compare.badge' | translate"></div>
+      <h2 class="text-2xl md:text-[2.2rem] font-extrabold text-gray-900 mb-4" [innerHTML]="'home.compare.title' | translate | richText"></h2>
+      <div class="inline-flex items-center gap-2 bg-gray-800 text-white rounded-full px-6 py-2.5 text-sm" [innerHTML]="'home.compare.badge' | translate | richText"></div>
     </div>
 
     <!-- 비교 헤더 -->
@@ -269,8 +278,8 @@
 
 
 <!-- ═══════════ Portfolio Section ═══════════ -->
-<section class="py-20 px-6" id="portfolio" style="background:#f8f9fb">
-  <div class="max-w-[1200px] mx-auto">
+<section class="py-28 px-6" id="portfolio" style="background:#f8f9fb">
+  <div class="max-w-[1120px] mx-auto">
 
     <!-- 헤더: 타이틀 (왼) + 링크 (오) -->
     <div class="flex items-start justify-between mb-10">
@@ -279,7 +288,7 @@
           <span class="text-indigo-600 text-lg">◇</span>
           <span class="text-sm font-semibold text-gray-500">{{ 'home.portfolio.label' | translate }}</span>
         </div>
-        <h2 class="text-2xl md:text-[2rem] font-extrabold text-gray-900" [innerHTML]="'home.portfolio.title' | translate"></h2>
+        <h2 class="text-2xl md:text-[2rem] font-extrabold text-gray-900" [innerHTML]="'home.portfolio.title' | translate | richText"></h2>
       </div>
       <a routerLink="/portfolio" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors flex items-center gap-1 mt-2">
         {{ 'home.portfolio.more' | translate }}
@@ -302,7 +311,7 @@
             }
           </div>
           <div class="p-4 flex flex-col">
-            <h3 class="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2 mb-3">{{ p.title }}</h3>
+            <h3 class="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2 mb-3">{{ loc(p, 'title') }}</h3>
             <div class="flex items-center justify-between mt-auto">
               <span class="text-xs text-gray-400">{{ p.createdAt | date:'yyyy-MM-dd' }}</span>
               <span class="text-xs font-semibold text-indigo-600 flex items-center gap-0.5">
@@ -330,8 +339,8 @@
 </section>
 
 <!-- ═══════════ Notice Section ═══════════ -->
-<section class="py-20 px-6" id="notices">
-  <div class="max-w-[1200px] mx-auto">
+<section class="py-28 px-6" id="notices">
+  <div class="max-w-[1120px] mx-auto">
 
     <!-- 헤더: 타이틀 (왼) + 링크 (오) -->
     <div class="flex items-start justify-between mb-10">
@@ -340,7 +349,7 @@
           <span class="text-indigo-600 text-lg">◇</span>
           <span class="text-sm font-semibold text-gray-500">{{ 'home.notice.label' | translate }}</span>
         </div>
-        <h2 class="text-2xl md:text-[2rem] font-extrabold text-gray-900" [innerHTML]="'home.notice.title' | translate"></h2>
+        <h2 class="text-2xl md:text-[2rem] font-extrabold text-gray-900" [innerHTML]="'home.notice.title' | translate | richText"></h2>
       </div>
       <a routerLink="/notice" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors flex items-center gap-1 mt-2">
         {{ 'home.notice.more' | translate }}
@@ -353,9 +362,9 @@
       @for (n of notices(); track n.id) {
         <a [routerLink]="['/notice', n.id]" class="group flex flex-col bg-white rounded-2xl border border-gray-100 p-6 hover:-translate-y-1 hover:shadow-lg transition-all">
           <span class="text-xs text-gray-400 mb-3 self-end">{{ n.createdAt | date:'yyyy.MM.dd' }}</span>
-          <h3 class="text-base font-bold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2">{{ n.title }}</h3>
+          <h3 class="text-base font-bold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2">{{ loc(n, 'title') }}</h3>
           @if (n.content) {
-            <p class="text-xs text-gray-400 line-clamp-2 mt-4">{{ n.content }}</p>
+            <p class="text-xs text-gray-400 line-clamp-2 mt-4">{{ loc(n, 'content') }}</p>
           }
           <div class="mt-auto pt-6">
             <span class="text-xs font-semibold text-indigo-600 flex items-center gap-1">
@@ -405,8 +414,8 @@
 </section>
 
 <!-- ═══════════ Blog Section ═══════════ -->
-<section class="py-20 px-6" id="blog" style="background:#f8f9fb">
-  <div class="max-w-[1200px] mx-auto">
+<section class="py-28 px-6" id="blog" style="background:#f8f9fb">
+  <div class="max-w-[1120px] mx-auto">
 
     <!-- 헤더: 타이틀 (왼) + 링크 (오) -->
     <div class="flex items-start justify-between mb-10">
@@ -415,7 +424,7 @@
           <span class="text-indigo-600 text-lg">◇</span>
           <span class="text-sm font-semibold text-gray-500">{{ 'home.blog.label' | translate }}</span>
         </div>
-        <h2 class="text-2xl md:text-[2rem] font-extrabold text-gray-900" [innerHTML]="'home.blog.title' | translate"></h2>
+        <h2 class="text-2xl md:text-[2rem] font-extrabold text-gray-900" [innerHTML]="'home.blog.title' | translate | richText"></h2>
       </div>
       <a routerLink="/blog" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors flex items-center gap-1 mt-2">
         {{ 'home.blog.more' | translate }}
@@ -457,8 +466,8 @@
 </section>
 
 <!-- ═══════════ 서비스 소개 Section ═══════════ -->
-<section class="py-20 px-6" id="service-intro">
-  <div class="max-w-[1200px] mx-auto">
+<section class="py-28 px-6" id="service-intro">
+  <div class="max-w-[1120px] mx-auto">
 
     <!-- 헤더: 타이틀 (왼) + 링크 (오) -->
     <div class="flex items-start justify-between mb-10">
@@ -467,7 +476,7 @@
           <span class="text-indigo-600 text-lg">◇</span>
           <span class="text-sm font-semibold text-gray-500">{{ 'home.services.label' | translate }}</span>
         </div>
-        <h2 class="text-2xl md:text-[2rem] font-extrabold text-gray-900" [innerHTML]="'home.services.title' | translate"></h2>
+        <h2 class="text-2xl md:text-[2rem] font-extrabold text-gray-900" [innerHTML]="'home.services.title' | translate | richText"></h2>
       </div>
       <a routerLink="/services" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors flex items-center gap-1 mt-2">
         {{ 'home.services.more' | translate }}
@@ -490,7 +499,7 @@
             }
           </div>
           <div class="p-4 flex flex-col">
-            <h3 class="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2 mb-3">{{ s.title }}</h3>
+            <h3 class="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2 mb-3">{{ loc(s, 'title') }}</h3>
             <div class="flex items-center justify-between mt-auto">
               <span class="text-xs text-gray-400">{{ s.createdAt | date:'yyyy-MM-dd' }}</span>
               <span class="text-xs font-semibold text-indigo-600 flex items-center gap-0.5">
@@ -512,8 +521,8 @@
 </section>
 
 <!-- ═══════════ 오시는길 (Google Map) Section ═══════════ -->
-<section class="py-20 px-6" id="location" style="background:#f8f9fb">
-  <div class="max-w-[1200px] mx-auto">
+<section class="py-28 px-6" id="location" style="background:#f8f9fb">
+  <div class="max-w-[1120px] mx-auto">
 
     <!-- 헤더 -->
     <div class="flex items-start justify-between mb-10">

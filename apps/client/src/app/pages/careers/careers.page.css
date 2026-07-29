@@ -39,7 +39,7 @@
 /* ── 더보기 버튼 hover (translateX + scale 조합) ── */
 .more-btn:hover {
   background: #354786;
-  transform: translateX(-50%) scale(1.08);
+  transform: scale(1.08);
 }
 
 /* ── 문화카드 오버레이 그라디언트 & hover 전환 ── */

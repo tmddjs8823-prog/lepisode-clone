@@ -6,12 +6,11 @@
     <span class="inline-block text-sm font-semibold text-indigo-600 mb-4">{{ 'about.label' | translate }}</span>
 
     <!-- 타이틀 -->
-    <h1 class="text-3xl md:text-[2.8rem] font-extrabold text-gray-900 mb-6 leading-tight"
-        [innerHTML]="'about.hero.title' | translate"></h1>
+    <h1 class="text-3xl md:text-[2.8rem] font-extrabold text-gray-900 mb-6 leading-tight">{{ 'about.hero.title.prefix' | translate }} <span class="text-indigo-600">{{ 'about.hero.title.accent' | translate }}</span></h1>
 
     <!-- 설명 -->
     <p class="text-sm md:text-base text-gray-500 leading-relaxed mb-10"
-       [innerHTML]="'about.hero.desc' | translate"></p>
+       [innerHTML]="'about.hero.desc' | translate | richText"></p>
 
     <!-- 통계 -->
     <div class="flex items-center justify-center gap-0 mb-4">
@@ -53,10 +52,9 @@
 <!-- ═══════════ 슬로건 ═══════════ -->
 <section class="py-20 px-6">
   <div class="max-w-[800px] mx-auto text-center">
-    <h2 class="text-2xl md:text-[2.2rem] font-extrabold text-gray-900 mb-4 leading-tight"
-        [innerHTML]="'about.slogan.title' | translate"></h2>
+    <h2 class="text-2xl md:text-[2.2rem] font-extrabold text-gray-900 mb-4 leading-tight">{{ 'about.slogan.title.prefix' | translate }}<br><span class="text-indigo-600">{{ 'about.slogan.title.accent' | translate }}</span></h2>
     <p class="text-sm md:text-base text-gray-500 leading-relaxed"
-       [innerHTML]="'about.slogan.desc' | translate"></p>
+       [innerHTML]="'about.slogan.desc' | translate | richText"></p>
   </div>
 </section>
 
@@ -74,21 +72,21 @@
       <div class="bg-white rounded-2xl p-8 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl mx-auto mb-5">🎯</div>
         <h3 class="text-lg font-bold text-gray-900 mb-2">{{ 'about.values.customer.title' | translate }}</h3>
-        <p class="text-xs text-gray-400 leading-relaxed" [innerHTML]="'about.values.customer.desc' | translate"></p>
+        <p class="text-xs text-gray-400 leading-relaxed" [innerHTML]="'about.values.customer.desc' | translate | richText"></p>
       </div>
 
       <!-- 가치 2 -->
       <div class="bg-white rounded-2xl p-8 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mx-auto mb-5">🚀</div>
         <h3 class="text-lg font-bold text-gray-900 mb-2">{{ 'about.values.innovation.title' | translate }}</h3>
-        <p class="text-xs text-gray-400 leading-relaxed" [innerHTML]="'about.values.innovation.desc' | translate"></p>
+        <p class="text-xs text-gray-400 leading-relaxed" [innerHTML]="'about.values.innovation.desc' | translate | richText"></p>
       </div>
 
       <!-- 가치 3 -->
       <div class="bg-white rounded-2xl p-8 text-center hover:-translate-y-1 hover:shadow-lg transition-all">
         <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl mx-auto mb-5">🤝</div>
         <h3 class="text-lg font-bold text-gray-900 mb-2">{{ 'about.values.trust.title' | translate }}</h3>
-        <p class="text-xs text-gray-400 leading-relaxed" [innerHTML]="'about.values.trust.desc' | translate"></p>
+        <p class="text-xs text-gray-400 leading-relaxed" [innerHTML]="'about.values.trust.desc' | translate | richText"></p>
       </div>
     </div>
 

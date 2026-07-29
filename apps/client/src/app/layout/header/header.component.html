@@ -43,11 +43,11 @@
     </a>
 
     <div class="flex items-center gap-2 ml-auto">
-      <nav class="nav-desktop hidden lg:flex items-center gap-0.5">
+      <nav class="nav-desktop hidden lg:flex items-center gap-0 flex-shrink-0">
         @for (item of navItems; track item.label) {
           @if (item.children) {
             <div class="nav-group relative">
-              <button class="nav-item flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#4a4a4a] no-underline rounded-md border-none bg-transparent transition-colors cursor-pointer font-[inherit] whitespace-nowrap hover:text-[#41539b] hover:bg-gray-100"
+              <button class="nav-item flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4a4a4a] no-underline rounded-md border-none bg-transparent transition-colors cursor-pointer font-[inherit] whitespace-nowrap hover:text-[#41539b] hover:bg-gray-100"
                       [class.active]="activeDropdown === item.label"
                       (click)="toggleDesktopDropdown(item.label, $event)">
                 {{ item.i18nKey ? (item.i18nKey | translate) : item.label }}
@@ -74,13 +74,13 @@
             </div>
           } @else {
             <a [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
-               class="nav-item flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#4a4a4a] no-underline rounded-md border-none bg-transparent transition-colors cursor-pointer whitespace-nowrap hover:text-[#41539b] hover:bg-gray-100">{{ item.i18nKey ? (item.i18nKey | translate) : item.label }}</a>
+               class="nav-item flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4a4a4a] no-underline rounded-md border-none bg-transparent transition-colors cursor-pointer whitespace-nowrap hover:text-[#41539b] hover:bg-gray-100">{{ item.i18nKey ? (item.i18nKey | translate) : item.label }}</a>
           }
         }
       </nav>
 
-      <div class="lang-dropdown-wrap relative hidden lg:block">
-        <button class="lang-btn flex items-center gap-1.5 px-3.5 py-1.5 border border-gray-200 rounded-full bg-white text-[13px] font-medium text-[#4a4a4a] cursor-pointer transition-colors hover:border-[#41539b]"
+      <div class="lang-dropdown-wrap relative hidden lg:block flex-shrink-0">
+        <button class="lang-btn flex items-center gap-1.5 px-3.5 py-1.5 border border-gray-200 rounded-full bg-white text-[13px] font-medium text-[#4a4a4a] cursor-pointer transition-colors hover:border-[#41539b] whitespace-nowrap"
                 (click)="toggleLangDropdown($event)">
           <span class="text-base leading-none">{{ i18n.getCurrentOption().flag }}</span>
           <span class="tracking-[-0.02em]">{{ i18n.getCurrentOption().label }}</span>
@@ -89,9 +89,9 @@
           </svg>
         </button>
         @if (langDropdownOpen) {
-          <div class="absolute top-full right-0 mt-1.5 min-w-[140px] bg-white border border-gray-200 rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.08)] p-1.5 z-[100] animate-dropdown-right">
+          <div class="absolute top-full right-0 mt-1.5 min-w-[160px] bg-white border border-gray-200 rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.08)] p-1.5 z-[100] animate-dropdown-right">
             @for (lang of languages; track lang.code) {
-              <button class="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm rounded-lg border-none bg-transparent cursor-pointer transition-all hover:bg-[#f5f5ff]"
+              <button class="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm rounded-lg border-none bg-transparent cursor-pointer transition-all hover:bg-[#f5f5ff] whitespace-nowrap"
                       [class.font-bold]="i18n.currentLang() === lang.code"
                       [class.text-indigo-600]="i18n.currentLang() === lang.code"
                       [class.text-gray-500]="i18n.currentLang() !== lang.code"

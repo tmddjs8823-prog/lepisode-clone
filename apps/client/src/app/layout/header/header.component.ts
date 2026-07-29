@@ -141,9 +141,5 @@ export class HeaderComponent {
   selectLang(lang: Lang): void {
     this.i18n.setLang(lang);
     this.langDropdownOpen = false;
-    // 언어 변경 시 (특히 일본어 ↔ 기타 전환 시) 스크롤 상단으로 이동
-    if (isPlatformBrowser(this.platformId)) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
   }
 }

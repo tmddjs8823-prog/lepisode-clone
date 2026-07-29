@@ -5,10 +5,12 @@ import { ClientApiService, BlogItem, JobItem } from '../../shared/services/clien
 import { TranslatePipe } from '@ngx-translate/core';
 import { I18nService } from '../../shared/services/i18n.service';
 
+import { RichTextPipe } from '../../shared/pipes/rich-text.pipe';
+
 @Component({
   selector: 'app-careers-page',
   standalone: true,
-  imports: [DatePipe, TranslatePipe],
+  imports: [DatePipe, TranslatePipe, RichTextPipe],
   templateUrl: './careers.page.html',
   styleUrl: './careers.page.css',
 })

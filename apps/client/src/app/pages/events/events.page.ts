@@ -31,17 +31,17 @@ export class EventsPage implements OnInit {
   }
 
   getStatus(event: EventItem): 'upcoming' | 'ongoing' | 'ended' {
-    const now = new Date();
-    if (event.startDate && new Date(event.startDate) > now) return 'upcoming';
-    if (event.endDate && new Date(event.endDate) < now) return 'ended';
+    const today = new Date().toISOString().slice(0, 10);
+    if (event.startDate && event.startDate.slice(0, 10) > today) return 'upcoming';
+    if (event.endDate && event.endDate.slice(0, 10) < today) return 'ended';
     return 'ongoing';
   }
 
   getStatusLabel(event: EventItem): string {
     const s = this.getStatus(event);
-    if (s === 'upcoming') return '예정';
-    if (s === 'ended') return '종료';
-    return '진행중';
+    if (s === 'upcoming') return 'events.status_upcoming';
+    if (s === 'ended') return 'events.status_ended';
+    return 'events.status_ongoing';
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

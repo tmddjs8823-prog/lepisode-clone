@@ -5,7 +5,7 @@
       <span class="text-indigo-600 text-lg">📋</span>
       <span class="text-sm font-semibold text-indigo-600">{{ 'blog.label' | translate }}</span>
     </div>
-    <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 mb-3" [innerHTML]="'blog.title' | translate"></h1>
+    <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 mb-3" [innerHTML]="'blog.title' | translate | richText"></h1>
     <p class="text-sm text-gray-400 leading-relaxed">
       {{ 'blog.desc' | translate }}
     </p>

@@ -1,7 +1,8 @@
-import { Component, OnInit, signal, inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, PLATFORM_ID } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { NgClass, DatePipe, isPlatformBrowser } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   ClientApiService,
   ServiceItem,
@@ -10,15 +11,16 @@ import {
   NaverBlogPost,
 } from '../../shared/services/client-api.service';
 import { I18nService } from '../../shared/services/i18n.service';
+import { RichTextPipe } from '../../shared/pipes/rich-text.pipe';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [RouterLink, NgClass, DatePipe, TranslatePipe],
+  imports: [RouterLink, NgClass, DatePipe, TranslatePipe, RichTextPipe],
   templateUrl: './home.page.html',
   styleUrl: './home.page.css',
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
   private api = inject(ClientApiService);
   private platformId = inject(PLATFORM_ID);
   i18n = inject(I18nService);
@@ -88,25 +90,69 @@ export class HomePage implements OnInit {
     return this.serviceTags[index % this.serviceTags.length];
   }
 
+  /* ── 원스톱 자동 호버 ── */
+  activeServiceIndex = signal(0);
+  private autoHoverTimer: ReturnType<typeof setInterval> | null = null;
+  private userHovering = false;
+
+  private startAutoHover(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.autoHoverTimer = setInterval(() => {
+      if (!this.userHovering) {
+        const total = this.services().length || 6;
+        this.activeServiceIndex.set((this.activeServiceIndex() + 1) % total);
+      }
+    }, 3000);
+  }
+
+  onServiceEnter(index: number): void {
+    this.userHovering = true;
+    this.activeServiceIndex.set(index);
+  }
+
+  onServiceLeave(): void {
+    this.userHovering = false;
+  }
+
+  ngOnDestroy(): void {
+    if (this.autoHoverTimer) clearInterval(this.autoHoverTimer);
+    this.langSub?.unsubscribe();
+  }
+
   /* ── 포트폴리오 ── */
   portfolios = signal<PortfolioItem[]>([]);
 
   readonly demoPortfolios = [
-    { title: '스마트 물류 관리 시스템', client: 'ABC 물류', icon: '📦', platforms: ['웹', 'iOS'] },
-    { title: '온라인 쇼핑몰 리뉴얼', client: 'XYZ 커머스', icon: '🛒', platforms: ['웹', '안드로이드', 'iOS'] },
-    { title: '기업 인트라넷 구축', client: 'DEF 그룹', icon: '🏗️', platforms: ['웹'] },
-    { title: '예약 관리 플랫폼', client: 'GHI 서비스', icon: '📅', platforms: ['웹', '안드로이드'] },
-    { title: '교육 콘텐츠 LMS', client: 'JKL 에듀', icon: '📚', platforms: ['웹', 'iOS'] },
-    { title: '의료 데이터 대시보드', client: 'MNO 헬스', icon: '🏥', platforms: ['웹'] },
-    { title: 'AI 챗봇 솔루션', client: 'PQR 테크', icon: '🤖', platforms: ['웹', 'API'] },
-    { title: '브랜드 마케팅 플랫폼', client: 'STU 미디어', icon: '📣', platforms: ['웹', 'iOS'] },
+    { title: '스마트 물류 관리 시스템', client: 'ABC 물류', icon: '📦', platforms: ['Web', 'iOS'] },
+    { title: '온라인 쇼핑몰 리뉴얼', client: 'XYZ 커머스', icon: '🛒', platforms: ['Web', 'Android', 'iOS'] },
+    { title: '기업 인트라넷 구축', client: 'DEF 그룹', icon: '🏗️', platforms: ['Web'] },
+    { title: '예약 관리 플랫폼', client: 'GHI 서비스', icon: '📅', platforms: ['Web', 'Android'] },
+    { title: '교육 콘텐츠 LMS', client: 'JKL 에듀', icon: '📚', platforms: ['Web', 'iOS'] },
+    { title: '의료 데이터 대시보드', client: 'MNO 헬스', icon: '🏥', platforms: ['Web'] },
+    { title: 'AI 챗봇 솔루션', client: 'PQR 테크', icon: '🤖', platforms: ['Web', 'API'] },
+    { title: '브랜드 마케팅 플랫폼', client: 'STU 미디어', icon: '📣', platforms: ['Web', 'iOS'] },
   ];
 
+  private translateService = inject(TranslateService);
+  private prevIsJa = false;
+  private langSub?: Subscription;
+
   ngOnInit(): void {
+    this.prevIsJa = this.i18n.currentLang() === 'ja';
+
+    this.langSub = this.translateService.onLangChange.subscribe(({ lang }) => {
+      const nowIsJa = lang === 'ja';
+      if (nowIsJa !== this.prevIsJa && isPlatformBrowser(this.platformId)) {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+      this.prevIsJa = nowIsJa;
+    });
+
     this.loadServices();
     this.loadPortfolios();
     this.loadNotices();
     this.loadBlogs();
+    this.startAutoHover();
   }
 
   private loadServices(): void {
@@ -186,5 +232,14 @@ export class HomePage implements OnInit {
         (a as HTMLElement).style.pointerEvents = '';
       });
     }, 50);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  loc(item: any, field: string): string {
+    if (!item) return '';
+    const lang = this.i18n.currentLang();
+    if (lang === 'en') return String(item[field + 'En'] || item[field] || '');
+    if (lang === 'ja') return String(item[field + 'Ja'] || item[field] || '');
+    return String(item[field] || '');
   }
 }

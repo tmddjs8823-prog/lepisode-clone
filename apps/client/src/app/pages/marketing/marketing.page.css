@@ -16,25 +16,58 @@
 .hosting-section {
   background: linear-gradient(145deg, #3b82f6 0%, #4f8ff7 50%, #60a5fa 100%);
 }
-/* ── 벨트 부드러운 이동 ── */
-.hosting-belt-smooth {
-  transition: transform 700ms ease-in-out;
+
+/* ── 벨트 컨테이너 (mask로 자연스러운 페이드) ── */
+.hosting-belt-container {
+  height: 420px;
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
 }
 
-/* ── 카드 라이트 효과 ── */
-.hosting-card--lit {
-  background: white;
+/* ── 벨트 무한 스크롤 ── */
+.hosting-belt-track {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: hosting-scroll 25s linear infinite;
+}
+
+@keyframes hosting-scroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+/* ── 카드 기본 (반투명 글래스) ── */
+.hosting-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+.hosting-card h3 {
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.4s ease;
+}
+.hosting-card p {
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 0.4s ease;
+}
+
+/* ── 활성 카드 (자동 중앙 감지) ── */
+.hosting-card--active {
+  background: #ffffff !important;
   box-shadow:
-    0 0 20px rgba(255, 255, 255, 0.6),
-    0 8px 32px rgba(59, 130, 246, 0.3);
+    0 0 24px rgba(255, 255, 255, 0.5),
+    0 12px 36px rgba(59, 130, 246, 0.25);
   transform: scale(1.04);
+  border-color: transparent;
 }
-
-.hosting-card--dim {
-  background: white;
-  opacity: 0.35;
-  transform: scale(0.96);
-}
+.hosting-card--active h3 { color: #1a1a2e !important; }
+.hosting-card--active p { color: #6b7280 !important; }
 
 /* ── 프로세스 섹션 (어두운 배경) ── */
 .process-section {

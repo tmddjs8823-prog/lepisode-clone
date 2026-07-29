@@ -1,11 +1,8 @@
 <!-- ═══════════ 서비스 소개 헤더 ═══════════ -->
 <section class="pt-20 pb-10 px-6" id="services-header">
   <div class="max-w-[1200px] mx-auto">
-    <div class="flex items-center gap-2 mb-3">
-      <span class="text-indigo-600 text-lg">◇</span>
-      <span class="text-sm font-semibold text-indigo-600">{{ 'services.label' | translate }}</span>
-    </div>
-    <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 mb-3" [innerHTML]="'services.page_title' | translate"></h1>
+
+    <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 mb-3" [innerHTML]="'services.page_title' | translate | richText"></h1>
     <p class="text-sm text-gray-400 leading-relaxed">{{ 'services.desc' | translate }}</p>
   </div>
 </section>

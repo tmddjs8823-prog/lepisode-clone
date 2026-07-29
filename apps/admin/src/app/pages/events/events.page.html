@@ -91,11 +91,11 @@
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col gap-1.5">
             <label for="input-event-start" class="text-sm font-semibold text-slate-200">시작일 <span class="text-red-400">*</span></label>
-            <input id="input-event-start" type="date" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="fStartDate()" (ngModelChange)="fStartDate.set($event)" />
+            <input id="input-event-start" type="date" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="fStartDate()" (ngModelChange)="fStartDate.set($event)" [max]="fEndDate()" />
           </div>
           <div class="flex flex-col gap-1.5">
             <label for="input-event-end" class="text-sm font-semibold text-slate-200">종료일 <span class="text-red-400">*</span></label>
-            <input id="input-event-end" type="date" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="fEndDate()" (ngModelChange)="fEndDate.set($event)" />
+            <input id="input-event-end" type="date" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="fEndDate()" (ngModelChange)="fEndDate.set($event)" [min]="fStartDate()" />
           </div>
         </div>
 
@@ -103,6 +103,28 @@
         <div class="flex flex-col gap-1.5">
           <label for="input-event-selected-date" class="text-sm font-semibold text-slate-200">선정일</label>
           <input id="input-event-selected-date" type="date" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:border-indigo-500 transition-colors" [ngModel]="fSelectedDate()" (ngModelChange)="fSelectedDate.set($event)" />
+        </div>
+
+        <!-- 대표 이미지 -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-sm font-semibold text-slate-200">대표 이미지</span>
+          @if (fImagePreview()) {
+            <div class="relative rounded-lg overflow-hidden border border-slate-700">
+              <img [src]="fImagePreview()" class="w-full object-contain max-h-52 bg-slate-800" alt="이벤트 이미지 미리보기" />
+              <button class="absolute top-2 right-2 p-1 bg-slate-900/80 text-slate-400 hover:text-red-400 rounded-full transition-colors" (click)="removeImage()">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+          } @else {
+            <label
+              class="flex flex-col items-center justify-center gap-2 p-6 border-2 border-dashed border-slate-600 rounded-xl cursor-pointer hover:border-indigo-500 transition-colors"
+              (dragover)="onImageDragOver($event)" (drop)="onImageDrop($event)">
+              <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M13.5 3.75h6m-6 0v6m0-6L6 11.25"/></svg>
+              <span class="text-slate-400 text-xs">이미지를 드래그하거나 클릭해서 업로드</span>
+              <span class="text-[11px] text-slate-600">JPG, PNG, GIF, WebP 지원</span>
+              <input type="file" accept="image/*" class="hidden" (change)="onImageSelect($event)" />
+            </label>
+          }
         </div>
 
         <!-- 내용 -->
@@ -151,9 +173,9 @@
       <!-- 푸터 -->
       <div class="px-6 py-4 border-t border-slate-800 shrink-0 flex gap-3">
         <button class="flex-1 px-4 py-2.5 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors" (click)="closeForm()">닫기</button>
-        <button class="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2" [disabled]="saving()" (click)="save()">
-          @if (saving()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
-          {{ saving() ? '저장 중...' : '저장' }}
+        <button class="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2" [disabled]="saving() || uploadingImage() || uploadingFile()" (click)="save()">
+          @if (saving() || uploadingImage() || uploadingFile()) { <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span> }
+          {{ uploadingImage() || uploadingFile() ? '업로드 중...' : saving() ? '저장 중...' : '저장' }}
         </button>
       </div>
 

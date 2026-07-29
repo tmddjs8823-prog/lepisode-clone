@@ -66,6 +66,9 @@ export class EventsPage implements OnInit {
   fSelectedDate = signal('');
   fContent = signal('');
   fAttachName = signal('');
+  fImagePreview = signal('');
+  uploadingImage = signal(false);
+  uploadingFile = signal(false);
 
   deleteTarget = signal<EventItem | null>(null);
   deleting = signal(false);
@@ -74,15 +77,52 @@ export class EventsPage implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
     this.fAttachName.set(file.name);
+    this.uploadingFile.set(true);
     this.upload.upload(file, 'event-docs').subscribe({
-      next: (res) => { this.fAttachmentUrl.set(res.url); this.toast.success('파일이 업로드되었습니다.'); },
-      error: () => this.toast.error('파일 업로드에 실패했습니다.'),
+      next: (res) => { this.fAttachmentUrl.set(res.url); this.uploadingFile.set(false); this.toast.success('파일이 업로드되었습니다.'); },
+      error: () => { this.uploadingFile.set(false); this.toast.error('파일 업로드에 실패했습니다.'); },
     });
   }
 
   removeFile(): void {
     this.fAttachName.set('');
     this.fAttachmentUrl.set('');
+  }
+
+  /* ── 이미지 업로드 ── */
+  onImageSelect(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.uploadImage(file);
+  }
+
+  onImageDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  onImageDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const file = event.dataTransfer?.files?.[0];
+    if (file && file.type.startsWith('image/')) this.uploadImage(file);
+  }
+
+  private uploadImage(file: File): void {
+    const reader = new FileReader();
+    reader.onload = () => this.fImagePreview.set(reader.result as string);
+    reader.readAsDataURL(file);
+
+    this.uploadingImage.set(true);
+    this.upload.upload(file, 'event-images').subscribe({
+      next: (res) => { this.fImageUrl.set(res.url); this.uploadingImage.set(false); this.toast.success('이미지가 업로드되었습니다.'); },
+      error: () => { this.uploadingImage.set(false); this.toast.error('이미지 업로드에 실패했습니다.'); },
+    });
+  }
+
+  removeImage(): void {
+    this.fImageUrl.set('');
+    this.fImagePreview.set('');
   }
 
   filteredData = computed(() => {
@@ -134,7 +174,8 @@ export class EventsPage implements OnInit {
     this.fPublished.set(item?.published ?? true);
     this.fSelectedDate.set(item?.selectedDate ? item.selectedDate.slice(0, 10) : '');
     this.fContent.set(item?.content ?? '');
-    this.fAttachName.set(item?.attachmentUrl ? '첨부파일' : '');
+    this.fAttachName.set(item?.attachmentName ?? '');
+    this.fImagePreview.set(item?.imageUrl ?? '');
     this.showForm.set(true);
   }
 
@@ -149,15 +190,27 @@ export class EventsPage implements OnInit {
 
   save(): void {
     if (!this.fTitle().trim()) { this.toast.warning('제목을 입력하세요.'); return; }
+    if (this.uploadingImage() || this.uploadingFile()) { this.toast.warning('파일 업로드 중입니다. 완료 후 저장해주세요.'); return; }
+    if (this.fStartDate() && this.fEndDate() && this.fStartDate() > this.fEndDate()) {
+      this.toast.warning('시작일은 종료일보다 이후일 수 없습니다.'); return;
+    }
+
+    const nullIfEmpty = (v: string): string | null => v.trim() || null;
+
     const payload: EventPayload = {
       title: this.fTitle().trim(),
-      titleEn: this.fTitleEn().trim() || undefined,
-      titleJa: this.fTitleJa().trim() || undefined,
-      description: this.fDescription().trim() || undefined,
-      imageUrl: this.fImageUrl() || undefined,
-      attachmentUrl: this.fAttachmentUrl() || undefined,
-      startDate: this.fStartDate() || undefined,
-      endDate: this.fEndDate() || undefined,
+      titleEn: nullIfEmpty(this.fTitleEn()),
+      titleJa: nullIfEmpty(this.fTitleJa()),
+      description: nullIfEmpty(this.fDescription()),
+      content: nullIfEmpty(this.fContent()),
+      seoTitle: nullIfEmpty(this.fSeoTitle()),
+      metaDesc: nullIfEmpty(this.fMetaDesc()),
+      imageUrl: nullIfEmpty(this.fImageUrl()),
+      attachmentUrl: nullIfEmpty(this.fAttachmentUrl()),
+      attachmentName: nullIfEmpty(this.fAttachName()),
+      startDate: this.fStartDate() || null,
+      endDate: this.fEndDate() || null,
+      selectedDate: this.fSelectedDate() || null,
       published: this.fPublished(),
     };
 

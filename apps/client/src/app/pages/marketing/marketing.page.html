@@ -5,22 +5,15 @@
   <div class="relative z-10 max-w-[1100px] mx-auto w-full px-6 flex flex-col lg:flex-row items-center gap-12 py-20">
     <!-- 텍스트 -->
     <div class="flex-1 text-center lg:text-left">
-      <div class="flex items-center gap-2 mb-4 justify-center lg:justify-start">
-        <span class="text-indigo-600 text-lg">◇</span>
-        <span class="text-sm font-semibold text-[#41539b]">LEPISODE</span>
-      </div>
-      <h1 class="text-3xl md:text-[2.8rem] font-black text-gray-900 leading-tight mb-5" [innerHTML]="'marketing.hero_title' | translate"></h1>
+
+      <h1 class="text-3xl md:text-[2.8rem] font-black leading-tight mb-5" [innerHTML]="heroTitleHtml()"></h1>
       <p class="text-sm text-gray-500 leading-relaxed mb-8" [innerHTML]="'marketing.hero_desc' | translate"></p>
       <div class="flex gap-3 justify-center lg:justify-start">
-        <a href="#marketing-services"
-           class="inline-flex items-center gap-2 bg-[#41539b] hover:bg-[#354786] text-white px-7 py-3.5 rounded-full text-sm font-semibold transition-all duration-200 shadow-lg shadow-indigo-200/50 hover:-translate-y-0.5">
-          {{ 'marketing.view_services' | translate }}
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-        </a>
-        <a href="#marketing-contact"
-           class="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 px-7 py-3.5 rounded-full text-sm font-semibold border border-gray-200 transition-all duration-200 hover:-translate-y-0.5">
+        <button type="button" (click)="scrollTo('marketing-contact')"
+           class="inline-flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-8 py-3.5 rounded-full text-sm font-semibold transition-all duration-200 shadow-lg shadow-gray-900/30 hover:-translate-y-0.5 cursor-pointer">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
           {{ 'marketing.free_consult' | translate }}
-        </a>
+        </button>
       </div>
     </div>
 
@@ -83,62 +76,50 @@
 <!-- ═══════════ 3. 호스팅 서비스 ═══════════ -->
 <section class="hosting-section py-24 px-6" id="marketing-hosting">
   <div class="max-w-[1100px] mx-auto">
-    <div class="flex flex-col lg:flex-row gap-16 items-start">
+    <div class="flex flex-col lg:flex-row gap-16 items-center">
 
-      <!-- 좌: 타이틀 (sticky) -->
-      <div class="lg:w-[340px] flex-shrink-0 lg:sticky lg:top-40">
+      <!-- 좌: 타이틀 -->
+      <div class="lg:w-[340px] flex-shrink-0">
         <span class="text-sm font-semibold text-blue-200 tracking-widest uppercase mb-3 block">HOSTING</span>
         <h2 class="text-3xl md:text-[2.4rem] font-black text-white leading-tight mb-4">{{ 'marketing.hosting_title' | translate }}</h2>
         <p class="text-sm text-blue-200/80 leading-relaxed" [innerHTML]="'marketing.hosting_desc' | translate"></p>
       </div>
 
-      <!-- 우: 중앙 포커스 벨트 -->
-      <div class="flex-1 max-w-[360px] relative">
-        <!-- 상/하단 페이드 (부드러운 엣지) -->
-        <div class="absolute top-0 left-0 right-0 h-16 z-10 pointer-events-none" style="background:linear-gradient(to bottom, rgba(79,143,247,1), transparent)"></div>
-        <div class="absolute bottom-0 left-0 right-0 h-16 z-10 pointer-events-none" style="background:linear-gradient(to top, rgba(79,143,247,1), transparent)"></div>
-
-        <div class="overflow-hidden h-[420px]">
-          <div class="flex flex-col gap-3"
-               [class.hosting-belt-smooth]="hostingTransition()"
-               [style.transform]="'translateY(' + hostingOffset() + 'px)'">
-            <!-- 1세트 -->
-            @for (svc of hostingServices; track svc.title; let i = $index) {
-              <div class="hosting-card flex items-center gap-5 rounded-2xl px-6 py-6 transition-all duration-500"
-                   [class.hosting-card--lit]="activeHostingIdx() === i"
-                   [class.hosting-card--dim]="activeHostingIdx() !== i">
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" [class]="svc.color">
-                  @if (svc.icon === 'server') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg> }
-                  @if (svc.icon === 'cloud') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"/></svg> }
-                  @if (svc.icon === 'dns') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/></svg> }
-                  @if (svc.icon === 'ssl') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg> }
-                  @if (svc.icon === 'monitor') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25h-13.5A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z"/></svg> }
-                </div>
-                <div>
-                  <h3 class="text-sm font-bold text-gray-900">{{ svc.title }}</h3>
-                  <p class="text-xs text-gray-400 leading-relaxed whitespace-pre-line">{{ svc.desc }}</p>
-                </div>
+      <!-- 우: 벨트 (CSS 무한 스크롤 + rAF 중앙 감지) -->
+      <div class="flex-1 max-w-[400px] hosting-belt-container">
+        <div class="hosting-belt-track">
+          <!-- 1세트 -->
+          @for (svc of hostingServices; track svc.title; let i = $index) {
+            <div class="hosting-card flex items-center gap-5 rounded-2xl px-6 py-5">
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" [class]="svc.color">
+                @if (svc.icon === 'server') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg> }
+                @if (svc.icon === 'cloud') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"/></svg> }
+                @if (svc.icon === 'dns') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/></svg> }
+                @if (svc.icon === 'ssl') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg> }
+                @if (svc.icon === 'monitor') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25h-13.5A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z"/></svg> }
               </div>
-            }
-            <!-- 복제 세트 -->
-            @for (svc of hostingServices; track svc.title + '-dup'; let i = $index) {
-              <div class="hosting-card flex items-center gap-5 rounded-2xl px-6 py-6 transition-all duration-500"
-                   [class.hosting-card--lit]="activeHostingIdx() === (i + hostingServices.length)"
-                   [class.hosting-card--dim]="activeHostingIdx() !== (i + hostingServices.length)">
-                <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" [class]="svc.color">
-                  @if (svc.icon === 'server') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg> }
-                  @if (svc.icon === 'cloud') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"/></svg> }
-                  @if (svc.icon === 'dns') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/></svg> }
-                  @if (svc.icon === 'ssl') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg> }
-                  @if (svc.icon === 'monitor') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25h-13.5A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z"/></svg> }
-                </div>
-                <div>
-                  <h3 class="text-sm font-bold text-gray-900">{{ svc.title }}</h3>
-                  <p class="text-xs text-gray-400 leading-relaxed whitespace-pre-line">{{ svc.desc }}</p>
-                </div>
+              <div>
+                <h3 class="text-sm font-bold">{{ svc.title }}</h3>
+                <p class="text-xs leading-relaxed whitespace-pre-line">{{ svc.desc }}</p>
               </div>
-            }
-          </div>
+            </div>
+          }
+          <!-- 복제 세트 (무한 루프용) -->
+          @for (svc of hostingServices; track svc.title + '-dup') {
+            <div class="hosting-card flex items-center gap-5 rounded-2xl px-6 py-5">
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" [class]="svc.color">
+                @if (svc.icon === 'server') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg> }
+                @if (svc.icon === 'cloud') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"/></svg> }
+                @if (svc.icon === 'dns') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/></svg> }
+                @if (svc.icon === 'ssl') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg> }
+                @if (svc.icon === 'monitor') { <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25h-13.5A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z"/></svg> }
+              </div>
+              <div>
+                <h3 class="text-sm font-bold">{{ svc.title }}</h3>
+                <p class="text-xs leading-relaxed whitespace-pre-line">{{ svc.desc }}</p>
+              </div>
+            </div>
+          }
         </div>
       </div>
 
@@ -268,7 +249,7 @@
       <!-- 좌: 연락처 카드 -->
       <div class="flex flex-col gap-3">
         <a href="https://pf.kakao.com/_ugdxln" target="_blank" rel="noopener"
-           class="flex items-center gap-4 bg-white rounded-2xl border border-gray-100 px-6 py-5 shadow-sm flex-1 hover:shadow-md hover:border-yellow-300 transition-all no-underline">
+           class="flex items-center gap-4 bg-white rounded-2xl border border-gray-100 px-6 py-5 shadow-sm flex-1 hover:shadow-md hover:border-yellow-300 transition-all cursor-pointer no-underline">
           <div class="w-11 h-11 rounded-xl bg-[#FEE500] flex items-center justify-center flex-shrink-0">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C6.48 3 2 6.58 2 10.9c0 2.78 1.86 5.22 4.66 6.6l-.9 3.33c-.08.28.24.5.48.34l3.9-2.58c.6.08 1.22.12 1.86.12 5.52 0 10-3.58 10-7.9C22 6.58 17.52 3 12 3z"/></svg>
           </div>
@@ -311,6 +292,7 @@
             <p class="text-sm text-gray-400">{{ 'marketing.submitted_desc' | translate }}</p>
           </div>
         } @else {
+          <!-- 성함 / 연락처 -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
               <label for="mkt-name" class="text-xs font-semibold text-gray-500 mb-1.5 block">{{ 'marketing.form_name' | translate }} <span class="text-red-400">*</span></label>
@@ -318,29 +300,50 @@
                      class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#41539b] focus:ring-2 focus:ring-indigo-100 transition-all" />
             </div>
             <div>
-              <label for="mkt-phone" class="text-xs font-semibold text-gray-500 mb-1.5 block">{{ 'marketing.form_phone' | translate }} <span class="text-red-400">*</span></label>
-              <input id="mkt-phone" type="tel" placeholder="010-0000-0000" [(ngModel)]="formPhone"
-                     class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#41539b] focus:ring-2 focus:ring-indigo-100 transition-all" />
+              <label for="mkt-phone1" class="text-xs font-semibold text-gray-500 mb-1.5 block">{{ 'marketing.form_phone' | translate }} <span class="text-red-400">*</span></label>
+              <div class="flex items-center gap-1">
+                <input id="mkt-phone1" type="tel" placeholder="010" [(ngModel)]="formPhone1" maxlength="3"
+                       (input)="autoFocusNext($event, 'mkt-phone2', 3)"
+                       class="w-full min-w-0 px-1 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-center focus:outline-none focus:border-[#41539b] focus:ring-2 focus:ring-indigo-100 transition-all" />
+                <span class="text-gray-300 flex-shrink-0">-</span>
+                <input id="mkt-phone2" type="tel" placeholder="0000" [(ngModel)]="formPhone2" maxlength="4"
+                       (input)="autoFocusNext($event, 'mkt-phone3', 4)"
+                       class="w-full min-w-0 px-1 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-center focus:outline-none focus:border-[#41539b] focus:ring-2 focus:ring-indigo-100 transition-all" />
+                <span class="text-gray-300 flex-shrink-0">-</span>
+                <input id="mkt-phone3" type="tel" placeholder="0000" [(ngModel)]="formPhone3" maxlength="4"
+                       class="w-full min-w-0 px-1 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-center focus:outline-none focus:border-[#41539b] focus:ring-2 focus:ring-indigo-100 transition-all" />
+              </div>
             </div>
           </div>
 
+          <!-- 이메일 -->
           <div class="mb-5">
             <label for="mkt-email" class="text-xs font-semibold text-gray-500 mb-1.5 block">{{ 'marketing.form_email' | translate }}</label>
             <input id="mkt-email" type="email" placeholder="example@email.com" [(ngModel)]="formEmail"
                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#41539b] focus:ring-2 focus:ring-indigo-100 transition-all" />
           </div>
 
-          <div class="flex flex-col gap-2.5 mb-6">
+          <!-- 동의 체크박스 -->
+          <div class="flex flex-col gap-3 mb-6">
+            <!-- [필수] 개인정보 수집 동의 -->
             <label class="flex items-start gap-2.5 cursor-pointer group">
               <input type="checkbox" [(ngModel)]="agreePrivacy"
                      class="mt-0.5 w-4 h-4 rounded border-gray-300 text-[#41539b] focus:ring-[#41539b]" />
               <span class="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
-                {{ 'marketing.agree_privacy' | translate }}
-                <a href="#" class="text-[#41539b] underline underline-offset-2">{{ 'common.view_detail' | translate }}</a>
+                <span class="text-red-500 font-bold">[필수]</span> 요청하신 문의 내용에 대한 서비스 제공을 위해 필요한 최소한의 <span class="text-gray-900 font-semibold underline underline-offset-2">개인정보</span> 수집 및 이용에 동의합니다.
+              </span>
+            </label>
+            <!-- [선택] 마케팅 정보 수신 동의 -->
+            <label class="flex items-start gap-2.5 cursor-pointer group">
+              <input type="checkbox" [(ngModel)]="agreeMarketing"
+                     class="mt-0.5 w-4 h-4 rounded border-gray-300 text-[#41539b] focus:ring-[#41539b]" />
+              <span class="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
+                <span class="text-gray-400 font-bold">[선택]</span> 레피소드의 이벤트 및 최신 기술 정보 수신을 위한 <span class="text-gray-900 font-semibold underline underline-offset-2">마케팅 정보 수신 동의</span>에 동의합니다.
               </span>
             </label>
           </div>
 
+          <!-- 제출 버튼 -->
           <button
             class="w-full py-4 rounded-2xl text-white font-bold text-base transition-all duration-200 shadow-lg mt-auto"
             [class]="submitting() ? 'bg-gray-300 cursor-not-allowed' : 'bg-gradient-to-r from-[#41539b] to-[#6366f1] hover:from-[#354786] hover:to-[#4f46e5] hover:-translate-y-0.5 shadow-indigo-200/50'"
@@ -349,7 +352,7 @@
             @if (submitting()) {
               {{ 'marketing.submitting' | translate }}
             } @else {
-              {{ 'marketing.submit_btn' | translate }}
+              문의 접수하기
             }
           </button>
         }
@@ -357,3 +360,4 @@
     </div>
   </div>
 </section>
+

@@ -4,11 +4,12 @@ import { RouterLink } from '@angular/router';
 import { ClientApiService, ServiceItem } from '../../shared/services/client-api.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { I18nService } from '../../shared/services/i18n.service';
+import { RichTextPipe } from '../../shared/pipes/rich-text.pipe';
 
 @Component({
   selector: 'app-services-page',
   standalone: true,
-  imports: [DatePipe, RouterLink, TranslatePipe],
+  imports: [DatePipe, RouterLink, TranslatePipe, RichTextPipe],
   templateUrl: './services.page.html',
   styleUrl: './services.page.css',
 })

@@ -4,13 +4,14 @@ import { RouterLink } from '@angular/router';
 import { ClientApiService, PortfolioItem } from '../../shared/services/client-api.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { I18nService } from '../../shared/services/i18n.service';
+import { RichTextPipe } from '../../shared/pipes/rich-text.pipe';
 
 
 
 @Component({
   selector: 'app-portfolio-page',
   standalone: true,
-  imports: [RouterLink, TranslatePipe],
+  imports: [RouterLink, TranslatePipe, RichTextPipe],
   templateUrl: './portfolio.page.html',
 })
 export class PortfolioPage implements OnInit {

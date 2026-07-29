@@ -25,10 +25,13 @@ export class StatusPage implements OnInit {
     const tab = this.activeTab();
     const all = this.allStatuses();
     if (tab === 'all') return all;
-    const platformMap: Record<string, string> = { web: '웹', app: '앱' };
-    const target = platformMap[tab] || tab;
+    if (tab === 'web') {
+      return all.filter(item => item.platforms?.some(p => p.toLowerCase() === 'web') ?? false);
+    }
+    // app: Android, iOS, App
+    const appPlatforms = ['android', 'ios', 'app'];
     return all.filter(item =>
-      item.platforms?.some(p => p === target) ?? false
+      item.platforms?.some(p => appPlatforms.includes(p.toLowerCase())) ?? false
     );
   });
 

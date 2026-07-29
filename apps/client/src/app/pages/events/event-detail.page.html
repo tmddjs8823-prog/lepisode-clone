@@ -16,7 +16,7 @@
       <button class="inline-flex items-center gap-1.5 text-[0.85rem] font-medium text-gray-400 bg-transparent border-none cursor-pointer mb-6 transition-colors hover:text-[#41539b]"
               (click)="goBack()">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-        목록으로
+        
       </button>
 
       <!-- 헤더 -->
@@ -27,7 +27,9 @@
             : getStatus() === 'upcoming'
               ? 'bg-[#41539b]/10 text-[#41539b]'
               : 'bg-slate-400/10 text-slate-400'">
-          {{ getStatusLabel() }}
+          {{ (getStatusLabel() | translate) !== getStatusLabel() ? (getStatusLabel() | translate) :
+             (getStatusLabel() === 'events.status_upcoming' ? '예정' :
+              getStatusLabel() === 'events.status_ended' ? '종료' : '진행중') }}
         </span>
         <h1 class="text-[1.8rem] font-extrabold text-[#1a1a2e] m-0 mb-3 leading-tight">{{ loc(event()!, 'title') }}</h1>
         <div class="flex items-center gap-1.5 text-[0.82rem] text-gray-400">
@@ -55,11 +57,11 @@
 
       <!-- 첨부파일 -->
       @if (event()!.attachmentUrl) {
-        <a [href]="event()!.attachmentUrl" target="_blank" rel="noopener"
-           class="inline-flex items-center gap-2 px-5 py-3 bg-[#f5f5ff] text-[#41539b] rounded-xl text-[0.85rem] font-semibold no-underline transition-all mb-4 hover:bg-[#ededff]">
+        <button (click)="downloadAttachment()"
+           class="inline-flex items-center gap-2 px-5 py-3 bg-[#f5f5ff] text-[#41539b] rounded-xl text-[0.85rem] font-semibold border-none cursor-pointer transition-all mb-4 hover:bg-[#ededff]">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-          첨부파일 다운로드
-        </a>
+          {{ event()!.attachmentName || '첨부파일 다운로드' }}
+        </button>
       }
 
       <!-- 링크 -->
@@ -70,11 +72,7 @@
         </a>
       }
 
-      <!-- 구분선 + 목록 -->
-      <div class="border-t border-gray-100 pt-6 mt-8">
-        <button class="px-7 py-3 bg-gray-50 text-gray-500 border border-gray-200 rounded-xl text-[0.85rem] font-semibold cursor-pointer transition-all hover:bg-gray-100 hover:text-[#1a1a2e]"
-                (click)="goBack()">목록으로 돌아가기</button>
-      </div>
+
     }
   </div>
 </section>

@@ -102,7 +102,7 @@ export class ProjectStatusDetailPage implements OnInit {
 
   readonly statusMeta = STATUS_META;
   readonly statusOptions: ProjectStatusType[] = ['ESTIMATING', 'IN_PROGRESS', 'COMPLETE'];
-  readonly platformOptions = ['안드로이드', 'iOS', '웹'];
+  readonly platformOptions = ['Android', 'iOS', 'Web'];
 
   fTitle = signal('');
   fTitleEn = signal('');

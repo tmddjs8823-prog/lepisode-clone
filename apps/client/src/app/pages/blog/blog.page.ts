@@ -3,11 +3,12 @@ import { isPlatformBrowser, DatePipe } from '@angular/common';
 import { ClientApiService, NaverBlogPost } from '../../shared/services/client-api.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { I18nService } from '../../shared/services/i18n.service';
+import { RichTextPipe } from '../../shared/pipes/rich-text.pipe';
 
 @Component({
   selector: 'app-blog-page',
   standalone: true,
-  imports: [DatePipe, TranslatePipe],
+  imports: [DatePipe, TranslatePipe, RichTextPipe],
   templateUrl: './blog.page.html',
   styleUrl: './blog.page.css',
 })

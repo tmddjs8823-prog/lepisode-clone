@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── 루트 폰트 크기 (뷰포트 반응형: 16px ~ 19px) ── */
+html { font-size: clamp(16px, 0.9vw + 10px, 19px); }
 /* ── SUIT 폰트 ── */
 @font-face { font-family: "SUIT"; font-weight: 100; font-style: normal; src: url(https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Thin.woff2) format("woff2"); font-display: swap; }
 @font-face { font-family: "SUIT"; font-weight: 200; font-style: normal; src: url(https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-ExtraLight.woff2) format("woff2"); font-display: swap; }

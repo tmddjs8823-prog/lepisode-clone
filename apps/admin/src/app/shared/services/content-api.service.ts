@@ -143,6 +143,7 @@ export interface EventItem {
   imageUrl: string | null;
   linkUrl: string | null;
   attachmentUrl: string | null;
+  attachmentName: string | null;
   startDate: string | null;
   endDate: string | null;
   selectedDate: string | null;
@@ -155,15 +156,19 @@ export interface EventItem {
 
 export interface EventPayload {
   title: string;
-  titleEn?: string;
-  titleJa?: string;
-  description?: string;
-  imageUrl?: string;
-  linkUrl?: string;
-  attachmentUrl?: string;
-  startDate?: string;
-  endDate?: string;
-  selectedDate?: string;
+  titleEn?: string | null;
+  titleJa?: string | null;
+  description?: string | null;
+  content?: string | null;
+  seoTitle?: string | null;
+  metaDesc?: string | null;
+  imageUrl?: string | null;
+  linkUrl?: string | null;
+  attachmentUrl?: string | null;
+  attachmentName?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  selectedDate?: string | null;
   published?: boolean;
 }
 

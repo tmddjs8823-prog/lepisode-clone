@@ -3,11 +3,12 @@ import { isPlatformBrowser, DatePipe, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ClientApiService, EventItem } from '../../shared/services/client-api.service';
 import { I18nService } from '../../shared/services/i18n.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-event-detail-page',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, TranslatePipe],
   templateUrl: './event-detail.page.html',
 })
 export class EventDetailPage implements OnInit {
@@ -37,17 +38,17 @@ export class EventDetailPage implements OnInit {
   getStatus(): 'upcoming' | 'ongoing' | 'ended' {
     const e = this.event();
     if (!e) return 'ended';
-    const now = new Date();
-    if (e.startDate && new Date(e.startDate) > now) return 'upcoming';
-    if (e.endDate && new Date(e.endDate) < now) return 'ended';
+    const today = new Date().toISOString().slice(0, 10);
+    if (e.startDate && e.startDate.slice(0, 10) > today) return 'upcoming';
+    if (e.endDate && e.endDate.slice(0, 10) < today) return 'ended';
     return 'ongoing';
   }
 
   getStatusLabel(): string {
     const s = this.getStatus();
-    if (s === 'upcoming') return '예정';
-    if (s === 'ended') return '종료';
-    return '진행중';
+    if (s === 'upcoming') return 'events.status_upcoming';
+    if (s === 'ended') return 'events.status_ended';
+    return 'events.status_ongoing';
   }
 
   goBack(): void {
@@ -61,5 +62,25 @@ export class EventDetailPage implements OnInit {
     if (lang === 'en') return String(item[field + 'En'] || item[field] || '');
     if (lang === 'ja') return String(item[field + 'Ja'] || item[field] || '');
     return String(item[field] || '');
+  }
+
+  /** 첨부파일을 원본 파일명으로 다운로드 */
+  downloadAttachment(): void {
+    const ev = this.event();
+    if (!ev?.attachmentUrl) return;
+
+    const fileName = ev.attachmentName || '첨부파일';
+
+    fetch(ev.attachmentUrl)
+      .then(res => res.blob())
+      .then(blob => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+      });
   }
 }

@@ -1,18 +1,42 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, PLATFORM_ID, HostListener } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClientApiService } from '../../shared/services/client-api.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { RichTextPipe } from '../../shared/pipes/rich-text.pipe';
 
 @Component({
   selector: 'app-support-projects-page',
   standalone: true,
-  imports: [FormsModule, TranslatePipe],
+  imports: [FormsModule, TranslatePipe, RichTextPipe],
   templateUrl: './support-projects.page.html',
   styleUrl: './support-projects.page.css',
 })
 export class SupportProjectsPage implements OnInit {
+  private platformId = inject(PLATFORM_ID);
   private api = inject(ClientApiService);
   private translate = inject(TranslateService);
+
+  /** 카테고리 카드 외부 클릭 시 선택 해제 */
+  @HostListener('document:click', ['$event.target'])
+  onDocClick(target: EventTarget | null): void {
+    if (!this.activeCategory() || !(target instanceof HTMLElement)) return;
+    if (!target.closest('[data-category-card]')) {
+      this.clearCategory();
+    }
+  }
+
+  /** Escape 키로 카테고리 선택 해제 (접근성) */
+  @HostListener('document:keydown.escape')
+  onEscKey(): void {
+    this.clearCategory();
+  }
+
+  scrollTo(id: string): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   private t(key: string): string {
     return this.translate.instant(key);
@@ -41,15 +65,28 @@ export class SupportProjectsPage implements OnInit {
 
   /* ── 문의 폼 ── */
   formName = '';
-  formPhone = '';
+  formPhone1 = '';
+  formPhone2 = '';
+  formPhone3 = '';
   formEmail = '';
   agreePrivacy = false;
   agreeMarketing = false;
   submitting = signal(false);
   submitted = signal(false);
 
+  autoFocusNext(event: Event, nextId: string, maxLen: number): void {
+    const input = event.target as HTMLInputElement;
+    if (input.value.length >= maxLen) {
+      document.getElementById(nextId)?.focus();
+    }
+  }
+
   selectCategory(key: string): void {
-    this.activeCategory.set(key);
+    this.activeCategory.set(this.activeCategory() === key ? '' : key);
+  }
+
+  clearCategory(): void {
+    this.activeCategory.set('');
   }
 
   getSelectedIcon(): string {
@@ -69,7 +106,7 @@ export class SupportProjectsPage implements OnInit {
       alert(this.t('marketing.form_name'));
       return;
     }
-    if (!this.formPhone.trim()) {
+    if (!this.formPhone1.trim() || !this.formPhone2.trim() || !this.formPhone3.trim()) {
       alert(this.t('marketing.form_phone'));
       return;
     }
@@ -78,10 +115,11 @@ export class SupportProjectsPage implements OnInit {
       return;
     }
 
+    const phone = `${this.formPhone1}-${this.formPhone2}-${this.formPhone3}`;
     this.submitting.set(true);
     this.api.createInquiry({
       name: this.formName.trim(),
-      phone: this.formPhone.trim(),
+      phone,
       email: this.formEmail.trim() || undefined,
       content: `[Support Inquiry] ${this.formName.trim()}`,
     }).subscribe({
@@ -89,7 +127,9 @@ export class SupportProjectsPage implements OnInit {
         this.submitted.set(true);
         this.submitting.set(false);
         this.formName = '';
-        this.formPhone = '';
+        this.formPhone1 = '';
+        this.formPhone2 = '';
+        this.formPhone3 = '';
         this.formEmail = '';
         this.agreePrivacy = false;
         this.agreeMarketing = false;
