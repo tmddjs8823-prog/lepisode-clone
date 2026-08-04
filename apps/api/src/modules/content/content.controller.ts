@@ -128,5 +128,10 @@ export class ContentController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard) @Delete('qr/:id')
   removeQrCode(@Param('id', ParseIntPipe) id: number) { return this.service.removeQrCode(id); }
+
+  @ApiOperation({ summary: 'QR코드 이미지 재생성' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard) @Post('qr/:id/regenerate')
+  regenerateQrImage(@Param('id', ParseIntPipe) id: number) { return this.service.regenerateQrImage(id); }
 }
 

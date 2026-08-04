@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
@@ -6,11 +6,15 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { JwtPayload, AdminUserResponse } from '../../common/types/api.types';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
   private readonly accessTokenSecret: string;
   private readonly accessTokenExpiry: number; // seconds
   private readonly refreshTokenSecret: string;
   private readonly refreshTokenExpiry: number; // seconds
+
+  onModuleInit() {
+    this.createInitialAdmin();
+  }
 
   constructor(
     private readonly prisma: PrismaService,

@@ -13,7 +13,7 @@ export class SupportController {
   @ApiOperation({ summary: '프로젝트 현황 목록 (공개)' })
   @Get('statuses/public')
   findPublicStatuses() {
-    return this.service.findAllStatuses();
+    return this.service.findPublicStatuses();
   }
 
   // SupportProject

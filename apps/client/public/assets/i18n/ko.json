@@ -47,5 +47,32 @@
   "about.values.trust.title": "신뢰와 협력",
   "about.values.trust.desc": "투명한 소통과 협업으로\n장기적인 파트너십을 구축합니다.",
   "about.team.title": "팀원소개",
-  "about.team.desc": "레피소드를 이끌어가는 사람들"
+  "about.team.desc": "레피소드를 이끌어가는 사람들",
+
+  "portfolio.cat.all": "전체",
+  "portfolio.cat.platform": "플랫폼",
+  "portfolio.cat.homepage": "홈페이지",
+  "portfolio.cat.DX": "DX",
+  "portfolio.cat.AX": "AX",
+  "portfolio.cat.catalog": "카탈로그/브랜딩",
+
+  "common.loading": "로딩 중...",
+  "service_detail.recommended": "추천 서비스",
+  "service_detail.recommended_empty": "추천 서비스가 없습니다.",
+  "service_detail.not_found": "서비스를 찾을 수 없습니다.",
+
+  "inquiry.name_placeholder": "성함을 입력해 주세요",
+  "inquiry.required": "필수",
+  "inquiry.optional": "선택",
+  "inquiry.privacy_agree": "요청하신 문의 내용에 대한 서비스 제공을 위해 필요한 최소한의",
+  "inquiry.privacy_link": "개인정보",
+  "inquiry.privacy_agree_suffix": "수집 및 이용에 동의합니다.",
+  "inquiry.marketing_agree": "레피소드의 이벤트 및 최신 기술 정보 수신을 위한",
+  "inquiry.marketing_link": "마케팅 정보 수신 동의",
+  "inquiry.marketing_agree_suffix": "에 동의합니다.",
+
+  "inquiry.submit": "문의 접수하기",
+  "portfolio_detail.recommended": "추천 포트폴리오",
+  "portfolio_detail.recommended_empty": "추천 포트폴리오가 없습니다.",
+  "portfolio_detail.not_found": "포트폴리오를 찾을 수 없습니다."
 }

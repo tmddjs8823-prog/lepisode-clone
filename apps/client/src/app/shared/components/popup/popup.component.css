@@ -20,9 +20,30 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ── 스와이프 컨테이너 ── */
+.popup-swipe-container {
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── 화살표 버튼 ── */
+.popup-arrow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.popup-arrow:active {
+  transform: translateY(-50%) scale(0.92);
+}
+
+/* ── 인디케이터 도트 ── */
+.popup-dot {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
 /* ── 반응형 ── */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .popup-card {
-    width: 92vw;
+    width: 100%;
   }
 }

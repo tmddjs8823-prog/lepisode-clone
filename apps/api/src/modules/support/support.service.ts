@@ -48,6 +48,14 @@ export class SupportService {
   }
 
   // ── ProjectStatus ─────────────────────────────────────
+  /** 공개용: published=true인 항목만 반환 (종료 처리는 스케줄러가 담당) */
+  async findPublicStatuses() {
+    return this.prisma.projectStatus.findMany({
+      where: { published: true },
+      orderBy: { sortOrder: 'asc' },
+    });
+  }
+
   async findAllStatuses(params?: { published?: boolean }) {
     const where: Prisma.ProjectStatusWhereInput = {};
     if (params?.published !== undefined) where.published = params.published;

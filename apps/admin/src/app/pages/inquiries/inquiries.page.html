@@ -58,6 +58,7 @@
     [total]="total()"
     [page]="page()"
     [limit]="limit()"
+    [rowClassFn]="$any(inquiryRowClass)"
     (rowClick)="openDetail($any($event))"
     (edit)="openDetail($any($event))"
     (delete)="onDelete($any($event))"

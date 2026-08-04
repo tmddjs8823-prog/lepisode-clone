@@ -22,6 +22,7 @@
           routerLinkActive="bg-blue-600/20 text-blue-400"
           [routerLinkActiveOptions]="{exact: true}"
           class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors duration-150 text-base font-medium"
+          (click)="onNavClick()"
         >
           <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="item.icon"/>
@@ -54,6 +55,7 @@
                   [routerLink]="child.route"
                   routerLinkActive="text-blue-400 bg-blue-600/10"
                   class="flex items-center gap-2 px-3 py-2 rounded-md text-slate-500 hover:bg-slate-800 hover:text-slate-200 transition-colors duration-150 text-sm font-medium"
+                  (click)="onNavClick()"
                 >
                   <span class="w-1.5 h-1.5 rounded-full bg-current shrink-0"></span>
                   {{ child.label }}

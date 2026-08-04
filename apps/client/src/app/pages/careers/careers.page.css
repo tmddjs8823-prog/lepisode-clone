@@ -73,9 +73,9 @@
   }
 
   .section-nav-inner {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     border-radius: 16px;
-    margin: 0 16px;
+    margin: 0;
     gap: 4px;
     padding: 8px;
   }
@@ -103,4 +103,13 @@
     grid-row: auto;
     height: 340px;
   }
+}
+
+/* ── 스크롤바 숨기기 (섹션 네비) ── */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

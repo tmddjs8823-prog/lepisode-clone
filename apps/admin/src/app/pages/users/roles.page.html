@@ -3,20 +3,20 @@
   <admin-page-header title="역할 및 권한 관리" />
 
   <!-- ── 상단 바 ── -->
-  <div class="flex items-center justify-between gap-4 flex-wrap">
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
     <div class="relative">
       <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
       <input type="text"
-        class="pl-9 pr-4 py-2 w-64 bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg focus:outline-none focus:border-indigo-500"
+        class="pl-9 pr-4 py-2 w-full lg:w-64 bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg focus:outline-none focus:border-indigo-500"
         placeholder="검색어를 입력해주세요."
         [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
     </div>
-    <div class="flex items-center gap-3">
-      <button class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors" (click)="exportJson()">
+    <div class="grid grid-cols-2 lg:flex lg:items-center gap-2 lg:gap-3">
+      <button class="flex items-center justify-center gap-2 px-4 py-2 text-sm text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors whitespace-nowrap" (click)="exportJson()">
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-        JSON으로 내보내기
+        JSON 내보내기
       </button>
-      <button class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors" (click)="openForm()">
+      <button class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors" (click)="openForm()">
         등록
       </button>
     </div>
@@ -34,7 +34,7 @@
         <div class="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
           <!-- 헤더 -->
           <div
-            class="flex items-center gap-3 px-5 py-3.5 cursor-pointer hover:bg-slate-800/80 transition-colors select-none"
+            class="flex flex-wrap items-center gap-2 lg:gap-3 px-4 lg:px-5 py-3 lg:py-3.5 cursor-pointer hover:bg-slate-800/80 transition-colors select-none"
             (click)="toggleExpand(role.id)" (keydown.enter)="toggleExpand(role.id)" tabindex="0" role="button"
           >
             <svg
@@ -45,15 +45,16 @@
             <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/20">역할</span>
             <span class="text-sm font-medium text-slate-200">{{ role.name }}</span>
             @if (role.description) {
-              <span class="text-slate-600">-</span>
-              <span class="text-xs text-slate-500">{{ role.description }}</span>
+              <span class="text-slate-600 hidden lg:inline">-</span>
+              <span class="text-xs text-slate-500 hidden lg:inline">{{ role.description }}</span>
             }
-            <div class="flex-1"></div>
 
             <!-- 권한 수 배지 -->
             <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-slate-700/50 text-slate-400 border border-slate-600/30">
               권한 {{ role.permissions.length }}개
             </span>
+
+            <div class="flex-1"></div>
 
             <!-- 로우 액션 버튼 -->
             <div class="flex items-center gap-2">
@@ -67,7 +68,7 @@
                 class="px-2.5 py-1 text-[11px] font-medium text-indigo-400 border border-indigo-500/20 bg-indigo-500/5 rounded-lg hover:bg-indigo-500/15 transition-colors"
                 (click)="$event.stopPropagation(); openEditRole(role)"
               >
-                역할 수정
+                수정
               </button>
             </div>
           </div>
@@ -75,8 +76,8 @@
           <!-- 확장 영역 -->
           @if (isExpanded(role.id)) {
             <div class="border-t border-slate-700/30">
-              <!-- 헤더 -->
-              <div class="flex items-center gap-3 px-5 py-2 text-[11px] font-medium text-slate-500 uppercase tracking-wider border-b border-slate-700/20">
+              <!-- 데스크톱: 헤더 -->
+              <div class="hidden lg:flex items-center gap-3 px-5 py-2 text-[11px] font-medium text-slate-500 uppercase tracking-wider border-b border-slate-700/20">
                 <span class="w-12 shrink-0 text-center">권한</span>
                 <span class="w-16 shrink-0 text-center">레벨</span>
                 <span class="min-w-[8rem]">권한명</span>
@@ -85,7 +86,8 @@
               </div>
               <!-- 권한 행 -->
               @for (perm of role.permissions; track perm.id) {
-                <div class="flex items-center gap-3 px-5 py-2.5 border-b border-slate-700/20 last:border-b-0 hover:bg-slate-800/40 transition-colors group">
+                <!-- 데스크톱 -->
+                <div class="hidden lg:flex items-center gap-3 px-5 py-2.5 border-b border-slate-700/20 last:border-b-0 hover:bg-slate-800/40 transition-colors group">
                   <span class="w-12 shrink-0 text-center">
                     <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">권한</span>
                   </span>
@@ -104,6 +106,25 @@
                   >
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                   </button>
+                </div>
+                <!-- 모바일 -->
+                <div class="flex lg:hidden items-center justify-between gap-2 px-4 py-3 border-b border-slate-700/20 last:border-b-0">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="px-2 py-0.5 text-[10px] font-semibold rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shrink-0">Lv {{ perm.level }}</span>
+                    <span class="text-sm text-slate-200 font-medium truncate">{{ perm.name }}</span>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button
+                      class="px-2 py-1 text-[11px] font-medium text-indigo-400 border border-indigo-500/20 bg-indigo-500/5 rounded-lg"
+                      (click)="openEditPerm(role.id, perm)"
+                    >수정</button>
+                    <button
+                      class="p-1 text-slate-500 hover:text-red-400 rounded"
+                      (click)="deletePermission(role.id, perm.id)"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                  </div>
                 </div>
               }
 

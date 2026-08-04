@@ -7,26 +7,24 @@
 
 <div class="flex flex-col gap-6 p-6">
 
-  <admin-page-header title="다국어 관리" />
+  <!-- ── 설명 영역 + 버튼 ── -->
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div>
+      <h3 class="text-lg font-semibold text-white">다국어 관리</h3>
+      <p class="text-xs text-slate-400 mt-0.5">등록된 번역 키를 조회하고 언어별 문구를 관리합니다.</p>
+    </div>
+    <div class="grid grid-cols-2 lg:flex lg:items-center gap-2">
+      <button class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors whitespace-nowrap" (click)="showBulkUpload.set(true)">
+        액셀 일괄 등록
+      </button>
+      <button class="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors whitespace-nowrap" (click)="openForm()">
+          새 번역 추가
+      </button>
+    </div>
+  </div>
 
   <!-- ── 콘텐츠 영역 ── -->
-  <div class="flex flex-col gap-6 pl-6 pt-4 min-w-0">
-
-    <!-- ── 설명 영역 + 버튼 ── -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h3 class="text-lg font-semibold text-white">다국어 관리</h3>
-        <p class="text-xs text-slate-400 mt-0.5">등록된 번역 키를 조회하고 언어별 문구를 관리합니다.</p>
-      </div>
-      <div class="flex items-center gap-2">
-        <button class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors" (click)="showBulkUpload.set(true)">
-          액셀 일괄 등록
-        </button>
-        <button class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors" (click)="openForm()">
-            새 번역 추가
-        </button>
-      </div>
-    </div>
+  <div class="flex flex-col gap-6 min-w-0">
 
     <!-- ── 액티브 탭 ── -->
     <div class="flex items-center gap-1 bg-slate-800/60 rounded-lg p-1">

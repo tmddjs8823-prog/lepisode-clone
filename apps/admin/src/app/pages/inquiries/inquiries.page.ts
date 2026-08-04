@@ -89,6 +89,12 @@ export class InquiriesPage implements OnInit {
 
   totalPages = computed(() => Math.ceil(this.total() / this.limit()));
 
+  /** 미확인 행: 호버 시 인디고 배경으로 구분 */
+  inquiryRowClass = (row: Record<string, unknown>): string => {
+    const r = row as unknown as InquiryItem;
+    return r.isRead ? '' : '!bg-indigo-900/40 hover:!bg-indigo-700/40';
+  };
+
   filteredData = computed(() => {
     const term = this.searchTerm().toLowerCase();
     if (!term) return this.data();
@@ -140,6 +146,13 @@ export class InquiriesPage implements OnInit {
     this.selectedItem.set(item);
     this.editStatus.set(item.status);
     this.editMemo.set(item.adminMemo ?? '');
+    // API 호출하여 isRead: true 처리
+    this.inquiryApi.getOne(item.id).subscribe({
+      next: (updated) => {
+        this.selectedItem.set(updated);
+        this.loadData();
+      },
+    });
   }
 
   closeDetail(): void { this.selectedItem.set(null); this.editingMemo.set(false); }

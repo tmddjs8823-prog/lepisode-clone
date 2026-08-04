@@ -3,13 +3,13 @@
   <admin-page-header title="SEO / AEO 관리" />
 
   <!-- ── 헤더 ── -->
-  <div class="flex items-center justify-between bg-slate-800/50 border border-slate-700/50 rounded-xl p-6 shadow-sm">
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 lg:p-6 shadow-sm">
     <div>
-      <h2 class="text-3xl font-bold text-white mb-1">SEO / AEO 관리</h2>
-      <p class="text-sm text-slate-200">사이트 SEO 설정과 AI 검색 엔진용 텍스트 엔드포인트를 함께 관리합니다.</p>
+      <h2 class="text-xl lg:text-3xl font-bold text-white mb-1">SEO / AEO 관리</h2>
+      <p class="text-xs lg:text-sm text-slate-200">사이트 SEO 설정과 AI 검색 엔진용 텍스트 엔드포인트를 함께 관리합니다.</p>
     </div>
     <button
-      class="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors shadow-sm disabled:opacity-50"
+      class="flex items-center justify-center gap-2 w-full lg:w-auto px-5 py-2.5 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors shadow-sm disabled:opacity-50"
       [disabled]="saving()"
       (click)="save()">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div class="flex flex-col gap-1.5">
         <label for="global-seo-title" class="text-sm font-semibold text-slate-200">SEO 타이틀</label>
         <input id="global-seo-title" type="text"
@@ -71,7 +71,7 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <div class="flex flex-col gap-1.5">
         <label for="ai-txt" class="text-sm font-semibold text-slate-200">ai.txt</label>
         <textarea id="ai-txt"
@@ -114,7 +114,7 @@
           }
         </div>
 
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div class="flex flex-col gap-1.5">
             <div class="text-xs font-semibold text-slate-400">SEO 타이틀</div>
             <input

@@ -69,7 +69,7 @@ export class FaqPage implements OnInit {
 
   filteredFaqs = computed(() => {
     const catId = this.selectedCatId();
-    let list = catId === '' ? this.faqs() : this.faqs().filter((f) => f.categoryId === catId);
+    let list = catId === '' ? this.faqs() : this.faqs().filter((f) => f.categoryId === Number(catId));
     const term = this.searchTerm.toLowerCase();
     if (term) {
       list = list.filter(item =>

@@ -11,7 +11,7 @@ export class PaginationComponent {
   currentPage = input<number>(1);
   pageSize = input<number>(10);
   pageSizeOptions = input<number[]>([5, 10, 15, 20, 50, 100, 500]);
-  maxVisiblePages = input<number>(5);
+  maxVisiblePages = input<number>(3);
 
   /* ── Outputs ── */
   pageChange = output<number>();

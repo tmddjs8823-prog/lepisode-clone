@@ -1,6 +1,16 @@
 <div class="flex h-screen overflow-hidden bg-slate-950">
-  <!-- Sidebar -->
-  <admin-sidebar />
+  <!-- Sidebar: 데스크톱 고정 -->
+  <div class="hidden lg:block">
+    <admin-sidebar />
+  </div>
+
+  <!-- Sidebar: 모바일 드로어 -->
+  @if (sidebarOpen()) {
+    <div class="fixed inset-0 z-40 bg-black/50 lg:hidden" (click)="closeSidebar()" role="button" tabindex="-1" aria-label="메뉴 닫기"></div>
+    <div class="fixed inset-y-0 left-0 z-50 w-64 lg:hidden animate-[slideInLeft_0.2s_ease-out]">
+      <admin-sidebar (closed)="closeSidebar()" />
+    </div>
+  }
 
   <!-- Main -->
   <main class="flex-1 flex flex-col overflow-hidden">
@@ -10,8 +20,14 @@
          [class.shadow-lg]="scrolled"
          [class.shadow-black/20]="scrolled">
 
-      <!-- 좌측: 빵가루 / 환영 메시지 -->
+      <!-- 좌측: 햄버거 + 환영 메시지 -->
       <div class="flex items-center gap-2">
+        <button class="p-2 text-slate-500 hover:text-white transition-colors rounded-lg hover:bg-slate-800/60 lg:hidden"
+                (click)="toggleSidebar()">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+          </svg>
+        </button>
         @if (currentUser(); as user) {
           <span class="text-sm text-slate-500">안녕하세요,</span>
           <span class="text-sm font-semibold text-white">{{ user.name }}</span>
@@ -73,3 +89,57 @@
 <!-- Global Toast -->
 <admin-toast />
 
+<!-- ─── 글로벌: 미처리 문의 경고 다이얼로그 ─── -->
+@if (inquiryAlert().open) {
+  <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+       (click)="closeAlert()" (keydown.escape)="closeAlert()" tabindex="0">
+    <div class="relative bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl w-full max-w-md"
+         (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()" tabindex="-1">
+
+      <!-- X 닫기 버튼 -->
+      <button class="absolute top-3 right-3 p-1.5 text-slate-500 hover:text-white hover:bg-slate-800 rounded-lg transition-colors z-10"
+              (click)="closeAlert()" title="닫기">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+
+      <!-- 아이콘 -->
+      <div class="flex flex-col items-center pt-8 pb-2 px-6">
+        <div class="flex items-center justify-center w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/20 mb-4">
+          <svg class="w-7 h-7 text-amber-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        </div>
+        <h3 class="text-base font-semibold text-white">⚠️ 미처리 문의 알림</h3>
+        <p class="text-sm text-slate-400 text-center mt-1">처리가 필요한 문의가 있습니다.</p>
+      </div>
+
+      <!-- 상세 항목 -->
+      <div class="flex flex-col gap-2 px-6 pb-4">
+        @for (detail of inquiryAlert().details; track detail) {
+          <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg"
+               [class]="detail.includes('⚠️') ? 'bg-red-500/10 border border-red-500/20' : 'bg-slate-800 border border-slate-700/40'">
+            <span class="text-sm"
+                  [class]="detail.includes('⚠️') ? 'text-red-300 font-medium' : 'text-slate-300'">
+              {{ detail }}
+            </span>
+          </div>
+        }
+      </div>
+
+      <!-- 버튼 -->
+      <div class="flex gap-3 p-5 border-t border-slate-800">
+        <button class="flex-1 px-4 py-2.5 text-sm font-medium text-slate-400 hover:text-slate-200 bg-slate-800/60 hover:bg-slate-800 rounded-lg transition-colors cursor-pointer border-none"
+                (click)="dismissToday()">
+          오늘 하루 보지 않기
+        </button>
+        <button class="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors cursor-pointer text-center border-none"
+                (click)="goToInquiries()">
+          문의 관리 바로가기
+        </button>
+      </div>
+    </div>
+  </div>
+}

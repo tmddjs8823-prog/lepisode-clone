@@ -3,6 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
+// Health Check & Scheduler
+import { HealthModule } from '../modules/health/health.module';
+import { SchedulerModule } from '../modules/scheduler/scheduler.module';
+
 // Core
 import { PrismaModule } from '../prisma/prisma.module';
 import { AuthModule } from '../modules/auth/auth.module';
@@ -37,6 +41,8 @@ import { CodyModule } from '../modules/cody/cody.module';
     PrismaModule,
     AuthModule,
     UploadModule,
+    HealthModule,
+    SchedulerModule,
     // Phase 2
     PortfolioModule,
     ServiceManageModule,

@@ -26,5 +26,32 @@
   "footer.support": "サポート : 062-675-2314 Email : help@lepisode.team",
   "footer.privacy": "個人情報保護方針",
   "footer.terms": "利用規約",
-  "footer.marketing": "マーケティング同意規約"
+  "footer.marketing": "マーケティング同意規約",
+
+  "portfolio.cat.all": "すべて",
+  "portfolio.cat.platform": "プラットフォーム",
+  "portfolio.cat.homepage": "ホームページ",
+  "portfolio.cat.DX": "DX",
+  "portfolio.cat.AX": "AX",
+  "portfolio.cat.catalog": "カタログ / ブランディング",
+
+  "common.loading": "読み込み中...",
+  "service_detail.recommended": "おすすめサービス",
+  "service_detail.recommended_empty": "おすすめサービスがありません。",
+  "service_detail.not_found": "サービスが見つかりません。",
+
+  "inquiry.name_placeholder": "お名前を入力してください",
+  "inquiry.required": "必須",
+  "inquiry.optional": "任意",
+  "inquiry.privacy_agree": "お問い合わせ内容に対するサービス提供に必要な最小限の",
+  "inquiry.privacy_link": "個人情報",
+  "inquiry.privacy_agree_suffix": "の収集および利用に同意します。",
+  "inquiry.marketing_agree": "LEPISODEのイベントおよび最新技術情報の受信のための",
+  "inquiry.marketing_link": "マーケティング情報受信同意",
+  "inquiry.marketing_agree_suffix": "に同意します。",
+
+  "inquiry.submit": "お問い合わせ",
+  "portfolio_detail.recommended": "おすすめポートフォリオ",
+  "portfolio_detail.recommended_empty": "おすすめポートフォリオがありません。",
+  "portfolio_detail.not_found": "ポートフォリオが見つかりません。"
 }

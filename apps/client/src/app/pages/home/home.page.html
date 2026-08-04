@@ -89,7 +89,7 @@
 </section>
 } @else {
 <!-- ═══════════ Hero (보라색 – 아래로 넓게) ═══════════ -->
-<section class="pt-32 pb-40 px-6" style="background: linear-gradient(180deg, #f0edff 0%, #e8e4ff 40%, #f0edff 100%);">
+<section class="pt-48 pb-40 px-6" style="background: linear-gradient(180deg, #f0edff 0%, #e8e4ff 40%, #f0edff 100%);">
 
   <div class="max-w-[800px] mx-auto text-center">
     <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900 leading-snug mb-5" [innerHTML]="'home.hero.title' | translate | richText"></h1>
@@ -99,16 +99,22 @@
 
 <!-- ═══════════ Services (보라색 위에 덧칠) ═══════════ -->
 <section class="px-4 pb-16 -mt-28" id="services">
-  <div class="max-w-[1400px] mx-auto bg-white rounded-3xl shadow-lg px-10 py-8 overflow-visible">
-    <div class="flex items-center justify-center gap-4 mb-6">
-      <span class="text-3xl">📋</span>
-      <h2 class="text-3xl md:text-[2.5rem] font-extrabold text-gray-900">
+  <div class="max-w-[1400px] mx-auto bg-white rounded-3xl shadow-lg px-4 md:px-10 py-6 md:py-8 overflow-hidden md:overflow-visible">
+    <div class="flex items-center justify-center gap-2 md:gap-4 mb-6">
+      <span class="text-2xl md:text-3xl">📋</span>
+      <h2 class="text-xl md:text-[2.5rem] font-extrabold text-gray-900">
         {{ 'home.onestop.prefix' | translate }} <span class="underline decoration-[#41539b] decoration-2 underline-offset-4">{{ 'home.onestop.highlight' | translate }}</span>
       </h2>
     </div>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+    <div class="drag-belt onestop-belt"
+         #onestopBelt
+         (mousedown)="dragStart($event, onestopBelt)"
+         (mousemove)="dragMove($event, onestopBelt)"
+         (mouseup)="dragEnd(onestopBelt)"
+         (mouseleave)="dragEnd(onestopBelt)"
+         (scroll)="onOnestopScroll(onestopBelt)">
       @for (s of services(); track s.id) {
-        <div class="rounded-2xl flex flex-col gap-3 transition-all duration-500 cursor-pointer"
+        <div class="drag-card rounded-2xl flex flex-col gap-3 transition-all duration-500 cursor-pointer"
              [class]="activeServiceIndex() === $index
                ? 'shadow-xl -translate-y-2 scale-[1.03] border-2 ' + (['border-violet-400 bg-violet-50', 'border-sky-400 bg-sky-50', 'border-emerald-400 bg-emerald-50', 'border-amber-400 bg-amber-50', 'border-rose-400 bg-rose-50', 'border-teal-400 bg-teal-50'][$index % 6])
                : 'bg-gray-50 border-2 border-transparent hover:shadow-lg hover:-translate-y-1'"
@@ -145,7 +151,7 @@
           </div>
         </div>
       } @empty {
-        <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
+        <div class="drag-card bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
           <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-violet-100 text-violet-600">⚡</div>
           <h3 class="text-sm font-bold text-gray-900">AI 솔루션</h3>
 
@@ -155,7 +161,7 @@
             <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-violet-50 text-violet-600">자동화</span>
           </div>
         </div>
-        <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
+        <div class="drag-card bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
           <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-sky-100 text-sky-600">🔷</div>
           <h3 class="text-sm font-bold text-gray-900">플랫폼</h3>
 
@@ -165,7 +171,7 @@
             <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-sky-50 text-sky-600">ERP</span>
           </div>
         </div>
-        <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
+        <div class="drag-card bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
           <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-emerald-100 text-emerald-600">🏛️</div>
           <h3 class="text-sm font-bold text-gray-900">비즈니스 솔루션</h3>
 
@@ -175,7 +181,7 @@
             <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-600">POS</span>
           </div>
         </div>
-        <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
+        <div class="drag-card bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
           <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-amber-100 text-amber-600">📱</div>
           <h3 class="text-sm font-bold text-gray-900">웹/앱 개발</h3>
 
@@ -185,7 +191,7 @@
             <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-amber-50 text-amber-600">설계/기획</span>
           </div>
         </div>
-        <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
+        <div class="drag-card bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
           <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-rose-100 text-rose-600">🖥️</div>
           <h3 class="text-sm font-bold text-gray-900">키오스크</h3>
 
@@ -194,7 +200,7 @@
             <span class="text-[10px] font-medium px-2 py-0.5 rounded-md bg-rose-50 text-rose-600">거래처 시스템</span>
           </div>
         </div>
-        <div class="bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
+        <div class="drag-card bg-gray-50 rounded-2xl flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all" style="min-height:250px;padding:2rem 1.5rem">
           <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-teal-100 text-teal-600">📊</div>
           <h3 class="text-sm font-bold text-gray-900">브랜딩/마케팅</h3>
 
@@ -296,11 +302,16 @@
       </a>
     </div>
 
-    <!-- 포트폴리오 그리드 -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <!-- 포트폴리오 벨트 (모바일: 드래그 스크롤 / 데스크톱: 그리드) -->
+    <div class="drag-belt portfolio-belt"
+         #portfolioBelt
+         (mousedown)="dragStart($event, portfolioBelt)"
+         (mousemove)="dragMove($event, portfolioBelt)"
+         (mouseup)="dragEnd(portfolioBelt)"
+         (mouseleave)="dragEnd(portfolioBelt)">
       @for (p of portfolios(); track p.id) {
         <a [routerLink]="['/portfolio', p.id]"
-           class="group block no-underline bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+           class="drag-card group block no-underline bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
           <div class="overflow-hidden bg-gray-50" style="aspect-ratio:1/1">
             @if (p.thumbnailUrl) {
               <img [src]="p.thumbnailUrl" [alt]="p.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -323,7 +334,7 @@
         </a>
       } @empty {
         @for (demo of demoPortfolios; track demo.title) {
-          <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div class="drag-card bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div class="bg-gradient-to-br from-indigo-50 to-slate-100 flex items-center justify-center" style="aspect-ratio:1/1">
               <span class="text-5xl opacity-20">{{ demo.icon }}</span>
             </div>
@@ -357,10 +368,15 @@
       </a>
     </div>
 
-    <!-- 공지사항 카드 그리드 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    <!-- 공지사항 벨트 (모바일: 드래그 스크롤 / 데스크톱: 그리드) -->
+    <div class="drag-belt notice-belt"
+         #noticeBelt
+         (mousedown)="dragStart($event, noticeBelt)"
+         (mousemove)="dragMove($event, noticeBelt)"
+         (mouseup)="dragEnd(noticeBelt)"
+         (mouseleave)="dragEnd(noticeBelt)">
       @for (n of notices(); track n.id) {
-        <a [routerLink]="['/notice', n.id]" class="group flex flex-col bg-white rounded-2xl border border-gray-100 p-6 hover:-translate-y-1 hover:shadow-lg transition-all">
+        <a [routerLink]="['/notice', n.id]" class="drag-card group flex flex-col bg-white rounded-2xl border border-gray-100 p-6 hover:-translate-y-1 hover:shadow-lg transition-all">
           <span class="text-xs text-gray-400 mb-3 self-end">{{ n.createdAt | date:'yyyy.MM.dd' }}</span>
           <h3 class="text-base font-bold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-2">{{ loc(n, 'title') }}</h3>
           @if (n.content) {
@@ -374,7 +390,7 @@
           </div>
         </a>
       } @empty {
-        <div class="flex flex-col bg-white rounded-2xl border border-gray-100 p-6">
+        <div class="drag-card flex flex-col bg-white rounded-2xl border border-gray-100 p-6">
           <span class="text-xs text-gray-400 mb-3 self-end">2025.07.21</span>
           <h3 class="text-base font-bold text-gray-900">레피소드 공식 서비스 오픈 안내</h3>
           <p class="text-xs text-gray-400 line-clamp-2 mt-4">레피소드의 새로운 서비스가 오픈되었습니다.</p>
@@ -385,7 +401,7 @@
             </span>
           </div>
         </div>
-        <div class="flex flex-col bg-white rounded-2xl border border-gray-100 p-6">
+        <div class="drag-card flex flex-col bg-white rounded-2xl border border-gray-100 p-6">
           <span class="text-xs text-gray-400 mb-3 self-end">2025.06.15</span>
           <h3 class="text-base font-bold text-gray-900">2025년 상반기 수상 실적 안내</h3>
           <p class="text-xs text-gray-400 line-clamp-2 mt-4">다양한 분야에서 수상 실적을 달성했습니다.</p>
@@ -396,7 +412,7 @@
             </span>
           </div>
         </div>
-        <div class="flex flex-col bg-white rounded-2xl border border-gray-100 p-6">
+        <div class="drag-card flex flex-col bg-white rounded-2xl border border-gray-100 p-6">
           <span class="text-xs text-gray-400 mb-3 self-end">2025.07.20</span>
           <h3 class="text-base font-bold text-gray-900">시스템 점검 안내 (7/25 02:00~06:00)</h3>
           <p class="text-xs text-gray-400 line-clamp-2 mt-4">서비스 안정화를 위한 정기 점검 안내입니다.</p>
@@ -432,11 +448,16 @@
       </a>
     </div>
 
-    <!-- 4컬럼 그리드 -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- 드래그 스크롤 벨트 -->
+    <div class="blog-belt"
+         #blogBelt
+         (mousedown)="dragStart($event, blogBelt)"
+         (mousemove)="dragMove($event, blogBelt)"
+         (mouseup)="dragEnd(blogBelt)"
+         (mouseleave)="dragEnd(blogBelt)">
       @for (b of blogPosts(); track b.link) {
         <a [attr.href]="b.link" target="_blank" rel="noopener noreferrer"
-           class="group block no-underline bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+           class="blog-card group block no-underline bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
           <div class="overflow-hidden bg-gray-50" style="aspect-ratio: 4/3;">
             @if (b.thumbnail) {
               <img [src]="b.thumbnail" [alt]="b.title"
@@ -484,11 +505,16 @@
       </a>
     </div>
 
-    <!-- 서비스 카드 그리드 -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <!-- 서비스소개 벨트 (모바일: 드래그 스크롤 / 데스크톱: 그리드) -->
+    <div class="drag-belt service-intro-belt"
+         #serviceIntroBelt
+         (mousedown)="dragStart($event, serviceIntroBelt)"
+         (mousemove)="dragMove($event, serviceIntroBelt)"
+         (mouseup)="dragEnd(serviceIntroBelt)"
+         (mouseleave)="dragEnd(serviceIntroBelt)">
       @for (s of apiServices(); track s.id) {
         <a [routerLink]="['/services', s.id]"
-           class="group block no-underline bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+           class="drag-card group block no-underline bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
           <div class="overflow-hidden bg-gray-50" style="aspect-ratio:1/1">
             @if (s.thumbnailUrl) {
               <img [src]="s.thumbnailUrl" [alt]="s.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -510,7 +536,7 @@
           </div>
         </a>
       } @empty {
-        <div class="col-span-4 py-20 text-center">
+        <div class="drag-card py-20 text-center">
           <span class="text-5xl mb-4 block">🔧</span>
           <p class="text-gray-400">{{ 'home.services.empty' | translate }}</p>
         </div>

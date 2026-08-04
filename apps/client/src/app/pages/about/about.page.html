@@ -116,12 +116,12 @@
             }
           </div>
           <!-- 이름 -->
-          <h3 class="text-base font-bold text-gray-900 mb-1">{{ member.name }}</h3>
+          <h3 class="text-base font-bold text-gray-900 mb-1">{{ maskName(loc(member, 'name')) }}</h3>
           <!-- 직책 -->
-          <p class="text-sm text-indigo-600 font-medium mb-2">{{ member.position }}</p>
+          <p class="text-sm text-indigo-600 font-medium mb-2">{{ loc(member, 'position') }}</p>
           <!-- 부서 태그 (bio 필드 활용) -->
           @if (member.bio) {
-            <span class="inline-block text-xs font-medium text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full">{{ member.bio }}</span>
+            <span class="inline-block text-xs font-medium text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full">{{ loc(member, 'bio') }}</span>
           }
         </div>
       } @empty {
@@ -137,7 +137,7 @@
             <div class="w-24 h-24 rounded-full mx-auto mb-5 overflow-hidden bg-gray-100 flex items-center justify-center">
               <span class="text-indigo-500 font-bold text-lg">{{ demo.name.slice(0, 2) }}</span>
             </div>
-            <h3 class="text-base font-bold text-gray-900 mb-1">{{ demo.name }}</h3>
+            <h3 class="text-base font-bold text-gray-900 mb-1">{{ maskName(demo.name) }}</h3>
             <p class="text-sm text-indigo-600 font-medium mb-2">{{ demo.position }}</p>
             <span class="inline-block text-xs font-medium text-indigo-500 bg-indigo-50 px-3 py-1 rounded-full">{{ demo.dept }}</span>
           </div>

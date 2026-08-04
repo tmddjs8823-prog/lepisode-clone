@@ -131,6 +131,10 @@ export class ContentApiService {
   removeQrCode(id: number): Observable<void> {
     return this.http.delete<void>(`${API}/qr/${id}`);
   }
+
+  regenerateQrImage(id: number): Observable<QrCodeItem> {
+    return this.http.post<QrCodeItem>(`${API}/qr/${id}/regenerate`, {});
+  }
 }
 
 export interface EventItem {
@@ -202,7 +206,7 @@ export interface QrCodeItem {
   name: string;
   type: string | null;
   targetUrl: string;
-  qrCodeUrl: string | null;
+  qrImageUrl: string | null;
   scanCount: number;
   isActive: boolean;
   createdAt: string;

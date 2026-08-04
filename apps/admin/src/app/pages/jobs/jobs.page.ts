@@ -47,10 +47,17 @@ export class JobsPage implements OnInit {
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
     { key: 'id', label: 'ID', align: 'center', width: '5%' },
     { key: 'category', label: '카테고리', align: 'center', width: '8%' },
-    { key: 'title', label: '제목', align: 'center', width: '18%' },
-    { key: 'titleEn', label: '영문 제목', align: 'center', width: '15%' },
-    { key: 'titleJa', label: '일본어 제목', align: 'center', width: '15%' },
-    { key: 'jobUrl', label: '공고 URL', align: 'center', width: '12%', transform: (row) => {
+    { key: 'title', label: '제목', align: 'center', width: '16%' },
+    { key: 'titleEn', label: '영문 제목', align: 'center', width: '13%' },
+    { key: 'titleJa', label: '일본어 제목', align: 'center', width: '13%' },
+    {
+      key: 'published', label: '게시 상태', align: 'center', width: '8%', type: 'badge',
+      badgeMap: {
+        true: { label: '게시중', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
+        false: { label: '비공개', class: 'bg-slate-500/10 text-slate-400 border border-slate-500/20' },
+      },
+    },
+    { key: 'jobUrl', label: '공고 URL', align: 'center', width: '10%', transform: (row) => {
       const url = row['jobUrl'] as string | null;
       return url || '-';
     }},

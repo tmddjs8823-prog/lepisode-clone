@@ -15,10 +15,11 @@
     [data]="$any(filteredFaqs())"
     [loading]="loading()"
     [total]="filteredFaqs().length"
+    (edit)="openFaqForm($any($event))"
     (delete)="deleteFaq($any($event))"
   >
     <!-- 검색 바를 데이터 테이블 내부의 슬롯으로 주입 -->
-    <div search-bar class="relative max-w-sm">
+    <div search-bar class="relative w-full lg:max-w-sm">
       <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
         <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>

@@ -80,4 +80,8 @@
     margin-top: -80px;
     padding-top: 80px;
   }
+  .hosting-belt-container {
+    height: 280px;
+    max-width: 100%;
+  }
 }

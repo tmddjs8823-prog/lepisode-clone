@@ -40,6 +40,7 @@ import { CodyNotificationsPage } from './pages/cody/cody-notifications.page';
 import { CodyReportsPage } from './pages/cody/cody-reports.page';
 import { CodyReportDetailPage } from './pages/cody/cody-report-detail.page';
 import { CodyProjectDetailPage } from './pages/cody/cody-project-detail.page';
+import { SchedulerPage } from './pages/scheduler/scheduler.page';
 
 export const appRoutes: Route[] = [
   // Login
@@ -118,6 +119,7 @@ export const appRoutes: Route[] = [
       // Settings
       { path: 'settings/i18n', component: I18nPage },
       { path: 'settings/seo',  component: SeoPage },
+      { path: 'settings/scheduler', component: SchedulerPage },
     ],
   },
 

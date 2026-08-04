@@ -1,6 +1,6 @@
-import { Component, input, output, signal, computed, ViewEncapsulation, HostListener } from '@angular/core';
+import { Component, input, output, signal, computed, ViewEncapsulation, HostListener, PLATFORM_ID, inject } from '@angular/core';
 import { ColumnDef } from '../../types/api.types';
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { PaginationComponent } from '../pagination/pagination.component';
 
 @Component({
@@ -20,6 +20,8 @@ import { PaginationComponent } from '../pagination/pagination.component';
   `],
 })
 export class DataTableComponent<T extends Record<string, unknown>> {
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  isMobile = signal(false);
   columns = input.required<ColumnDef<T>[]>();
   data = input<T[]>([]);
   total = input<number>(0);
@@ -29,6 +31,7 @@ export class DataTableComponent<T extends Record<string, unknown>> {
   showActions = input<boolean>(true);
   showToolbar = input<boolean>(true);
   customContextMenuItems = input<{ action: string; label: string; icon: string }[]>([]);
+  rowClassFn = input<((row: T) => string) | null>(null);
 
   pageChange = output<number>();
   pageSizeChange = output<number>();
@@ -36,6 +39,19 @@ export class DataTableComponent<T extends Record<string, unknown>> {
   delete = output<T>();
   rowClick = output<T>();
   customAction = output<{ action: string; row: T }>();
+
+  constructor() {
+    if (this.isBrowser) {
+      this.isMobile.set(window.innerWidth < 1024);
+    }
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    if (this.isBrowser) {
+      this.isMobile.set(window.innerWidth < 1024);
+    }
+  }
 
   /* ── 정렬 ── */
   sortKey = signal<string>('');
@@ -226,11 +242,65 @@ export class DataTableComponent<T extends Record<string, unknown>> {
 
   @HostListener('document:click')
   onDocumentClick(): void {
+    if (this.skipNextClick) {
+      this.skipNextClick = false;
+      return;
+    }
     this.closeContextMenu();
   }
 
   @HostListener('document:keydown.escape')
   onEscapeKey(): void {
     this.closeContextMenu();
+  }
+
+  /* ── 모바일 Long Press (길게 누르기 → 컨텍스트 메뉴) ── */
+  private longPressTimer: ReturnType<typeof setTimeout> | null = null;
+  private skipNextClick = false;
+  private longPressTriggered = false;
+
+  onTouchStart(event: TouchEvent, row: T): void {
+    if (!this.showActions()) return;
+    this.longPressTriggered = false;
+    const touch = event.touches[0];
+    const startX = touch.clientX;
+    const startY = touch.clientY;
+
+    this.longPressTimer = setTimeout(() => {
+      this.longPressTriggered = true;
+      this.skipNextClick = true;
+
+      // 뷰포트 경계 보정
+      const menuWidth = 160;
+      const menuHeight = 100;
+      let x = startX;
+      let y = startY;
+      if (x + menuWidth > window.innerWidth) x = window.innerWidth - menuWidth - 8;
+      if (y + menuHeight > window.innerHeight) y = window.innerHeight - menuHeight - 8;
+
+      this.contextMenuX.set(x);
+      this.contextMenuY.set(y);
+      this.contextMenuRow.set(row);
+    }, 500);
+  }
+
+  onTouchMove(): void {
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
+    }
+  }
+
+  onTouchEnd(event: Event): void {
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
+    }
+    // long press가 트리거되었으면 click 이벤트 방지
+    if (this.longPressTriggered) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.longPressTriggered = false;
+    }
   }
 }

@@ -67,13 +67,43 @@
         </div>
 
         <div class="flex flex-col gap-1.5">
+          <label for="company-name-en" class="text-sm font-semibold text-slate-200">이름 (영문)</label>
+          <input id="company-name-en" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="Hong Gildong" [ngModel]="fNameEn()" (ngModelChange)="fNameEn.set($event)" />
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label for="company-name-ja" class="text-sm font-semibold text-slate-200">이름 (일본어)</label>
+          <input id="company-name-ja" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="ホン・ギルドン" [ngModel]="fNameJa()" (ngModelChange)="fNameJa.set($event)" />
+        </div>
+
+        <div class="flex flex-col gap-1.5">
           <label for="company-position" class="text-sm font-semibold text-slate-200">직함 <span class="text-red-400">*</span></label>
           <input id="company-position" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="CEO / 대표이사" [ngModel]="fPosition()" (ngModelChange)="fPosition.set($event)" />
         </div>
 
         <div class="flex flex-col gap-1.5">
+          <label for="company-position-en" class="text-sm font-semibold text-slate-200">직함 (영문)</label>
+          <input id="company-position-en" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="CEO" [ngModel]="fPositionEn()" (ngModelChange)="fPositionEn.set($event)" />
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label for="company-position-ja" class="text-sm font-semibold text-slate-200">직함 (일본어)</label>
+          <input id="company-position-ja" type="text" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="代表取締役" [ngModel]="fPositionJa()" (ngModelChange)="fPositionJa.set($event)" />
+        </div>
+
+        <div class="flex flex-col gap-1.5">
           <label for="company-bio" class="text-sm font-semibold text-slate-200">분야 (Bio)</label>
           <textarea id="company-bio" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 min-h-[80px]" placeholder="담당 업무, 약력 등" [ngModel]="fBio()" (ngModelChange)="fBio.set($event)"></textarea>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label for="company-bio-en" class="text-sm font-semibold text-slate-200">분야 (영문)</label>
+          <textarea id="company-bio-en" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 min-h-[80px]" placeholder="Role, background, etc." [ngModel]="fBioEn()" (ngModelChange)="fBioEn.set($event)"></textarea>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label for="company-bio-ja" class="text-sm font-semibold text-slate-200">분야 (일본어)</label>
+          <textarea id="company-bio-ja" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-500 min-h-[80px]" placeholder="担当業務、経歴など" [ngModel]="fBioJa()" (ngModelChange)="fBioJa.set($event)"></textarea>
         </div>
 
         <div class="flex flex-col gap-1.5">

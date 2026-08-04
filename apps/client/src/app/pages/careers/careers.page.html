@@ -1,5 +1,5 @@
 <!-- ═══════════ Hero Banner (70vh) + 섹션 네비게이션 ═══════════ -->
-<section class="careers-hero relative h-[70vh] min-h-[500px] -mt-[50px] pt-[50px] flex flex-col justify-center items-center overflow-visible" id="히어로">
+<section class="careers-hero relative h-[60vh] min-h-[400px] md:h-[70vh] md:min-h-[500px] -mt-16 pt-16 lg:-mt-[72px] lg:pt-[72px] flex flex-col justify-center items-center overflow-visible" id="히어로">
   <!-- 배경 오버레이 -->
   <div class="hero-overlay absolute inset-0 z-[1]"></div>
 
@@ -11,13 +11,13 @@
   </div>
 
   <!-- 섹션 네비게이션 바 (배너 70% 경계선 위치) -->
-  <nav class="section-nav absolute bottom-0 left-0 right-0 z-10 translate-y-1/2">
-    <div class="section-nav-inner max-w-[900px] mx-auto flex items-center justify-center gap-1.5 bg-white rounded-full px-2 py-1.5">
-      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('엔진들')">{{ 'careers.nav_engines' | translate }}</button>
-      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('약속')">{{ 'careers.nav_promise' | translate }}</button>
-      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('팀문화')">{{ 'careers.nav_culture' | translate }}</button>
-      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('회사복지')">{{ 'careers.nav_welfare' | translate }}</button>
-      <button class="nav-pill px-[22px] py-2.5 rounded-full text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white" (click)="scrollTo('채용공고')">{{ 'careers.nav_jobs' | translate }}</button>
+  <nav class="section-nav absolute bottom-0 left-0 right-0 z-10 translate-y-1/2 px-4 md:px-0">
+    <div class="section-nav-inner max-w-[900px] mx-auto flex items-center justify-start md:justify-center gap-1.5 bg-white rounded-2xl md:rounded-full px-2 py-1.5 overflow-x-auto no-scrollbar">
+      <button class="nav-pill px-4 md:px-[22px] py-2 md:py-2.5 rounded-full text-xs md:text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white flex-shrink-0" (click)="scrollTo('엔진들')">{{ 'careers.nav_engines' | translate }}</button>
+      <button class="nav-pill px-4 md:px-[22px] py-2 md:py-2.5 rounded-full text-xs md:text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white flex-shrink-0" (click)="scrollTo('약속')">{{ 'careers.nav_promise' | translate }}</button>
+      <button class="nav-pill px-4 md:px-[22px] py-2 md:py-2.5 rounded-full text-xs md:text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white flex-shrink-0" (click)="scrollTo('팀문화')">{{ 'careers.nav_culture' | translate }}</button>
+      <button class="nav-pill px-4 md:px-[22px] py-2 md:py-2.5 rounded-full text-xs md:text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white flex-shrink-0" (click)="scrollTo('회사복지')">{{ 'careers.nav_welfare' | translate }}</button>
+      <button class="nav-pill px-4 md:px-[22px] py-2 md:py-2.5 rounded-full text-xs md:text-sm font-semibold text-gray-500 cursor-pointer transition-all duration-[250ms] whitespace-nowrap select-none border-none bg-transparent font-[inherit] hover:bg-[#f0edff] hover:text-[#41539b] active:bg-[#41539b] active:text-white flex-shrink-0" (click)="scrollTo('채용공고')">{{ 'careers.nav_jobs' | translate }}</button>
     </div>
   </nav>
 </section>
@@ -32,42 +32,42 @@
 
 <!-- ═══════════ 업무 소개 (좌: 설명 / 우: 사진) ═══════════ -->
 <section class="bg-white px-6 pb-20">
-  <div class="max-w-[80%] mx-auto flex flex-col gap-4">
+  <div class="max-w-full md:max-w-[80%] mx-auto flex flex-col gap-4">
 
     <!-- 01. 웹개발 -->
-    <div class="grid grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-[300px]">
-      <div class="flex flex-col justify-center py-5 px-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-auto md:h-[300px]">
+      <div class="flex flex-col justify-center py-5 px-5 md:px-10 order-2 md:order-1">
         <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">01</span>
-        <h3 class="text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work1_title' | translate }}</h3>
+        <h3 class="text-lg md:text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work1_title' | translate }}</h3>
         <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work1_desc' | translate | richText"></p>
       </div>
-      <div class="overflow-hidden">
+      <div class="overflow-hidden h-48 md:h-full order-1 md:order-2">
         <img src="/assets/images/careers/workspace.png" [attr.alt]="'careers.work1_title' | translate" loading="lazy"
              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
     </div>
 
     <!-- 02. AI기반 비즈니스 자동화 -->
-    <div class="grid grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-[300px]">
-      <div class="flex flex-col justify-center py-5 px-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-auto md:h-[300px]">
+      <div class="flex flex-col justify-center py-5 px-5 md:px-10 order-2 md:order-1">
         <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">02</span>
-        <h3 class="text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work2_title' | translate }}</h3>
+        <h3 class="text-lg md:text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work2_title' | translate }}</h3>
         <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work2_desc' | translate | richText"></p>
       </div>
-      <div class="overflow-hidden">
+      <div class="overflow-hidden h-48 md:h-full order-1 md:order-2">
         <img src="/assets/images/careers/teamwork.png" [attr.alt]="'careers.work2_title' | translate" loading="lazy"
              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
     </div>
 
     <!-- 03. 맞춤형 비즈니스 시스템 구축 -->
-    <div class="grid grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-[300px]">
-      <div class="flex flex-col justify-center py-5 px-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden bg-gray-50 group h-auto md:h-[300px]">
+      <div class="flex flex-col justify-center py-5 px-5 md:px-10 order-2 md:order-1">
         <span class="text-xs font-bold text-[#41539b] tracking-wider mb-2">03</span>
-        <h3 class="text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work3_title' | translate }}</h3>
+        <h3 class="text-lg md:text-xl font-extrabold text-gray-900 mb-2">{{ 'careers.work3_title' | translate }}</h3>
         <p class="text-sm text-gray-400 leading-relaxed" [innerHTML]="'careers.work3_desc' | translate | richText"></p>
       </div>
-      <div class="overflow-hidden">
+      <div class="overflow-hidden h-48 md:h-full order-1 md:order-2">
         <img src="/assets/images/careers/creative.png" [attr.alt]="'careers.work3_title' | translate" loading="lazy"
              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
@@ -109,7 +109,7 @@
       </div>
 
       <!-- 기획/디자인팀 -->
-      <div class="relative rounded-2xl overflow-hidden group mt-10" style="aspect-ratio:9/16">
+      <div class="relative rounded-2xl overflow-hidden group mt-0 md:mt-10" style="aspect-ratio:9/16">
         <img src="/assets/images/careers/team-design.png" [attr.alt]="'careers.team_design' | translate" loading="lazy"
              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
@@ -158,7 +158,7 @@
     </div>
 
     <!-- 장점 리스트 -->
-    <div style="margin-left: calc(40% - 120px);" class="flex flex-col gap-10 max-w-[500px]">
+    <div class="flex flex-col gap-10 max-w-[500px] mx-auto md:mx-0 md:ml-[calc(40%-120px)]">
 
       <!-- 01. 10시 출근 -->
       <div class="flex gap-5 items-start group">
@@ -222,29 +222,29 @@
 <!-- ═══════════ 우리가 추구하는 방식 Section ═══════════ -->
 <section class="py-24 px-6" id="기술블로그" style="background:#f8f9fb">
   <div class="max-w-[1100px] mx-auto">
-    <div style="display: flex; flex-direction: row; gap: 48px; align-items: stretch;">
+    <div class="flex flex-col md:flex-row gap-8 md:gap-12 items-stretch">
 
       <!-- 왼쪽: 큰 제목 -->
-      <div style="text-align: center; width: 320px; flex-shrink: 0;">
+      <div class="text-center md:w-[320px] flex-shrink-0">
         <span class="text-sm font-semibold text-[#41539b] tracking-widest uppercase mb-4 block">{{ 'careers.blog_label' | translate }}</span>
-        <h2 class="text-4xl md:text-[3rem] font-black text-gray-900 leading-tight mb-4" [innerHTML]="'careers.blog_title' | translate | richText"></h2>
-        <p class="text-base text-gray-400 leading-relaxed" [innerHTML]="'careers.blog_desc' | translate | richText"></p>
+        <h2 class="text-2xl md:text-[3rem] font-black text-gray-900 leading-tight mb-4" [innerHTML]="'careers.blog_title' | translate | richText"></h2>
+        <p class="text-sm md:text-base text-gray-400 leading-relaxed" [innerHTML]="'careers.blog_desc' | translate | richText"></p>
       </div>
 
       <!-- 오른쪽: 블로그 카드 리스트 -->
       <div class="flex-1">
         <div class="flex flex-col gap-4">
           @for (post of blogPosts(); track post.id) {
-            <div class="flex gap-6 bg-white rounded-2xl overflow-hidden border border-gray-100 hover:-translate-y-0.5 hover:shadow-lg transition-all group cursor-pointer p-5 items-center">
+            <div class="flex flex-col md:flex-row gap-4 md:gap-6 bg-white rounded-2xl overflow-hidden border border-gray-100 hover:-translate-y-0.5 hover:shadow-lg transition-all group cursor-pointer p-4 md:p-5 items-stretch md:items-center">
               @if (post.thumbnailUrl) {
-                <div class="overflow-hidden rounded-xl w-60 h-44 flex-shrink-0">
+                <div class="overflow-hidden rounded-xl w-full md:w-60 h-40 md:h-44 flex-shrink-0">
                   <img [src]="post.thumbnailUrl" [alt]="post.title" loading="lazy"
                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 </div>
               }
               <div class="flex-1 min-w-0">
-                <h3 class="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#41539b] transition-colors">{{ loc(post, 'title') }}</h3>
-                <p class="text-base text-gray-400">{{ 'careers.blog_date' | translate }}: {{ post.createdAt | date:'yyyy.MM.dd' }}</p>
+                <h3 class="text-base md:text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-[#41539b] transition-colors">{{ loc(post, 'title') }}</h3>
+                <p class="text-sm md:text-base text-gray-400">{{ 'careers.blog_date' | translate }}: {{ post.createdAt | date:'yyyy.MM.dd' }}</p>
               </div>
             </div>
           }

@@ -37,6 +37,22 @@ export class PortfolioPage implements OnInit {
     catalog: '카탈로그/브랜딩',
   };
 
+  /** DB 카테고리 값 → i18n 키 역매핑 */
+  private readonly dbToCatKey: Record<string, string> = {
+    '전체': 'all',
+    '플랫폼': 'platform',
+    '홈페이지': 'homepage',
+    'DX': 'DX',
+    'AX': 'AX',
+    '카탈로그/브랜딩': 'catalog',
+  };
+
+  /** DB 카테고리 → 번역 키 반환 */
+  getCatTranslateKey(dbCategory: string): string {
+    const key = this.dbToCatKey[dbCategory] || dbCategory;
+    return 'portfolio.cat.' + key;
+  }
+
   getCategoryLabel(key: string): string {
     return this.translate.instant('portfolio.cat.' + key);
   }

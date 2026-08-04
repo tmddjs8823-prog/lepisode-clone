@@ -55,7 +55,7 @@
             <span class="text-sm font-semibold text-white">썸네일</span>
             <div class="min-h-[80px] flex items-center text-sm text-slate-400 pl-1">
               @if (ev.jobUrl) {
-                <a [href]="ev.jobUrl" target="_blank" class="text-indigo-400 hover:text-indigo-300 underline transition-colors">{{ ev.jobUrl }}</a>
+                <a [href]="ev.jobUrl" target="_blank" class="text-indigo-400 hover:text-indigo-300 underline transition-colors break-all">{{ ev.jobUrl }}</a>
               } @else {
                 —
               }

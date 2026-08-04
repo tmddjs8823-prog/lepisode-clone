@@ -1,9 +1,11 @@
 <app-header />
-<main style="padding-top: 50px; min-height: 100vh;">
+<main [style.padding-top]="isHome ? '0' : '50px'" style="min-height: 100vh;">
   <router-outlet />
 </main>
 <app-footer />
-<app-popup />
+@if (isHome) {
+  <app-popup />
+}
 
 <!-- ── 플로팅 글로벌 아이콘 (우하단) ── -->
 <div class="fab-wrap fixed bottom-7 right-7 z-[9999] flex flex-col gap-3 items-end">
@@ -59,7 +61,7 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label for="inq-name" class="block text-xs font-bold text-gray-900 mb-1">{{ 'inquiry.name' | translate }} <span class="text-red-500">*</span></label>
-            <input id="inq-name" type="text" [(ngModel)]="formName" placeholder="성함을 입력해 주세요"
+            <input id="inq-name" type="text" [(ngModel)]="formName" [placeholder]="'inquiry.name_placeholder' | translate"
                    class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-900 bg-gray-50/50 outline-none transition-all focus:border-[#41539b] focus:ring-2 focus:ring-[#41539b]/10 placeholder:text-gray-300" />
           </div>
           <div>
@@ -90,16 +92,16 @@
             <input type="checkbox" [(ngModel)]="agreePrivacy"
                    class="w-4 h-4 rounded border-gray-300 mt-0.5 flex-shrink-0 accent-[#41539b]" />
             <span class="text-xs text-gray-600 leading-relaxed">
-              <span class="text-gray-400">[필수]</span> 요청하신 문의 내용에 대한 서비스 제공을 위해 필요한 최소한의
-              <a href="javascript:void(0)" class="text-gray-900 font-bold underline">[개인정보]</a> 수집 및 이용에 동의합니다.
+              <span class="text-gray-400">[{{ 'inquiry.required' | translate }}]</span> {{ 'inquiry.privacy_agree' | translate }}
+              <a href="javascript:void(0)" class="text-gray-900 font-bold underline">[{{ 'inquiry.privacy_link' | translate }}]</a> {{ 'inquiry.privacy_agree_suffix' | translate }}
             </span>
           </label>
           <label class="flex items-start gap-2 cursor-pointer">
             <input type="checkbox" [(ngModel)]="agreeMarketing"
                    class="w-4 h-4 rounded border-gray-300 mt-0.5 flex-shrink-0 accent-[#41539b]" />
             <span class="text-xs text-gray-600 leading-relaxed">
-              <span class="text-gray-400">[선택]</span> 레피소드의 이벤트 및 최신 기술 정보 수신을 위한
-              <a href="javascript:void(0)" class="text-gray-900 font-bold underline">[마케팅 정보 수신 동의]</a> 에 동의합니다.
+              <span class="text-gray-400">[{{ 'inquiry.optional' | translate }}]</span> {{ 'inquiry.marketing_agree' | translate }}
+              <a href="javascript:void(0)" class="text-gray-900 font-bold underline">[{{ 'inquiry.marketing_link' | translate }}]</a> {{ 'inquiry.marketing_agree_suffix' | translate }}
             </span>
           </label>
         </div>
@@ -115,9 +117,9 @@
 
       <!-- 하단 링크 -->
       <div class="flex items-center justify-center gap-3 mt-4 pt-3 border-t border-gray-100">
-        <a routerLink="/terms/privacy" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">개인정보취급방침</a>
-        <a routerLink="/terms/service" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">서비스 이용약관</a>
-        <a routerLink="/terms/marketing" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">마케팅 수신동의 약관</a>
+        <a routerLink="/terms/privacy" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">{{ 'footer.privacy' | translate }}</a>
+        <a routerLink="/terms/service" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">{{ 'footer.terms' | translate }}</a>
+        <a routerLink="/terms/marketing" class="text-[10px] text-gray-400 hover:text-gray-600 transition-colors">{{ 'footer.marketing' | translate }}</a>
       </div>
     }
   </div>

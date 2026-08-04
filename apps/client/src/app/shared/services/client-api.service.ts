@@ -321,14 +321,18 @@ export class ClientApiService {
 
 /* ── 팀원 ── */
 export interface TeamMember {
+  [key: string]: unknown;
   id: number;
   name: string;
   nameEn?: string;
+  nameJa?: string;
   position: string;
   positionEn?: string;
+  positionJa?: string;
   profileImageUrl?: string;
   bio?: string;
   bioEn?: string;
+  bioJa?: string;
   sortOrder?: number;
 }
 

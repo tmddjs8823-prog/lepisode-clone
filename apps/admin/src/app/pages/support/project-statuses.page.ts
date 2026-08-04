@@ -61,6 +61,13 @@ export class ProjectStatusesPage implements OnInit {
     { key: 'platforms',  label: '플랫폼',   align: 'center' },
     { key: 'startDate',  label: '시작일',   align: 'center', width: '7.5rem', type: 'date' },
     { key: 'endDate',    label: '마감일',   align: 'center', width: '7.5rem', type: 'date' },
+    {
+      key: 'published', label: '노출여부', align: 'center', width: '6rem', type: 'badge',
+      badgeMap: {
+        true:  { label: '노출', class: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
+        false: { label: '숨김', class: 'bg-slate-700/50 text-slate-400 border border-slate-600/30' },
+      },
+    },
     { key: 'createdAt',  label: '등록일',   align: 'center', width: '7.5rem', type: 'date' },
   ];
   showForm = signal(false);

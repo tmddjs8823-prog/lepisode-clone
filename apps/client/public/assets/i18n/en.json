@@ -26,5 +26,32 @@
   "footer.support": "Support : 062-675-2314 Email : help@lepisode.team",
   "footer.privacy": "Privacy Policy",
   "footer.terms": "Terms of Service",
-  "footer.marketing": "Marketing Agreement"
+  "footer.marketing": "Marketing Agreement",
+
+  "portfolio.cat.all": "All",
+  "portfolio.cat.platform": "Platform",
+  "portfolio.cat.homepage": "Website",
+  "portfolio.cat.DX": "DX",
+  "portfolio.cat.AX": "AX",
+  "portfolio.cat.catalog": "Catalog / Branding",
+
+  "common.loading": "Loading...",
+  "service_detail.recommended": "Recommended Services",
+  "service_detail.recommended_empty": "No recommended services.",
+  "service_detail.not_found": "Service not found.",
+
+  "inquiry.name_placeholder": "Enter your name",
+  "inquiry.required": "Required",
+  "inquiry.optional": "Optional",
+  "inquiry.privacy_agree": "I agree to the collection and use of the minimum",
+  "inquiry.privacy_link": "personal information",
+  "inquiry.privacy_agree_suffix": "necessary to provide the requested service.",
+  "inquiry.marketing_agree": "I agree to receive LEPISODE's events and latest technology",
+  "inquiry.marketing_link": "marketing information consent",
+  "inquiry.marketing_agree_suffix": ".",
+
+  "inquiry.submit": "Submit Inquiry",
+  "portfolio_detail.recommended": "Recommended Portfolio",
+  "portfolio_detail.recommended_empty": "No recommended portfolios.",
+  "portfolio_detail.not_found": "Portfolio not found."
 }

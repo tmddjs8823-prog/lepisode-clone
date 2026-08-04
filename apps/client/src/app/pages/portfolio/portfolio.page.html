@@ -34,12 +34,12 @@
     </div>
 
     <!-- 카테고리 필터 탭 -->
-    <div class="flex items-center gap-2 border-b border-gray-100 pb-0">
+    <div class="flex items-center gap-0.5 md:gap-2 border-b border-gray-100 pb-0 overflow-x-auto no-scrollbar">
       @for (cat of categoryKeys; track cat) {
-        <button class="relative px-5 py-2.5 text-[0.9rem] font-medium bg-transparent border-none cursor-pointer transition-colors border-b-2 -mb-px max-md:px-3 max-md:text-[0.8rem]"
+      <button class="relative px-3 md:px-5 py-2.5 text-[0.78rem] md:text-[0.9rem] font-medium bg-transparent border-none cursor-pointer transition-colors border-b-2 -mb-px whitespace-nowrap shrink-0"
                 [class]="activeCategory() === cat ? 'text-[#1a1a2e] font-bold border-b-[#1a1a2e]' : 'text-gray-400 border-b-transparent hover:text-[#1a1a2e]'"
                 (click)="selectCategory(cat)">
-          {{ getCategoryLabel(cat) }}
+          {{ 'portfolio.cat.' + cat | translate }}
         </button>
       }
     </div>
@@ -76,7 +76,7 @@
           <!-- 카테고리 뱃지 -->
           @if (item.category) {
             <span class="inline-block text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-              {{ item.category }}
+              {{ getCatTranslateKey(item.category) | translate }}
             </span>
           }
         </a>

@@ -94,15 +94,49 @@ export class HomePage implements OnInit, OnDestroy {
   activeServiceIndex = signal(0);
   private autoHoverTimer: ReturnType<typeof setInterval> | null = null;
   private userHovering = false;
+  private scrollSyncTimer: ReturnType<typeof setTimeout> | null = null;
 
   private startAutoHover(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     this.autoHoverTimer = setInterval(() => {
       if (!this.userHovering) {
         const total = this.services().length || 6;
-        this.activeServiceIndex.set((this.activeServiceIndex() + 1) % total);
+        const nextIndex = (this.activeServiceIndex() + 1) % total;
+        this.activeServiceIndex.set(nextIndex);
+        this.scrollToCard(nextIndex);
       }
     }, 3000);
+  }
+
+  private scrollToCard(index: number): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const belt = document.querySelector('.onestop-belt') as HTMLElement;
+    if (!belt) return;
+    const cards = belt.querySelectorAll<HTMLElement>('.drag-card');
+    const card = cards[index];
+    if (!card) return;
+    belt.scrollTo({ left: card.offsetLeft, behavior: 'smooth' });
+  }
+
+  /** 스크롤 종료 후 현재 보이는 카드로 activeServiceIndex 동기화 */
+  onOnestopScroll(belt: HTMLElement): void {
+    if (this.scrollSyncTimer) clearTimeout(this.scrollSyncTimer);
+    this.scrollSyncTimer = setTimeout(() => {
+      const cards = belt.querySelectorAll<HTMLElement>('.drag-card');
+      if (!cards.length) return;
+      const beltLeft = belt.scrollLeft;
+      let closestIndex = 0;
+      let minDist = Infinity;
+      cards.forEach((card, i) => {
+        const dist = Math.abs(card.offsetLeft - beltLeft);
+        if (dist < minDist) {
+          minDist = dist;
+          closestIndex = i;
+        }
+      });
+      this.activeServiceIndex.set(closestIndex);
+      this.userHovering = false;
+    }, 150);
   }
 
   onServiceEnter(index: number): void {
@@ -195,7 +229,7 @@ export class HomePage implements OnInit, OnDestroy {
   private loadBlogs(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     this.api.getNaverBlogs().subscribe({
-      next: (list) => this.blogPosts.set(list.slice(0, 4)),
+      next: (list) => this.blogPosts.set(list),
       error: () => { /* fallback: 빈 목록 */ },
     });
   }
@@ -204,35 +238,49 @@ export class HomePage implements OnInit, OnDestroy {
   private isDragging = false;
   private startX = 0;
   private scrollStart = 0;
+  private dragMoved = false;
+  private rafId = 0;
 
   dragStart(e: MouseEvent, el: HTMLElement): void {
     e.preventDefault();
     this.isDragging = true;
+    this.dragMoved = false;
     this.startX = e.clientX;
     this.scrollStart = el.scrollLeft;
+    el.style.userSelect = 'none';
   }
 
   dragMove(e: MouseEvent, el: HTMLElement): void {
     if (!this.isDragging) return;
     const dx = e.clientX - this.startX;
-    el.scrollLeft = this.scrollStart - dx;
-    // 5px 이상 이동하면 드래그로 판정 → 링크 클릭 차단
-    if (Math.abs(dx) > 5) {
-      el.querySelectorAll('.blog-card').forEach((a) => {
-        (a as HTMLElement).style.pointerEvents = 'none';
-      });
+
+    // rAF로 스크롤 업데이트 → 프레임에 동기화
+    cancelAnimationFrame(this.rafId);
+    this.rafId = requestAnimationFrame(() => {
+      el.scrollLeft = this.scrollStart - dx;
+    });
+
+    // 5px 이상 이동 시 한번만 pointer-events 차단
+    if (!this.dragMoved && Math.abs(dx) > 5) {
+      this.dragMoved = true;
+      el.classList.add('is-dragging');
     }
   }
 
   dragEnd(el: HTMLElement): void {
+    if (!this.isDragging) return;
     this.isDragging = false;
-    // 약간 딜레이 후 pointer-events 복원
-    setTimeout(() => {
-      el.querySelectorAll('.blog-card').forEach((a) => {
-        (a as HTMLElement).style.pointerEvents = '';
-      });
-    }, 50);
+    cancelAnimationFrame(this.rafId);
+    el.style.userSelect = '';
+
+    if (this.dragMoved) {
+      // 딜레이 후 클릭 허용 복원
+      setTimeout(() => el.classList.remove('is-dragging'), 50);
+    }
   }
+
+
+
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   loc(item: any, field: string): string {

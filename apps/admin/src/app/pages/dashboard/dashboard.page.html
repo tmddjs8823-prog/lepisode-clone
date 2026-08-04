@@ -1,6 +1,137 @@
 <div class="p-6">
   <h2 class="text-xl font-semibold text-white mb-6">대시보드</h2>
-  <p class="text-slate-400" style="padding: 10px 0;">
-    차후 구현 예정...
-  </p>
+
+  <!-- 서버 모니터링 섹션 -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+        </svg>
+        서버 모니터링
+      </h3>
+      <div class="flex items-center gap-3">
+        @if (lastChecked()) {
+          <span class="text-xs text-slate-500">마지막 확인: {{ lastChecked() }}</span>
+        }
+        <button class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-600 text-slate-300 bg-transparent cursor-pointer transition-all hover:border-emerald-500 hover:text-emerald-400"
+                [class.opacity-50]="healthLoading()"
+                [disabled]="healthLoading()"
+                (click)="checkHealth()">
+          <svg class="w-3.5 h-3.5" [class.animate-spin]="healthLoading()" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M2.985 14.652" />
+          </svg>
+          새로고침
+        </button>
+      </div>
+    </div>
+
+    @if (healthError()) {
+      <!-- 에러 상태 -->
+      <div class="rounded-xl border border-red-500/30 bg-red-500/5 p-6">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center text-2xl">🔴</div>
+          <div>
+            <div class="text-white font-semibold">서버 연결 실패</div>
+            <div class="text-red-400 text-sm">{{ healthError() }}</div>
+          </div>
+        </div>
+      </div>
+    } @else if (health()) {
+      <!-- 상태 카드 그리드 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+        <!-- 1. 전체 상태 -->
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/50 p-5 transition-all hover:border-slate-600/50">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">서버 상태</span>
+            <span class="text-lg">{{ overallIcon() }}</span>
+          </div>
+          <div class="text-2xl font-bold text-white mb-1">{{ overallStatus() }}</div>
+          <div class="text-xs text-slate-500">PID: {{ pid() }} · {{ nodeVersion() }}</div>
+        </div>
+
+        <!-- 2. 데이터베이스 -->
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/50 p-5 transition-all hover:border-slate-600/50">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">데이터베이스</span>
+            <span class="text-lg">{{ getStatusIcon(dbStatus()) }}</span>
+          </div>
+          <div class="text-2xl font-bold text-white mb-1">
+            {{ dbStatus() === 'up' ? '연결됨' : '연결 실패' }}
+          </div>
+          <div class="text-xs text-slate-500">PostgreSQL (Prisma)</div>
+        </div>
+
+        <!-- 3. 메모리 -->
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/50 p-5 transition-all hover:border-slate-600/50">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">메모리 (Heap)</span>
+            <span class="text-lg">{{ getStatusIcon(heapStatus()) }}</span>
+          </div>
+          <div class="text-2xl font-bold text-white mb-1">{{ memoryPercent() }}%</div>
+          <div class="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden mt-2 mb-1.5">
+            <div class="h-full rounded-full transition-all duration-500"
+                 [class]="memoryColor()"
+                 [style.width.%]="memoryPercent()"></div>
+          </div>
+          <div class="text-xs text-slate-500">{{ heapUsed() }}MB / {{ heapTotal() }}MB</div>
+        </div>
+
+        <!-- 4. 업타임 -->
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/50 p-5 transition-all hover:border-slate-600/50">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">업타임</span>
+            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="text-2xl font-bold text-white mb-1">{{ uptime() }}</div>
+          <div class="text-xs text-slate-500">RSS: {{ rssMb() }}MB</div>
+        </div>
+      </div>
+
+      <!-- 상세 정보 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <!-- 디스크 상태 -->
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/50 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+            </svg>
+            <span class="text-sm font-medium text-slate-300">디스크</span>
+            <span class="text-lg ml-auto">{{ getStatusIcon(diskStatus()) }}</span>
+          </div>
+          <div class="text-sm text-slate-400">
+            상태: <span class="text-white font-medium">{{ diskStatus() === 'up' ? '정상 (90% 이하)' : '용량 부족' }}</span>
+          </div>
+        </div>
+
+        <!-- 메모리 RSS 상태 -->
+        <div class="rounded-xl border border-slate-700/50 bg-slate-800/50 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+            <span class="text-sm font-medium text-slate-300">메모리 RSS</span>
+            <span class="text-lg ml-auto">{{ getStatusIcon(rssStatus()) }}</span>
+          </div>
+          <div class="text-sm text-slate-400">
+            사용량: <span class="text-white font-medium">{{ rssMb() }}MB</span>
+            <span class="text-slate-500"> / 제한: 512MB</span>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- 로딩 -->
+      <div class="flex items-center justify-center py-12">
+        <div class="flex items-center gap-3 text-slate-400">
+          <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M2.985 14.652" />
+          </svg>
+          서버 상태를 확인하고 있습니다...
+        </div>
+      </div>
+    }
+  </div>
 </div>

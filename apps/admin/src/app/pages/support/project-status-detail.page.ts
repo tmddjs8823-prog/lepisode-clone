@@ -118,6 +118,7 @@ export class ProjectStatusDetailPage implements OnInit {
   fAttachName = signal('');
   fMemo = signal('');
   fContent = signal('');
+  fPublished = signal(true);
 
   openEditForm(): void {
     const data = this.item();
@@ -136,6 +137,7 @@ export class ProjectStatusDetailPage implements OnInit {
     this.fAttachName.set('');
     this.fMemo.set(data.memo ?? '');
     this.fContent.set(data.content ?? '');
+    this.fPublished.set(data.published ?? true);
     this.showForm.set(true);
   }
 
@@ -170,6 +172,7 @@ export class ProjectStatusDetailPage implements OnInit {
       attachmentUrl: this.fAttachmentUrl() || undefined,
       memo: this.fMemo() || undefined,
       content: this.fContent() || undefined,
+      published: this.fPublished(),
     }).subscribe({
       next: (updated) => {
         this.item.set(updated);

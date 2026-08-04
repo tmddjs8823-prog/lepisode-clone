@@ -12,7 +12,7 @@
 
     @if (loading()) {
       <div class="py-20 text-center">
-        <p class="text-gray-400">로딩 중...</p>
+        <p class="text-gray-400">{{ 'common.loading' | translate }}</p>
       </div>
     }
 
@@ -86,7 +86,7 @@
 
       <!-- 추천 서비스 -->
       <div class="mt-14 pt-10 border-t border-gray-200">
-        <h2 class="text-xl font-extrabold text-gray-900 mb-8">추천 서비스</h2>
+        <h2 class="text-xl font-extrabold text-gray-900 mb-8">{{ 'service_detail.recommended' | translate }}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           @for (rec of recommended(); track rec.id) {
             <a [routerLink]="['/services', rec.id]" class="group block no-underline">
@@ -110,7 +110,7 @@
               <h3 class="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{{ loc(rec, 'title') }}</h3>
             </a>
           } @empty {
-            <p class="text-sm text-gray-400 col-span-3">추천 서비스가 없습니다.</p>
+            <p class="text-sm text-gray-400 col-span-3">{{ 'service_detail.recommended_empty' | translate }}</p>
           }
         </div>
       </div>
@@ -119,7 +119,7 @@
     @if (!loading() && !item()) {
       <div class="py-20 text-center">
         <span class="text-5xl mb-4 block">😢</span>
-        <p class="text-gray-400">서비스를 찾을 수 없습니다.</p>
+        <p class="text-gray-400">{{ 'service_detail.not_found' | translate }}</p>
       </div>
     }
 

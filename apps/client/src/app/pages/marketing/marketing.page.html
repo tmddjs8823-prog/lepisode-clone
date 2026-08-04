@@ -74,19 +74,19 @@
 </section>
 
 <!-- ═══════════ 3. 호스팅 서비스 ═══════════ -->
-<section class="hosting-section py-24 px-6" id="marketing-hosting">
+<section class="hosting-section pt-14 pb-8 md:py-24 px-4 md:px-6" id="marketing-hosting">
   <div class="max-w-[1100px] mx-auto">
-    <div class="flex flex-col lg:flex-row gap-16 items-center">
+    <div class="flex flex-col lg:flex-row gap-8 lg:gap-16 items-center">
 
       <!-- 좌: 타이틀 -->
-      <div class="lg:w-[340px] flex-shrink-0">
+      <div class="lg:w-[340px] flex-shrink-0 text-center lg:text-left">
         <span class="text-sm font-semibold text-blue-200 tracking-widest uppercase mb-3 block">HOSTING</span>
-        <h2 class="text-3xl md:text-[2.4rem] font-black text-white leading-tight mb-4">{{ 'marketing.hosting_title' | translate }}</h2>
+        <h2 class="text-2xl md:text-[2.4rem] font-black text-white leading-tight mb-4">{{ 'marketing.hosting_title' | translate }}</h2>
         <p class="text-sm text-blue-200/80 leading-relaxed" [innerHTML]="'marketing.hosting_desc' | translate"></p>
       </div>
 
       <!-- 우: 벨트 (CSS 무한 스크롤 + rAF 중앙 감지) -->
-      <div class="flex-1 max-w-[400px] hosting-belt-container">
+      <div class="flex-1 w-full lg:max-w-[400px] hosting-belt-container">
         <div class="hosting-belt-track">
           <!-- 1세트 -->
           @for (svc of hostingServices; track svc.title; let i = $index) {
@@ -330,7 +330,7 @@
               <input type="checkbox" [(ngModel)]="agreePrivacy"
                      class="mt-0.5 w-4 h-4 rounded border-gray-300 text-[#41539b] focus:ring-[#41539b]" />
               <span class="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
-                <span class="text-red-500 font-bold">[필수]</span> 요청하신 문의 내용에 대한 서비스 제공을 위해 필요한 최소한의 <span class="text-gray-900 font-semibold underline underline-offset-2">개인정보</span> 수집 및 이용에 동의합니다.
+                <span class="text-red-500 font-bold">[{{ 'inquiry.required' | translate }}]</span> {{ 'inquiry.privacy_agree' | translate }} <span class="text-gray-900 font-semibold underline underline-offset-2">{{ 'inquiry.privacy_link' | translate }}</span> {{ 'inquiry.privacy_agree_suffix' | translate }}
               </span>
             </label>
             <!-- [선택] 마케팅 정보 수신 동의 -->
@@ -338,7 +338,7 @@
               <input type="checkbox" [(ngModel)]="agreeMarketing"
                      class="mt-0.5 w-4 h-4 rounded border-gray-300 text-[#41539b] focus:ring-[#41539b]" />
               <span class="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
-                <span class="text-gray-400 font-bold">[선택]</span> 레피소드의 이벤트 및 최신 기술 정보 수신을 위한 <span class="text-gray-900 font-semibold underline underline-offset-2">마케팅 정보 수신 동의</span>에 동의합니다.
+                <span class="text-gray-400 font-bold">[{{ 'inquiry.optional' | translate }}]</span> {{ 'inquiry.marketing_agree' | translate }} <span class="text-gray-900 font-semibold underline underline-offset-2">{{ 'inquiry.marketing_link' | translate }}</span>{{ 'inquiry.marketing_agree_suffix' | translate }}
               </span>
             </label>
           </div>
@@ -352,7 +352,7 @@
             @if (submitting()) {
               {{ 'marketing.submitting' | translate }}
             } @else {
-              문의 접수하기
+              {{ 'inquiry.submit' | translate }}
             }
           </button>
         }

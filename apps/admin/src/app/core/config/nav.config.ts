@@ -29,6 +29,7 @@ export const NAV_ITEMS: NavItem[] = [
       { label: '회사 소개 관리',     icon: '', route: '/homepage/company' },
       { label: 'SEO 관리',           icon: '', route: '/settings/seo' },
       { label: '기술 블로그 관리',   icon: '', route: '/homepage/blog' },
+      { label: '스케줄 관리',        icon: '', route: '/settings/scheduler' },
     ],
   },
   {

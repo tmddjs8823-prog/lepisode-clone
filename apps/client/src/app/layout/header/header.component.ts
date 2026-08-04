@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, PLATFORM_ID } from '@angular/core';
+import { Component, HostListener, inject, PLATFORM_ID, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -36,6 +36,7 @@ export class HeaderComponent {
   activeDropdown: string | null = null;
   scrolled = false;
   isHome = true;
+  currentUrl = signal('/');
   isHeroPage = false;
   isTransparentPage = false;
 
@@ -44,10 +45,26 @@ export class HeaderComponent {
       filter((e): e is NavigationEnd => e instanceof NavigationEnd)
     ).subscribe(e => {
       const url = e.urlAfterRedirects.split('?')[0]; // query string 제거
+      this.currentUrl.set(url);
       this.isHome = url === '/' || url === '';
       this.isHeroPage = url === '/careers';
       this.isTransparentPage = url === '/support-projects' || url === '/marketing';
     });
+  }
+
+  /** 하위메뉴 아이템이 현재 페이지에 해당하는지 */
+  isSubActive(sub: SubItem): boolean {
+    const url = this.currentUrl();
+    return !sub.external && url.startsWith(sub.path);
+  }
+
+  /** 부모 메뉴가 현재 페이지를 포함하는지 */
+  isParentActive(item: NavItem): boolean {
+    const url = this.currentUrl();
+    if (item.children) {
+      return item.children.some(sub => !sub.external && url.startsWith(sub.path));
+    }
+    return item.path !== '/' && url.startsWith(item.path);
   }
 
   @HostListener('window:scroll')
@@ -92,20 +109,51 @@ export class HeaderComponent {
     },
   ];
 
-  toggleMenu() {
+  toggleMenu(event?: Event) {
+    event?.stopPropagation();
     this.mobileMenuOpen = !this.mobileMenuOpen;
+    this.langDropdownOpen = false;
+    // 드로어 열 때 현재 라우트 기반 부모 메뉴 자동 펼침
+    if (this.mobileMenuOpen) {
+      this.activeDropdown = this.getActiveParentLabel();
+    } else {
+      this.activeDropdown = null;
+    }
+    this.updateBodyScroll();
   }
 
   closeMenu() {
     this.mobileMenuOpen = false;
     this.activeDropdown = null;
+    this.langDropdownOpen = false;
+    this.updateBodyScroll();
   }
 
+  private updateBodyScroll() {
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = this.mobileMenuOpen ? 'hidden' : '';
+    }
+  }
+
+  private dropdownTimer: ReturnType<typeof setTimeout> | null = null;
+
   openDropdown(label: string) {
+    if (this.dropdownTimer) { clearTimeout(this.dropdownTimer); this.dropdownTimer = null; }
     this.activeDropdown = label;
   }
 
+  /** 마우스 이탈 시 — 딜레이 적용 */
   closeDropdown() {
+    if (this.dropdownTimer) clearTimeout(this.dropdownTimer);
+    this.dropdownTimer = setTimeout(() => {
+      this.activeDropdown = null;
+      this.dropdownTimer = null;
+    }, 30);
+  }
+
+  /** 클릭 시 — 즉시 닫기 */
+  closeDropdownNow() {
+    if (this.dropdownTimer) { clearTimeout(this.dropdownTimer); this.dropdownTimer = null; }
     this.activeDropdown = null;
   }
 
@@ -119,10 +167,27 @@ export class HeaderComponent {
     this.activeDropdown = this.activeDropdown === label ? null : label;
   }
 
+  /** 현재 URL에 해당하는 부모 navItem label 반환 */
+  private getActiveParentLabel(): string | null {
+    const url = this.router.url.split('?')[0];
+    for (const item of this.navItems) {
+      if (item.children?.some(sub => url.startsWith(sub.path))) {
+        return item.label;
+      }
+      if (item.path && url.startsWith(item.path) && item.path !== '/') {
+        return item.label;
+      }
+    }
+    return null;
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event) {
+    // 모바일 드로어가 열려있으면 document click으로 드롭다운 닫지 않음
+    if (this.mobileMenuOpen) return;
+
     const target = event.target as HTMLElement;
-    if (!target.closest('.nav-group') && !target.closest('.mobile-nav')) {
+    if (!target.closest('.nav-group') && !target.closest('.mobile-drawer')) {
       this.activeDropdown = null;
     }
     if (!target.closest('.lang-dropdown-wrap')) {

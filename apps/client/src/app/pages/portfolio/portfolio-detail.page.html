@@ -12,7 +12,7 @@
 
     @if (loading()) {
       <div class="py-20 text-center">
-        <p class="text-gray-400">로딩 중...</p>
+        <p class="text-gray-400">{{ 'common.loading' | translate }}</p>
       </div>
     }
 
@@ -91,13 +91,13 @@
       <!-- 설명 -->
       @if (p.description) {
         <div class="mt-8 pt-7 border-t border-gray-200">
-          <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{{ loc(p, 'description') }}</p>
+          <div class="text-sm text-gray-600 leading-relaxed whitespace-pre-line" [innerHTML]="loc(p, 'description')"></div>
         </div>
       }
 
       <!-- 추천 포트폴리오 -->
       <div class="mt-14 pt-10 border-t border-gray-200">
-        <h2 class="text-xl font-extrabold text-gray-900 mb-8">추천 포트폴리오</h2>
+        <h2 class="text-xl font-extrabold text-gray-900 mb-8">{{ 'portfolio_detail.recommended' | translate }}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           @for (rec of recommended(); track rec.id) {
             <a [routerLink]="['/portfolio', rec.id]" class="group block">
@@ -114,7 +114,7 @@
               <h3 class="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{{ loc(rec, 'title') }}</h3>
             </a>
           } @empty {
-            <p class="text-sm text-gray-400 col-span-3">추천 포트폴리오가 없습니다.</p>
+            <p class="text-sm text-gray-400 col-span-3">{{ 'portfolio_detail.recommended_empty' | translate }}</p>
           }
         </div>
       </div>
@@ -123,7 +123,7 @@
     @if (!loading() && !item()) {
       <div class="py-20 text-center">
         <span class="text-5xl mb-4 block">😢</span>
-        <p class="text-gray-400">포트폴리오를 찾을 수 없습니다.</p>
+        <p class="text-gray-400">{{ 'portfolio_detail.not_found' | translate }}</p>
       </div>
     }
 

@@ -1,31 +1,28 @@
 <!-- ═══════════ 히어로 배너 ═══════════ -->
-<section class="bg-gradient-to-br from-[#41539b] via-[#7c8fd4] to-[#c4b5e3] py-[60px]" id="status-hero">
-  <div class="max-w-[1200px] mx-auto px-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
+<section class="bg-gradient-to-br from-[#41539b] via-[#7c8fd4] to-[#c4b5e3] py-10 md:py-[60px]" id="status-hero">
+  <div class="max-w-[1200px] mx-auto px-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 md:gap-10">
 
     <!-- 왼쪽: 타이틀 -->
     <div>
-      <h1 class="text-3xl md:text-[2.5rem] font-extrabold text-white leading-tight mb-3">{{ 'status.title' | translate }}</h1>
-      <p class="text-sm text-white/60">{{ 'status.desc' | translate }}</p>
+      <h1 class="text-2xl md:text-[2.5rem] font-extrabold text-white leading-tight mb-2 md:mb-3">{{ 'status.title' | translate }}</h1>
+      <p class="text-xs md:text-sm text-white/60">{{ 'status.desc' | translate }}</p>
     </div>
 
     <!-- 오른쪽: 상태 플로우 -->
-    <div class="flex items-center gap-4">
-      <!-- 견적중 -->
-      <div class="flex flex-col items-center gap-2.5">
-        <div class="text-[1.6rem]">📋</div>
-        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-[#41539b]">{{ 'status.estimating' | translate }}</div>
+    <div class="flex items-center gap-2 md:gap-4">
+      <div class="flex flex-col items-center gap-1 md:gap-2.5">
+        <div class="text-lg md:text-[1.6rem]">📋</div>
+        <div class="px-3 md:px-5 py-1 md:py-1.5 rounded-full text-[0.68rem] md:text-[0.82rem] font-bold text-white bg-[#41539b] whitespace-nowrap">{{ 'status.estimating' | translate }}</div>
       </div>
-      <div class="text-white/40 text-base tracking-[-2px] -mt-4 max-md:hidden">▸▸</div>
-      <!-- 진행중 -->
-      <div class="flex flex-col items-center gap-2.5">
-        <div class="text-[1.6rem]">⚙️</div>
-        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-gray-500">{{ 'status.in_progress' | translate }}</div>
+      <div class="text-white/40 text-xs md:text-base tracking-[-2px]">▸▸</div>
+      <div class="flex flex-col items-center gap-1 md:gap-2.5">
+        <div class="text-lg md:text-[1.6rem]">⚙️</div>
+        <div class="px-3 md:px-5 py-1 md:py-1.5 rounded-full text-[0.68rem] md:text-[0.82rem] font-bold text-white bg-gray-500 whitespace-nowrap">{{ 'status.in_progress' | translate }}</div>
       </div>
-      <div class="text-white/40 text-base tracking-[-2px] -mt-4 max-md:hidden">▸▸</div>
-      <!-- 납품완료 -->
-      <div class="flex flex-col items-center gap-2.5">
-        <div class="text-[1.6rem]">☑️</div>
-        <div class="px-5 py-1.5 rounded-full text-[0.82rem] font-bold text-white bg-[#5a6a30]">{{ 'status.delivered' | translate }}</div>
+      <div class="text-white/40 text-xs md:text-base tracking-[-2px]">▸▸</div>
+      <div class="flex flex-col items-center gap-1 md:gap-2.5">
+        <div class="text-lg md:text-[1.6rem]">☑️</div>
+        <div class="px-3 md:px-5 py-1 md:py-1.5 rounded-full text-[0.68rem] md:text-[0.82rem] font-bold text-white bg-[#5a6a30] whitespace-nowrap">{{ 'status.delivered' | translate }}</div>
       </div>
     </div>
 
@@ -35,7 +32,7 @@
 <!-- ═══════════ 필터 탭 + 리스트 ═══════════ -->
 <section class="py-16 px-6" id="status-list">
   <div class="max-w-[1200px] mx-auto">
-    <div class="max-w-[500px] mx-auto">
+    <div>
 
     <!-- 탭 -->
     <div class="flex items-center gap-2 mb-10">
@@ -43,37 +40,36 @@
         <button class="px-6 py-2.5 rounded-xl text-[0.9rem] font-medium transition-all cursor-pointer"
                 [class]="activeTab() === tab ? 'bg-[#f0f0ff] border border-[#d0d4e8] text-[#1a1a2e] font-bold' : 'border border-transparent text-gray-400 hover:text-gray-700'"
                 (click)="selectTab(tab)">
-          {{ getTabLabel(tab) }}
+          {{ getTabLabel(tab) | translate }}
         </button>
       }
     </div>
 
-    <!-- 카드 리스트 -->
-    <div class="flex flex-col gap-3">
+    <!-- 카드 그리드 (3컬럼) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
       @for (item of filtered(); track item.id) {
-        <div class="border border-gray-200 rounded-2xl px-7 py-5 bg-white transition-shadow hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
+        <div class="border border-gray-200 rounded-xl px-5 py-4 bg-white transition-shadow hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
           <!-- 상단: 플랫폼 + 뱃지 -->
           <div class="flex items-center justify-between mb-2">
             <div class="flex gap-1.5">
               @if (item.platforms && item.platforms.length > 0) {
                 @for (p of item.platforms; track p) {
-                  <span class="text-[0.82rem] font-medium text-[#41539b]">{{ p }}</span>
+                  <span class="text-[0.78rem] font-medium text-[#41539b]">{{ p }}</span>
                 }
               }
             </div>
-            <span class="inline-block px-4 py-1 rounded-full text-[0.78rem] font-semibold border-[1.5px] bg-transparent"
+            <span class="inline-block px-3 py-0.5 rounded-full text-[0.72rem] font-semibold border-[1.5px] bg-transparent"
                   [class]="getStatusBadgeClass(item.status)">
-              {{ getStatusLabel(item.status) }}
+              {{ getStatusKey(item.status) | translate }}
             </span>
           </div>
-          <!-- 하단: 제목 + 기간 -->
-          <div class="flex items-center justify-between max-md:flex-col max-md:items-start max-md:gap-1">
-            <span class="text-[0.95rem] font-bold text-[#1a1a2e]">{{ loc(item, 'title') }}</span>
-            <span class="text-[0.82rem] text-gray-400">{{ formatPeriod(item.startDate, item.endDate) }}</span>
-          </div>
+          <!-- 제목 -->
+          <div class="text-[0.88rem] font-bold text-[#1a1a2e] mb-1.5 line-clamp-1">{{ loc(item, 'title') }}</div>
+          <!-- 기간 -->
+          <div class="text-[0.78rem] text-gray-400">{{ formatPeriod(item.startDate, item.endDate) }}</div>
         </div>
       } @empty {
-        <div class="py-16 text-center">
+        <div class="col-span-full py-16 text-center">
           <p class="text-gray-400">{{ 'status.empty' | translate }}</p>
         </div>
       }

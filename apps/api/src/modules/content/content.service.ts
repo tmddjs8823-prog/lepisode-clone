@@ -7,12 +7,12 @@ import {
   UpsertTermsDto,
   CreateQrCodeDto, UpdateQrCodeDto,
 } from './dto/content.dto';
+import * as QRCode from 'qrcode';
 
 @Injectable()
 export class ContentService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /** DTO의 날짜 문자열을 Prisma DateTime(Date 객체)로 변환 */
   private convertDates(dto: object, dateFields: string[]): Record<string, unknown> {
     const data: Record<string, unknown> = { ...dto as Record<string, unknown> };
     for (const field of dateFields) {
@@ -23,7 +23,6 @@ export class ContentService {
     return data;
   }
 
-  // ── Certificate ────────────────────────────────────────
   async findCertificates() {
     return this.prisma.certificate.findMany({ orderBy: { sortOrder: 'asc' } });
   }
@@ -37,14 +36,13 @@ export class ContentService {
     return this.prisma.certificate.delete({ where: { id } });
   }
 
-  // ── Event ──────────────────────────────────────────────
   async findEvents(params?: { published?: boolean }) {
     const where = params?.published !== undefined ? { published: params.published } : {};
     return this.prisma.event.findMany({ where, orderBy: { startDate: 'desc' } });
   }
   async findOneEvent(id: number) {
     const item = await this.prisma.event.findUnique({ where: { id } });
-    if (!item) throw new NotFoundException(`Event #${id} not found`);
+    if (!item) throw new NotFoundException('Event not found');
     return item;
   }
   async createEvent(dto: CreateEventDto) {
@@ -59,14 +57,31 @@ export class ContentService {
     return this.prisma.event.delete({ where: { id } });
   }
 
-  // ── Popup ──────────────────────────────────────────────
   async findPopups(params?: { published?: boolean }) {
-    const where = params?.published !== undefined ? { published: params.published } : {};
+    const where: Record<string, unknown> = {};
+    if (params?.published !== undefined) {
+      where.published = params.published;
+      const now = new Date();
+      const todayStart = new Date(now);
+      todayStart.setHours(0, 0, 0, 0);
+      where.OR = [
+        { startDate: null },
+        { startDate: { lte: now } },
+      ];
+      where.AND = [
+        {
+          OR: [
+            { endDate: null },
+            { endDate: { gte: todayStart } },
+          ],
+        },
+      ];
+    }
     return this.prisma.popup.findMany({ where, orderBy: { createdAt: 'desc' } });
   }
   async findOnePopup(id: number) {
     const item = await this.prisma.popup.findUnique({ where: { id } });
-    if (!item) throw new NotFoundException(`Popup #${id} not found`);
+    if (!item) throw new NotFoundException('Popup not found');
     return item;
   }
   async createPopup(dto: CreatePopupDto) {
@@ -81,7 +96,6 @@ export class ContentService {
     return this.prisma.popup.delete({ where: { id } });
   }
 
-  // ── Terms ──────────────────────────────────────────────
   async findAllTerms() {
     return this.prisma.terms.findMany({ orderBy: { type: 'asc' } });
   }
@@ -97,21 +111,31 @@ export class ContentService {
     });
   }
 
-  // ── QrCode ────────────────────────────────────────────
   async findQrCodes() {
     return this.prisma.qrCode.findMany({ orderBy: { createdAt: 'desc' } });
   }
   async findOneQrCode(id: number) {
     const item = await this.prisma.qrCode.findUnique({ where: { id } });
-    if (!item) throw new NotFoundException(`QrCode #${id} not found`);
+    if (!item) throw new NotFoundException('QrCode not found');
     return item;
   }
   async createQrCode(dto: CreateQrCodeDto) {
-    return this.prisma.qrCode.create({ data: dto });
+    const qrImageUrl = await QRCode.toDataURL(dto.targetUrl, {
+      width: 512, margin: 2, errorCorrectionLevel: 'H',
+      color: { dark: '#000000', light: '#ffffff' },
+    });
+    return this.prisma.qrCode.create({ data: { ...dto, qrImageUrl } });
   }
   async updateQrCode(id: number, dto: UpdateQrCodeDto) {
     await this.findOneQrCode(id);
-    return this.prisma.qrCode.update({ where: { id }, data: dto });
+    const data: Record<string, unknown> = { ...dto };
+    if (dto.targetUrl) {
+      data.qrImageUrl = await QRCode.toDataURL(dto.targetUrl, {
+        width: 512, margin: 2, errorCorrectionLevel: 'H',
+        color: { dark: '#000000', light: '#ffffff' },
+      });
+    }
+    return this.prisma.qrCode.update({ where: { id }, data: data as never });
   }
   async removeQrCode(id: number) {
     await this.findOneQrCode(id);
@@ -122,5 +146,13 @@ export class ContentService {
       where: { id },
       data: { scanCount: { increment: 1 } },
     });
+  }
+  async regenerateQrImage(id: number) {
+    const item = await this.findOneQrCode(id);
+    const qrImageUrl = await QRCode.toDataURL(item.targetUrl, {
+      width: 512, margin: 2, errorCorrectionLevel: 'H',
+      color: { dark: '#000000', light: '#ffffff' },
+    });
+    return this.prisma.qrCode.update({ where: { id }, data: { qrImageUrl } });
   }
 }

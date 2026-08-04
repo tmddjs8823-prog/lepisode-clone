@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { HeaderComponent } from './header/header.component';
@@ -17,7 +18,18 @@ import { I18nService } from '../shared/services/i18n.service';
 })
 export class LayoutComponent {
   private api = inject(ClientApiService);
+  private router = inject(Router);
   i18n = inject(I18nService);
+  isHome = false;
+
+  constructor() {
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd)
+    ).subscribe(e => {
+      const url = e.urlAfterRedirects.split('?')[0];
+      this.isHome = url === '/' || url === '';
+    });
+  }
 
   showInquiry = false;
   submitting = signal(false);

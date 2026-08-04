@@ -1,0 +1,19 @@
+// ============================================================
+// 스케줄러 설정
+// ============================================================
+
+model SchedulerTask {
+  id          Int      @id @default(autoincrement())
+  taskKey     String   @unique // 'expire-popups', 'expire-events', 'expire-jobs'
+  name        String            // 표시 이름
+  description String?           // 설명
+  cronExpr    String   @default("0 0 * * *") // 매일 자정
+  enabled     Boolean  @default(false)
+  lastRunAt   DateTime?
+  lastResult  String?           // 'success' | 'error'
+  lastMessage String?           // 실행 결과 메시지
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("scheduler_tasks")
+}

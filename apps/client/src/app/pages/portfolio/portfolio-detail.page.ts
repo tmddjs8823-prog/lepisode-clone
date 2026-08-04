@@ -2,12 +2,13 @@ import { Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ClientApiService, PortfolioItem } from '../../shared/services/client-api.service';
+import { TranslatePipe } from '@ngx-translate/core';
 import { I18nService } from '../../shared/services/i18n.service';
 
 @Component({
   selector: 'app-portfolio-detail-page',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   templateUrl: './portfolio-detail.page.html',
 })
 export class PortfolioDetailPage implements OnInit {

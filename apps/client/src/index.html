@@ -22,6 +22,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
 
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <style>
+      body { opacity: 0; transition: opacity 0.15s ease-in; }
+      body.app-ready { opacity: 1; }
+    </style>
   </head>
   <body>
     <app-root></app-root>

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ContentApiService, QrCodeItem, QrCodePayload } from '../../shared/services/content-api.service';
 import { ToastService } from '../../shared/services/toast.service';
@@ -23,17 +23,18 @@ export class QrPage implements OnInit {
   loading = signal(false);
 
   readonly columns: ColumnDef<Record<string, unknown>>[] = [
-    { key: '_index', label: '순번', align: 'center', width: '8%', type: 'index' },
-    { key: 'name', label: 'QR 코드명', align: 'center', width: '25%' },
+    { key: '_index', label: '순번', align: 'center', width: '6%', type: 'index' },
+    { key: 'name', label: 'QR 코드명', align: 'center', width: '20%' },
     {
-      key: 'type', label: '유형', align: 'center', width: '12%', type: 'badge',
+      key: 'type', label: '유형', align: 'center', width: '10%', type: 'badge',
       badgeMap: {
         URL: { label: 'URL', class: 'bg-violet-500/10 text-violet-400 border border-violet-500/20' },
         PDF: { label: 'PDF', class: 'bg-rose-500/10 text-rose-400 border border-rose-500/20' },
       },
     },
-    { key: 'targetUrl', label: '연결 URL', align: 'center', width: '40%' },
-    { key: 'createdAt', label: '생성일', align: 'center', width: '15%', type: 'date' },
+    { key: 'qrImageUrl', label: 'QR 이미지', align: 'center', width: '10%', type: 'image' },
+    { key: 'targetUrl', label: '연결 URL', align: 'center', width: '35%' },
+    { key: 'createdAt', label: '생성일', align: 'center', width: '12%', type: 'date' },
   ];
 
   showForm = signal(false);
@@ -55,24 +56,59 @@ export class QrPage implements OnInit {
 
   readonly qrContextMenuItems = [
     { action: 'download-qr', label: 'QR코드 다운로드', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4' },
+    { action: 'regenerate-qr', label: 'QR코드 재생성', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
   ];
+
+  generatingQr = signal(false);
 
   onCustomAction(event: { action: string; row: Record<string, unknown> }): void {
     if (event.action === 'download-qr') {
       const item = event.row as unknown as QrCodeItem;
-      if (!item.qrCodeUrl) {
-        this.toast.warning('QR코드 이미지가 없습니다.');
-        return;
-      }
-      const link = document.createElement('a');
-      link.href = item.qrCodeUrl;
-      link.download = `${item.name || 'qrcode'}.png`;
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      this.toast.success('QR코드 다운로드를 시작합니다.');
+      this.downloadQrImage(item);
+    } else if (event.action === 'regenerate-qr') {
+      const item = event.row as unknown as QrCodeItem;
+      this.regenerateQrImage(item);
     }
+  }
+
+  downloadQrImage(item: QrCodeItem): void {
+    if (!item.qrImageUrl) {
+      this.toast.warning('QR코드 이미지가 없습니다. 먼저 QR코드를 재생성하세요.');
+      return;
+    }
+    // data URL을 Blob으로 변환 후 다운로드
+    const dataUrl = item.qrImageUrl;
+    fetch(dataUrl)
+      .then(res => res.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${item.name || 'qrcode'}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        this.toast.success('QR코드 이미지를 다운로드했습니다.');
+      })
+      .catch(() => {
+        this.toast.error('QR코드 다운로드에 실패했습니다.');
+      });
+  }
+
+  regenerateQrImage(item: QrCodeItem): void {
+    this.generatingQr.set(true);
+    this.api.regenerateQrImage(item.id).subscribe({
+      next: () => {
+        this.toast.success('QR코드 이미지가 재생성되었습니다.');
+        this.generatingQr.set(false);
+        this.loadData();
+      },
+      error: () => {
+        this.toast.error('QR코드 재생성에 실패했습니다.');
+        this.generatingQr.set(false);
+      },
+    });
   }
 
   filteredData = computed(() => {

@@ -56,6 +56,9 @@ export class AuthService {
     this.http.post(`${API}/auth/logout`, {}, { withCredentials: true }).subscribe();
     this.token.clearAccessToken();
     this._currentUser.set(null);
+    // 미처리 문의 알림 상태 초기화 (재로그인 시 다시 표시)
+    localStorage.removeItem('inquiry-alert-dismissed');
+    sessionStorage.removeItem('inquiry-alert-last-run');
     this.router.navigate(['/login']);
   }
 

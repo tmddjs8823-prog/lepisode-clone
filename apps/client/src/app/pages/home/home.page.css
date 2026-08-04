@@ -32,9 +32,111 @@
 .service-scroll::-webkit-scrollbar { display: none; }
 
 .blog-belt {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
   scrollbar-width: none;
+  cursor: grab;
+  padding: 4px 0;
+  -webkit-overflow-scrolling: touch;
 }
 .blog-belt::-webkit-scrollbar { display: none; }
+.blog-belt:active { cursor: grabbing; }
+.blog-belt.is-dragging .blog-card { pointer-events: none; }
+
+.blog-belt .blog-card {
+  flex: 0 0 300px;
+}
+
+@media (max-width: 1024px) {
+  .blog-belt .blog-card {
+    flex: 0 0 280px;
+  }
+}
+@media (max-width: 640px) {
+  .blog-belt .blog-card {
+    flex: 0 0 80vw;
+  }
+}
+
+/* ── 모바일 드래그 벨트: 공지사항 / 포트폴리오 / 서비스소개 ── */
+.drag-belt {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  cursor: grab;
+  padding: 4px 0;
+  -webkit-overflow-scrolling: touch;
+}
+.drag-belt::-webkit-scrollbar { display: none; }
+.drag-belt:active { cursor: grabbing; }
+.drag-belt.is-dragging .drag-card { pointer-events: none; }
+.drag-belt .drag-card { flex: 0 0 80vw; }
+.onestop-belt .drag-card { flex: 0 0 100%; min-height: 200px; }
+.onestop-belt { gap: 0; scroll-snap-type: x mandatory; }
+.onestop-belt .drag-card { scroll-snap-align: start; }
+/* 모바일에서 scale/translate 효과 제거 (카드 겹침 방지) */
+@media (max-width: 767px) {
+  .onestop-belt .drag-card {
+    transform: none !important;
+    scale: none !important;
+  }
+}
+
+/* md 이상에서는 grid로 복원 */
+@media (min-width: 768px) {
+  .notice-belt {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    overflow: visible;
+    cursor: default;
+    padding: 0;
+  }
+  .portfolio-belt {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    overflow: visible;
+    cursor: default;
+    padding: 0;
+  }
+  .service-intro-belt {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    overflow: visible;
+    cursor: default;
+    padding: 0;
+  }
+  .onestop-belt {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    overflow: visible;
+    cursor: default;
+    padding: 0;
+  }
+  .drag-belt .drag-card { flex: unset; }
+}
+@media (min-width: 1024px) {
+  .notice-belt {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .portfolio-belt {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .service-intro-belt {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .onestop-belt {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+
+
 
 /* ── 수상 실적 벨트 (홈 전용) ── */
 .awards-belt {

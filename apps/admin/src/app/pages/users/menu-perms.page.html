@@ -3,27 +3,30 @@
   <admin-page-header title="메뉴별 권한 관리" />
 
   <!-- ── 상단 바 ── -->
-  <div class="flex items-center justify-between gap-4 flex-wrap">
+  <div class="flex flex-col gap-3">
     <div class="relative">
       <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
       <input type="text"
-        class="pl-9 pr-4 py-2 w-64 bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg focus:outline-none focus:border-indigo-500"
+        class="pl-9 pr-4 py-2 w-full lg:w-64 bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg focus:outline-none focus:border-indigo-500"
         placeholder="검색어를 입력해주세요."
         [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
     </div>
-    <div class="flex items-center gap-3">
-      <button class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors" (click)="importJson()">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-        JSON으로 가져오기
+    <div class="grid grid-cols-2 lg:flex lg:items-center gap-2">
+      <button class="flex items-center justify-center gap-2 px-3 py-2 text-sm text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors whitespace-nowrap" (click)="importJson()">
+        <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+        JSON 가져오기
       </button>
-      <button class="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors" (click)="exportJson()">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-        JSON으로 내보내기
+      <button class="flex items-center justify-center gap-2 px-3 py-2 text-sm text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors whitespace-nowrap" (click)="exportJson()">
+        <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+        JSON 내보내기
       </button>
-      <button class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors" (click)="openForm()">
+      <button class="hidden lg:flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors" (click)="openForm()">
         등록
       </button>
     </div>
+    <button class="flex lg:hidden items-center justify-center gap-2 w-full px-3 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors" (click)="openForm()">
+      등록
+    </button>
   </div>
 
   <!-- ── 로딩 ── -->
@@ -38,29 +41,16 @@
         <div class="bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden">
           <!-- 부모 데이터 행 -->
           <div
-            class="flex items-center gap-3 px-5 py-3.5 cursor-pointer hover:bg-slate-800/80 transition-colors select-none"
+            class="flex flex-wrap lg:flex-nowrap items-center gap-x-3 gap-y-2 px-5 py-3.5 cursor-pointer hover:bg-slate-800/80 transition-colors select-none overflow-hidden"
             (click)="toggleExpand(menu.id)" (keydown.enter)="toggleExpand(menu.id)" tabindex="0" role="button"
           >
             <svg class="w-3.5 h-3.5 text-slate-400 transition-transform shrink-0" [class.rotate-180]="isExpanded(menu.id)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-            <span class="text-sm font-semibold text-slate-200 shrink-0">{{ menu.menuName }}</span>
-            <span class="text-xs text-slate-500 font-mono truncate">{{ menu.menuKey }}</span>
+            <span class="text-sm font-semibold text-slate-200 mp-truncate mp-truncate-8" [title]="menu.menuName">{{ menu.menuName }}</span>
+            <span class="text-xs text-slate-500 font-mono mp-truncate mp-truncate-8" [title]="menu.menuKey">{{ menu.menuKey }}</span>
             <button class="p-0.5 text-slate-600 hover:text-slate-300 transition-colors shrink-0" title="키 복사" (click)="$event.stopPropagation(); copyToClipboard(menu.menuKey)">
               <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
             </button>
             <div class="flex-1"></div>
-            <div class="flex flex-col gap-1 shrink-0" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
-              @for (mp of (permMap().get(menu.menuName) ?? permMap().get(menu.menuKey) ?? []); track mp.permId) {
-                <div class="flex items-center gap-1.5 text-xs text-slate-400">
-                  <span>· 역할</span>
-                  <span class="font-semibold text-slate-200">{{ mp.roleName }}</span>
-                  <span>· 레벨</span>
-                  <span class="font-semibold text-slate-200">{{ mp.level }}</span>
-                  <button class="p-0.5 text-slate-500 hover:text-indigo-400 hover:bg-indigo-500/10 rounded transition-colors" title="권한 수정" (click)="openEditMenuPerm(mp, menu.menuName)">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                  </button>
-                </div>
-              }
-            </div>
             <div class="flex items-center gap-1 shrink-0" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
               <button class="p-1.5 text-slate-500 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors" title="하위메뉴 등록" (click)="openSubMenuForm(menu)">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
@@ -72,6 +62,21 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
               </button>
             </div>
+            @if ((permMap().get(menu.menuName) ?? permMap().get(menu.menuKey) ?? []).length > 0) {
+              <div class="flex flex-col gap-1 w-full" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+                @for (mp of (permMap().get(menu.menuName) ?? permMap().get(menu.menuKey) ?? []); track mp.permId) {
+                  <div class="flex items-center gap-1.5 text-xs text-slate-400">
+                    <span>· 역할</span>
+                    <span class="font-semibold text-slate-200 mp-truncate mp-truncate-6" [title]="mp.roleName">{{ mp.roleName }}</span>
+                    <span class="shrink-0">· 레벨</span>
+                    <span class="font-semibold text-slate-200 shrink-0">{{ mp.level }}</span>
+                    <button class="p-0.5 text-slate-500 hover:text-indigo-400 hover:bg-indigo-500/10 rounded transition-colors shrink-0" title="권한 수정" (click)="openEditMenuPerm(mp, menu.menuName)">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
           </div>
         </div>
 
@@ -84,20 +89,20 @@
                   (click)="toggleExpand(child.id)" (keydown.enter)="toggleExpand(child.id)" tabindex="0" role="button">
                   <svg class="w-3 h-3 text-slate-500 transition-transform shrink-0" [class.rotate-180]="isExpanded(child.id)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
                   <!-- 메뉴명 + URL 세로 정렬 -->
-                  <div class="flex flex-col min-w-0 shrink-0">
-                    <span class="text-sm font-semibold text-slate-300">{{ child.menuName }}</span>
-                    <span class="text-[11px] text-slate-500 font-mono truncate">라우트 URL : {{ child.routeUrl ?? '—' }}</span>
-                    <span class="text-[11px] text-slate-500 font-mono truncate">API URL : {{ child.apiUrl ?? '—' }}</span>
+                  <div class="flex flex-col mp-child-col">
+                    <span class="text-sm font-semibold text-slate-300 mp-truncate" [title]="child.menuName">{{ child.menuName }}</span>
+                    <span class="text-[11px] text-slate-500 font-mono mp-truncate" [title]="child.routeUrl ?? '—'">라우트 URL : {{ child.routeUrl ?? '—' }}</span>
+                    <span class="text-[11px] text-slate-500 font-mono mp-truncate" [title]="child.apiUrl ?? '—'">API URL : {{ child.apiUrl ?? '—' }}</span>
                   </div>
                   <div class="flex-1"></div>
                   <!-- 권한 배지 -->
-                  <div class="flex flex-col gap-1 shrink-0" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+                  <div class="flex flex-col gap-1 shrink-0 min-w-0 max-w-[40%] lg:max-w-none" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
                     @for (group of getGroupedPerms(child.menuName, child.menuKey); track group.roleId) {
-                      <div class="flex items-center gap-3 text-xs text-slate-400">
+                      <div class="flex items-center gap-2 lg:gap-3 text-xs text-slate-400 flex-wrap">
                         <span>· 역할</span>
-                        <span class="font-semibold text-slate-200">{{ group.roleName }}</span>
-                        <span>· 레벨</span>
-                        <span class="font-semibold text-slate-200">{{ group.level }}</span>
+                        <span class="font-semibold text-slate-200 mp-truncate mp-truncate-5" [title]="group.roleName">{{ group.roleName }}</span>
+                        <span class="shrink-0">· 레벨</span>
+                        <span class="font-semibold text-slate-200 shrink-0">{{ group.level }}</span>
                         @for (t of group.types; track t.type) {
                           <span class="inline-flex items-center gap-1" [class]="t.active ? 'text-indigo-400' : 'text-slate-600'">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

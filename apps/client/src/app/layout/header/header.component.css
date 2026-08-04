@@ -60,10 +60,47 @@
   background: #f5f5ff;
 }
 
+/* 하위메뉴 활성 상태 */
+.sub-active {
+  color: #41539b !important;
+  font-weight: 600 !important;
+  background: #f5f5ff;
+}
+
+.mobile-sub-item.sub-active {
+  color: #41539b !important;
+  font-weight: 600 !important;
+  background: #f0f0ff;
+}
+
+/* 터치 디바이스에서 hover 고착 방지 */
+@media (hover: hover) {
+  .nav-item:hover {
+    color: #41539b;
+    background: #f3f4f6;
+  }
+  .mobile-nav-item:hover {
+    color: #41539b;
+    background: #f5f5ff;
+  }
+  .mobile-sub-item:hover {
+    color: #41539b;
+    background: #f0f0ff;
+  }
+}
+
 /* ═══════════ Hero Mode (배너 위 투명 헤더) ═══════════ */
 .header.hero-mode {
   background: transparent;
   box-shadow: none;
+}
+
+/* 모바일에서 hero-mode 가독성 확보 */
+@media (max-width: 1023px) {
+  .header.hero-mode {
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+  }
 }
 
 .header.hero-mode .logo-text {
@@ -110,4 +147,34 @@
 
 .header.transparent-mode .header-line {
   opacity: 0;
+}
+
+/* ═══════════ Home Hero Mode (KO 홈 – 벨트 유지, 네비만 투명) ═══════════ */
+.header.home-hero-mode {
+  background: transparent;
+  box-shadow: none;
+}
+
+.header.home-hero-mode .header-line {
+  opacity: 0;
+}
+
+/* ═══════════ Mobile Side Drawer ═══════════ */
+.mobile-backdrop {
+  animation: backdropFadeIn 0.2s ease-out;
+}
+
+.mobile-drawer {
+  animation: drawerSlideIn 0.25s ease-out;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
+}
+
+@keyframes backdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes drawerSlideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }

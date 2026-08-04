@@ -144,6 +144,18 @@ export class PopupsPage implements OnInit {
 
   save(): void {
     if (!this.fTitle().trim()) { this.toast.warning('팝업명을 입력하세요.'); return; }
+
+    // 날짜 정합성 검증: 시작일 > 종료일이면 차단
+    if (this.fStartDate() && this.fEndDate()) {
+      if (this.fStartDate() > this.fEndDate()) {
+        this.toast.warning('종료일은 시작일 이후여야 합니다.');
+        return;
+      }
+      if (this.fStartDate() === this.fEndDate()) {
+        this.toast.info('시작일과 종료일이 같아 당일만 게시됩니다.');
+      }
+    }
+
     this.saving.set(true);
 
     const doSave = (imageUrl?: string) => {

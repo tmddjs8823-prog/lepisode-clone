@@ -1,4 +1,4 @@
-import { Component, signal, inject, computed, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, signal, inject, computed, OnInit, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, switchMap } from 'rxjs';
@@ -23,6 +23,23 @@ export interface MenuPermItem {
   selector: 'admin-menu-perms-page',
   imports: [FormsModule, ConfirmDialogComponent, PageHeaderComponent],
   templateUrl: './menu-perms.page.html',
+  encapsulation: ViewEncapsulation.None,
+  styles: [`
+    .mp-truncate {
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+      display: inline-block !important;
+    }
+    .mp-truncate-8 { max-width: 4rem !important; }
+    .mp-truncate-6 { max-width: 3rem !important; }
+    .mp-truncate-5 { max-width: 3rem !important; }
+    .mp-truncate-10 { max-width: 6rem !important; }
+    .mp-child-col {
+      max-width: 6rem !important;
+      min-width: 0 !important;
+    }
+  `],
 })
 export class MenuPermsPage implements OnInit {
   private http = inject(HttpClient);

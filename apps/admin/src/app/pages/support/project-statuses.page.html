@@ -133,6 +133,20 @@
           </div>
         </div>
 
+        <!-- 노출여부 -->
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-sm font-semibold text-slate-200">노출여부</div>
+            <div class="text-xs text-slate-500 mt-0.5">비공개 시 클라이언트 페이지에 표시되지 않습니다</div>
+          </div>
+          <button class="relative w-12 h-7 rounded-full cursor-pointer transition-colors duration-200 border-none flex-shrink-0"
+                  [class]="fPublished() ? 'bg-emerald-500' : 'bg-slate-600'"
+                  (click)="fPublished.set(!fPublished())">
+            <div class="absolute top-1 w-5 h-5 rounded-full bg-white transition-all duration-200 shadow-sm"
+                 [class]="fPublished() ? 'left-6' : 'left-1'"></div>
+          </button>
+        </div>
+
         <!-- 이메일 -->
         <div class="flex flex-col gap-1.5">
           <label for="project-email" class="text-sm font-semibold text-slate-200">이메일 <span class="text-indigo-500">*</span></label>

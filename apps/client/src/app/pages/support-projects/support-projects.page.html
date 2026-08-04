@@ -261,7 +261,7 @@
               <input type="checkbox" [(ngModel)]="agreePrivacy"
                      class="mt-0.5 w-4 h-4 rounded border-gray-300 text-[#41539b] focus:ring-[#41539b]" />
               <span class="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
-                <span class="text-red-500 font-bold">[필수]</span> 요청하신 문의 내용에 대한 서비스 제공을 위해 필요한 최소한의 <span class="text-gray-900 font-semibold underline underline-offset-2">개인정보</span> 수집 및 이용에 동의합니다.
+                <span class="text-red-500 font-bold">[{{ 'inquiry.required' | translate }}]</span> {{ 'inquiry.privacy_agree' | translate }} <span class="text-gray-900 font-semibold underline underline-offset-2">{{ 'inquiry.privacy_link' | translate }}</span> {{ 'inquiry.privacy_agree_suffix' | translate }}
               </span>
             </label>
             <!-- [선택] 마케팅 정보 수신 동의 -->
@@ -269,7 +269,7 @@
               <input type="checkbox" [(ngModel)]="agreeMarketing"
                      class="mt-0.5 w-4 h-4 rounded border-gray-300 text-[#41539b] focus:ring-[#41539b]" />
               <span class="text-xs text-gray-500 leading-relaxed group-hover:text-gray-700 transition-colors">
-                <span class="text-gray-400 font-bold">[선택]</span> 레피소드의 이벤트 및 최신 기술 정보 수신을 위한 <span class="text-gray-900 font-semibold underline underline-offset-2">마케팅 정보 수신 동의</span>에 동의합니다.
+                <span class="text-gray-400 font-bold">[{{ 'inquiry.optional' | translate }}]</span> {{ 'inquiry.marketing_agree' | translate }} <span class="text-gray-900 font-semibold underline underline-offset-2">{{ 'inquiry.marketing_link' | translate }}</span>{{ 'inquiry.marketing_agree_suffix' | translate }}
               </span>
             </label>
           </div>
@@ -283,7 +283,7 @@
             @if (submitting()) {
               {{ 'marketing.submitting' | translate }}
             } @else {
-              문의 접수하기
+              {{ 'inquiry.submit' | translate }}
             }
           </button>
         }

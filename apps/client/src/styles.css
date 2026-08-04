@@ -180,3 +180,12 @@ a {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-primary-300);
 }
+
+/* ── 스크롤바 숨기기 유틸리티 ── */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

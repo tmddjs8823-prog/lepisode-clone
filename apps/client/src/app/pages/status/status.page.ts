@@ -1,7 +1,7 @@
 import { Component, OnInit, PLATFORM_ID, inject, signal, computed } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ClientApiService, ProjectStatusItem } from '../../shared/services/client-api.service';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { I18nService } from '../../shared/services/i18n.service';
 
 @Component({
@@ -14,7 +14,7 @@ export class StatusPage implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private api = inject(ClientApiService);
   private i18n = inject(I18nService);
-  private translate = inject(TranslateService);
+
 
   allStatuses = signal<ProjectStatusItem[]>([]);
   activeTab = signal('all');
@@ -48,7 +48,7 @@ export class StatusPage implements OnInit {
   }
 
   getTabLabel(key: string): string {
-    return this.translate.instant('status.tab_' + key);
+    return 'status.tab_' + key;
   }
 
   formatPeriod(start?: string, end?: string): string {
@@ -58,9 +58,10 @@ export class StatusPage implements OnInit {
       const date = new Date(d);
       const y = String(date.getFullYear()).slice(2);
       const m = String(date.getMonth() + 1).padStart(2, '0');
-      if (lang === 'ja') return `${y}年 ${m}月`;
-      if (lang === 'en') return `${date.getFullYear()}.${m}`;
-      return `${y}년 ${m}월`;
+      const day = String(date.getDate()).padStart(2, '0');
+      if (lang === 'ja') return `${y}年 ${m}月 ${day}日`;
+      if (lang === 'en') return `${date.getFullYear()}.${m}.${day}`;
+      return `${y}년 ${m}월 ${day}일`;
     };
     const s = fmt(start);
     const e = fmt(end);
@@ -79,16 +80,14 @@ export class StatusPage implements OnInit {
     }
   }
 
-  getStatusLabel(status: string): string {
+  getStatusKey(status: string): string {
     const keyMap: Record<string, string> = {
       ESTIMATING: 'status.estimating',
       IN_PROGRESS: 'status.in_progress',
       ANSWERED: 'status.answered',
       COMPLETE: 'status.delivered',
     };
-    const key = keyMap[status];
-    if (key) return this.translate.instant(key);
-    return status;
+    return keyMap[status] || status;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

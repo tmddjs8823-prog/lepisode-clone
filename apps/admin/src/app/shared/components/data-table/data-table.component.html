@@ -1,9 +1,9 @@
 <div class="flex flex-col">
 
-  <!-- 검색 바 + 액션 바 (같은 줄에 배치) -->
-  <div class="flex items-center justify-between gap-3 mb-10">
+  <!-- 검색 바 + 액션 바 -->
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-6 lg:mb-10">
     <ng-content select="[search-bar]"></ng-content>
-    <div class="flex items-center gap-2 shrink-0">
+    <div class="flex items-center gap-2 flex-wrap shrink-0">
       <ng-content select="[action-bar]"></ng-content>
     </div>
   </div>
@@ -40,7 +40,7 @@
         @if (showSortMenu()) {
           <div class="absolute right-0 top-full mt-1 z-30 bg-white rounded-lg shadow-xl border border-gray-200 overflow-visible min-w-[120px]">
             <!-- 오름차순 -->
-            <div class="relative" (mouseenter)="hoverAsc.set(true)" (mouseleave)="hoverAsc.set(false)">
+            <div class="relative" (mouseenter)="hoverAsc.set(true); hoverDesc.set(false)" (mouseleave)="hoverAsc.set(false)">
               <button
                 class="w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors"
                 [class]="sortDir() === 'asc' && sortKey() ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
@@ -49,20 +49,22 @@
                 오름차순 ↑
               </button>
               @if (hoverAsc()) {
-                <div class="absolute right-full top-0 mr-1 z-40 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden min-w-[140px]">
-                  @for (col of sortableColumns(); track col.key) {
-                    <button
-                      class="w-full text-left px-4 py-2 text-sm transition-colors"
-                      [class]="sortKey() === col.key && sortDir() === 'asc' ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
-                      (click)="applySort(col.key.toString(), 'asc')"
-                    >{{ col.label }}</button>
-                  }
+                <div class="absolute right-full top-0 pr-1 z-40">
+                  <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden min-w-[140px]">
+                    @for (col of sortableColumns(); track col.key) {
+                      <button
+                        class="w-full text-left px-4 py-2 text-sm transition-colors"
+                        [class]="sortKey() === col.key && sortDir() === 'asc' ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
+                        (click)="applySort(col.key.toString(), 'asc')"
+                      >{{ col.label }}</button>
+                    }
+                  </div>
                 </div>
               }
             </div>
 
             <!-- 내림차순 -->
-            <div class="relative" (mouseenter)="hoverDesc.set(true)" (mouseleave)="hoverDesc.set(false)">
+            <div class="relative" (mouseenter)="hoverDesc.set(true); hoverAsc.set(false)" (mouseleave)="hoverDesc.set(false)">
               <button
                 class="w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors"
                 [class]="sortDir() === 'desc' && sortKey() ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
@@ -71,14 +73,16 @@
                 내림차순 ↓
               </button>
               @if (hoverDesc()) {
-                <div class="absolute right-full top-0 mr-1 z-40 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden min-w-[140px]">
-                  @for (col of sortableColumns(); track col.key) {
-                    <button
-                      class="w-full text-left px-4 py-2 text-sm transition-colors"
-                      [class]="sortKey() === col.key && sortDir() === 'desc' ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
-                      (click)="applySort(col.key.toString(), 'desc')"
-                    >{{ col.label }}</button>
-                  }
+                <div class="absolute right-full top-0 pr-1 z-40">
+                  <div class="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden min-w-[140px]">
+                    @for (col of sortableColumns(); track col.key) {
+                      <button
+                        class="w-full text-left px-4 py-2 text-sm transition-colors"
+                        [class]="sortKey() === col.key && sortDir() === 'desc' ? 'text-blue-600 bg-blue-50 font-medium' : 'text-gray-700 hover:bg-gray-50'"
+                        (click)="applySort(col.key.toString(), 'desc')"
+                      >{{ col.label }}</button>
+                    }
+                  </div>
                 </div>
               }
             </div>
@@ -91,7 +95,8 @@
   }
 
 
-  <!-- Table wrapper -->
+  <!-- ═══ 데스크톱: 테이블 ═══ -->
+  @if (!isMobile()) {
   <div class="overflow-x-auto rounded-xl border border-slate-700/50">
     <table class="w-full text-sm" style="table-layout: fixed;">
       <thead>
@@ -147,7 +152,7 @@
           </tr>
         } @else {
           @for (row of paginatedData(); track $index) {
-            <tr class="border-b border-slate-800/80 hover:bg-slate-800/40 transition-colors cursor-pointer" (click)="rowClick.emit(row)" (contextmenu)="showActions() ? openContextMenu($event, row) : null">
+            <tr class="border-b border-slate-800/80 hover:bg-slate-800/40 transition-colors cursor-pointer" [class]="rowClassFn() ? rowClassFn()!(row) : ''" (click)="rowClick.emit(row)" (contextmenu)="showActions() ? openContextMenu($event, row) : null">
                @for (col of columns(); track col.key) {
                 <td
                   [class]="col.type === 'image' ? 'px-2 text-slate-300' : 'px-4 text-slate-300'"
@@ -216,6 +221,74 @@
       </tbody>
     </table>
   </div>
+  }
+
+  <!-- ═══ 모바일: 카드 리스트 ═══ -->
+  @if (isMobile()) {
+    @if (loading()) {
+      <div class="py-16 flex flex-col items-center gap-3 text-slate-500">
+        <div class="w-6 h-6 border-2 border-slate-600 border-t-indigo-500 rounded-full animate-spin"></div>
+        <span class="text-xs">불러오는 중...</span>
+      </div>
+    } @else if (paginatedData().length === 0) {
+      <div class="py-16 text-center text-slate-500 text-xs">데이터가 없습니다.</div>
+    } @else {
+      <div class="flex flex-col gap-3">
+        @for (row of paginatedData(); track $index) {
+          <div class="relative bg-slate-800/60 border border-slate-700/50 rounded-xl p-4 cursor-pointer hover:bg-slate-800 transition-colors"
+               (click)="rowClick.emit(row)"
+               (touchstart)="onTouchStart($event, row)"
+               (touchmove)="onTouchMove()"
+               (touchend)="onTouchEnd($event)">
+            @if (rowClassFn() && rowClassFn()!(row)) {
+              <span class="absolute -top-2 -right-2 px-2 py-0.5 bg-indigo-500 text-white text-[0.6rem] font-bold rounded-full shadow-lg animate-pulse">NEW</span>
+            }
+            @for (col of columns(); track col.key) {
+              @if ($any(col.type) !== 'index') {
+                <div class="flex items-start justify-between py-1.5" [class.border-b]="!$last" [class.border-slate-700/30]="!$last">
+                  <span class="text-[0.7rem] font-medium text-slate-500 shrink-0 w-24">{{ col.label }}</span>
+                  <div class="flex-1 text-right min-w-0 overflow-hidden">
+                    @if (col.type === 'image') {
+                      @let imgVal = getCellValue(row, col.key.toString());
+                      @if (imgVal) {
+                        <img [src]="imgVal + ''" class="w-16 h-12 object-cover rounded-md border border-slate-700 ml-auto" alt="이미지" />
+                      } @else {
+                        <span class="text-xs text-slate-600">—</span>
+                      }
+                    } @else if (col.transform) {
+                      @let transformedVal = col.transform($any(row));
+                      <span class="text-xs text-slate-300">{{ transformedVal || '—' }}</span>
+                    } @else if (col.type === 'badge' && col.badgeMap) {
+                      @let val = getCellValue(row, col.key.toString());
+                      @let badge = col.badgeMap[val + ''];
+                      @if (badge) {
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.65rem] font-medium" [class]="badge.class">{{ badge.label }}</span>
+                      } @else {
+                        <span class="text-xs text-slate-600">—</span>
+                      }
+                    } @else if (col.type === 'boolean') {
+                      @let boolVal = getCellValue(row, col.key.toString());
+                      @if (boolVal) {
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.65rem] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">활성</span>
+                      } @else {
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.65rem] font-medium bg-slate-700/50 text-slate-400 border border-slate-600/30">비활성</span>
+                      }
+                    } @else if (col.type === 'date') {
+                      @let dateVal = getCellValue(row, col.key.toString());
+                      <span class="text-xs text-slate-400">{{ dateVal ? ($any(dateVal) | date: 'yyyy-MM-dd') : '—' }}</span>
+                    } @else {
+                      @let textVal = getCellValue(row, col.key.toString());
+                      <span class="text-xs text-slate-300 break-all">{{ textVal ?? '—' }}</span>
+                    }
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+    }
+  }
 
   <!-- Pagination -->
   <div class="pt-4">
