@@ -5,7 +5,10 @@
 model AdminUser {
   id          Int       @id @default(autoincrement())
   email       String    @unique
-  password    String
+  password    String?
+  provider    String?   // "google" | "kakao" | null(이메일 로그인)
+  providerId  String?   // 소셜 provider 고유 ID
+  avatarUrl   String?   // 프로필 이미지 URL
   name        String
   role        String    @default("ADMIN") // SUPER_ADMIN, ADMIN, EDITOR
   permission  String?   // 선택된 권한명
@@ -16,6 +19,7 @@ model AdminUser {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  @@unique([provider, providerId])
   @@map("admin_users")
 }
 

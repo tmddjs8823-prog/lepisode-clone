@@ -47,6 +47,11 @@ export class AuthService implements OnModuleInit {
       throw new UnauthorizedException('잘못된 이메일 또는 비밀번호입니다.');
     }
 
+    // 소셜 로그인 전용 계정은 비밀번호 로그인 불가
+    if (!user.password) {
+      throw new UnauthorizedException('소셜 로그인으로 가입된 계정입니다. 소셜 로그인을 이용해주세요.');
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('잘못된 이메일 또는 비밀번호입니다.');
@@ -135,6 +140,78 @@ export class AuthService implements OnModuleInit {
     };
   }
 
+  /** 소셜 로그인 처리 (자동 가입 포함) */
+  async socialLogin(profile: {
+    provider: string;
+    providerId: string;
+    email: string;
+    name: string;
+    avatarUrl?: string;
+  }) {
+    // 1. provider + providerId로 기존 사용자 조회
+    let user = await this.prisma.adminUser.findFirst({
+      where: { provider: profile.provider, providerId: profile.providerId },
+    });
+
+    if (!user) {
+      // 2. email로 기존 계정 조회 (계정 연동)
+      user = await this.prisma.adminUser.findUnique({
+        where: { email: profile.email },
+      });
+
+      if (user) {
+        // 기존 계정에 소셜 정보 연동
+        user = await this.prisma.adminUser.update({
+          where: { id: user.id },
+          data: {
+            provider: profile.provider,
+            providerId: profile.providerId,
+            avatarUrl: profile.avatarUrl ?? user.avatarUrl,
+          },
+        });
+      } else {
+        // 3. 자동 가입
+        user = await this.prisma.adminUser.create({
+          data: {
+            email: profile.email,
+            name: profile.name,
+            provider: profile.provider,
+            providerId: profile.providerId,
+            avatarUrl: profile.avatarUrl,
+            role: 'ADMIN',
+          },
+        });
+      }
+    }
+
+    if (!user.isActive) {
+      throw new UnauthorizedException('비활성화된 계정입니다.');
+    }
+
+    // 마지막 로그인 시각 갱신
+    await this.prisma.adminUser.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    };
+
+    return {
+      accessToken: this.generateAccessToken(payload),
+      refreshToken: this.generateRefreshToken({ sub: user.id }),
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+    };
+  }
+
   async createInitialAdmin() {
     const count = await this.prisma.adminUser.count();
     if (count > 0) return null;
@@ -162,6 +239,9 @@ export class AuthService implements OnModuleInit {
         role: true,
         permission: true,
         roleId: true,
+        provider: true,
+        providerId: true,
+        avatarUrl: true,
         isActive: true,
         lastLoginAt: true,
         createdAt: true,
