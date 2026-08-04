@@ -17,9 +17,9 @@ async function bootstrap() {
   // Cookie parser (for httpOnly refresh token)
   app.use(cookieParser());
 
-  // CORS for client (4200) and admin (4300)
+  // CORS for admin (4200), client (4300), Capacitor app (localhost)
   app.enableCors({
-    origin: ['http://localhost:4200', 'http://localhost:4300'],
+    origin: ['http://localhost:4200', 'http://localhost:4300', 'http://localhost'],
     credentials: true,
   });
 

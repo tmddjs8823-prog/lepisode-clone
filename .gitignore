@@ -53,3 +53,7 @@ Thumbs.db
 
 # uploads
 uploads/
+
+# Capacitor native projects
+android/
+ios/

@@ -51,6 +51,19 @@
           "optimization": false,
           "extractLicenses": false,
           "sourceMap": true
+        },
+        "capacitor": {
+          "server": false,
+          "ssr": false,
+          "outputMode": "static",
+          "outputHashing": "all",
+          "baseHref": "./",
+          "fileReplacements": [
+            {
+              "replace": "apps/client/src/environments/environment.ts",
+              "with": "apps/client/src/environments/environment.capacitor.ts"
+            }
+          ]
         }
       }
     },

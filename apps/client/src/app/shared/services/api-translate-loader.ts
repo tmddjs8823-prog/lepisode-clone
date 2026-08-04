@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateLoader } from '@ngx-translate/core';
 import { Observable, of, forkJoin } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 interface TranslationItem {
   id: number;
@@ -24,8 +25,10 @@ export class ApiTranslateLoader extends TranslateLoader {
   private platformId = inject(PLATFORM_ID);
 
   getTranslation(lang: string): Observable<Record<string, string>> {
+    // Capacitor: baseHref가 ./이므로 상대경로로 assets 접근
+    const assetsBase = environment.apiUrl ? './assets' : '/assets';
     const staticFile$ = this.http
-      .get<Record<string, string>>(`/assets/i18n/${lang}.json`)
+      .get<Record<string, string>>(`${assetsBase}/i18n/${lang}.json`)
       .pipe(catchError(() => of({})));
 
     // SSR 환경에서는 정적 파일만 사용
@@ -33,8 +36,9 @@ export class ApiTranslateLoader extends TranslateLoader {
       return staticFile$;
     }
 
+    const apiBase = environment.apiUrl || '';
     const api$ = this.http
-      .get<TranslationItem[]>('/api/v1/i18n/translations')
+      .get<TranslationItem[]>(`${apiBase}/api/v1/i18n/translations`)
       .pipe(
         map((items) => {
           const result: Record<string, string> = {};
@@ -62,3 +66,4 @@ export class ApiTranslateLoader extends TranslateLoader {
     );
   }
 }
+
